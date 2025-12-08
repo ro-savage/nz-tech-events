@@ -6,7 +6,7 @@ class EventsController < ApplicationController
   before_action :authorize_owner!, only: [:edit, :update, :destroy]
 
   def index
-    @events = Event.upcoming.includes(:user)
+    @events = Event.upcoming.approved.includes(:user)
   end
 
   def past
@@ -29,7 +29,11 @@ class EventsController < ApplicationController
     @event = Current.user.events.build(event_params)
 
     if @event.save
-      redirect_to @event, notice: "Event created successfully!"
+      if @event.approved?
+        redirect_to @event, notice: "Event created successfully!"
+      else
+        redirect_to @event, notice: "Event created! It will appear on the events list once approved by an admin."
+      end
     else
       render :new, status: :unprocessable_entity
     end

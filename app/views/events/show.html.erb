@@ -2,6 +2,16 @@
 
 <a href="<%= root_path %>" class="back-link">&larr; Back to Events</a>
 
+<% unless @event.approved? %>
+  <div class="alert alert-warning" role="alert">
+    <strong>⏳ Pending Approval</strong><br>
+    This event is awaiting admin approval and is not yet visible in the public events list. 
+    <% if Current.user&.admin? %>
+      <a href="<%= admin_pending_events_path %>" class="underline">Go to pending events</a>
+    <% end %>
+  </div>
+<% end %>
+
 <article class="event-detail">
   <header>
     <span class="<%= event_type_badge_class(@event.event_type) %>">

@@ -45,9 +45,14 @@ class Event < ApplicationRecord
   # Scopes
   scope :upcoming, -> { where("start_date >= ?", Date.current).order(start_date: :asc, start_time: :asc) }
   scope :past, -> { where("start_date < ?", Date.current).order(start_date: :desc, start_time: :desc) }
+  scope :approved, -> { where(approved: true) }
+  scope :pending_approval, -> { where(approved: false) }
   scope :by_region, ->(region) { where(region: region) if region.present? }
   scope :by_city, ->(city) { where(city: city) if city.present? }
   scope :by_event_type, ->(type) { where(event_type: type) if type.present? }
+
+  # Callbacks
+  before_create :set_approval_status
 
   # Instance methods
   def owned_by?(check_user)
@@ -90,6 +95,11 @@ class Event < ApplicationRecord
   end
 
   private
+
+  def set_approval_status
+    # Auto-approve if user is an approved organiser or admin
+    self.approved = user&.approved_organiser? || user&.admin?
+  end
 
   def end_date_after_start_date
     if end_date < start_date

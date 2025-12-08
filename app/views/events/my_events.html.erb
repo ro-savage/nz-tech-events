@@ -14,6 +14,9 @@
             <%= event.event_type.titleize %>
           </span>
           <div class="flex gap-1 items-center">
+            <% unless event.approved? %>
+              <span class="badge badge-other">Pending Approval</span>
+            <% end %>
             <% if event.start_date < Date.current %>
               <span class="badge badge-other">Past</span>
             <% end %>

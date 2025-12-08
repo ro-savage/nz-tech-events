@@ -1,0 +1,85 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Pending Event Approvals</h1>
+    <span class="text-sm text-gray-600"><%= @events.count %> pending</span>
+  </div>
+
+  <% if @events.empty? %>
+    <div class="bg-white shadow-md rounded-lg p-8 text-center">
+      <p class="text-gray-600">No events pending approval.</p>
+      <p class="text-sm text-gray-500 mt-2">Events from approved organisers are automatically approved.</p>
+    </div>
+  <% else %>
+    <div class="space-y-4">
+      <% @events.each do |event| %>
+        <article class="bg-white shadow-md rounded-lg p-6">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <h2 class="text-2xl font-bold mb-2">
+                <a href="<%= event_path(event) %>" class="text-blue-600 hover:text-blue-800">
+                  <%= event.title %>
+                </a>
+              </h2>
+              
+              <div class="text-sm text-gray-600 mb-3">
+                <strong>Organiser:</strong> <%= event.user.display_name %> (<%= event.user.email_address %>)
+                <% unless event.user.approved_organiser? %>
+                  <span class="ml-2 px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Unapproved Organiser</span>
+                <% end %>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4 mb-3">
+                <div>
+                  <p class="text-sm text-gray-600"><strong>Date:</strong> <%= event.formatted_date %></p>
+                  <% if event.formatted_time %>
+                    <p class="text-sm text-gray-600"><strong>Time:</strong> <%= event.formatted_time %></p>
+                  <% end %>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600"><strong>Type:</strong> <%= event.event_type.to_s.titleize %></p>
+                  <p class="text-sm text-gray-600"><strong>Region:</strong> <%= event.region_display %></p>
+                  <p class="text-sm text-gray-600"><strong>City:</strong> <%= event.city %></p>
+                </div>
+              </div>
+
+              <div class="text-gray-700 mb-3">
+                <%= truncate(event.description, length: 200) %>
+              </div>
+
+              <p class="text-xs text-gray-500">
+                Submitted <%= time_ago_in_words(event.created_at) %> ago
+              </p>
+            </div>
+
+            <div class="ml-4 flex flex-col gap-2">
+              <%= button_to "Approve", admin_approve_event_path(event), 
+                  method: :post,
+                  data: { turbo_confirm: "Approve this event?" },
+                  class: "px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-medium" %>
+              
+              <%= button_to "Reject & Delete", admin_reject_event_path(event), 
+                  method: :delete,
+                  data: { turbo_confirm: "Are you sure? This will permanently delete this event." },
+                  class: "px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium" %>
+              
+              <a href="<%= event_path(event) %>" 
+                 class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 text-sm font-medium text-center">
+                View Full Event
+              </a>
+            </div>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+    <h3 class="text-sm font-semibold text-blue-800 mb-2">Admin Tips:</h3>
+    <ul class="text-sm text-blue-700 space-y-1">
+      <li>• Events from <strong>Approved Organisers</strong> are automatically approved and won't appear here.</li>
+      <li>• You can make a user an Approved Organiser from the <a href="<%= users_path %>" class="underline">Users page</a>.</li>
+      <li>• Rejected events are permanently deleted and cannot be recovered.</li>
+      <li>• Unapproved events can still be viewed by direct URL, they're just hidden from the public listings.</li>
+    </ul>
+  </div>
+</div>

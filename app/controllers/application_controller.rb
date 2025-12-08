@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
 
-  helper_method :logged_in?
+  helper_method :logged_in?, :pending_events_count
 
   private
 
@@ -20,6 +20,10 @@ class ApplicationController < ActionController::Base
 
   def logged_in?
     Current.user.present?
+  end
+
+  def pending_events_count
+    @pending_events_count ||= Event.pending_approval.count if Current.user&.admin?
   end
 
   def require_login

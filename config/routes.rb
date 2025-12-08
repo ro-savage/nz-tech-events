@@ -30,7 +30,18 @@ Rails.application.routes.draw do
   end
 
   # Admin - Users management
-  resources :users, only: [:index, :destroy]
+  resources :users, only: [:index, :destroy] do
+    member do
+      post :toggle_approved_organiser
+    end
+  end
+
+  # Admin - Events management
+  namespace :admin do
+    get "events/pending", to: "events#pending", as: :pending_events
+    post "events/:id/approve", to: "events#approve", as: :approve_event
+    delete "events/:id/reject", to: "events#reject", as: :reject_event
+  end
 
   # Health check for deployment
   get "up" => "rails/health#show", as: :rails_health_check

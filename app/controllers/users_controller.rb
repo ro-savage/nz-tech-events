@@ -6,6 +6,14 @@ class UsersController < ApplicationController
     @users = User.order(created_at: :desc).includes(:events)
   end
 
+  def toggle_approved_organiser
+    @user = User.find(params[:id])
+    @user.update(approved_organiser: !@user.approved_organiser)
+    
+    status = @user.approved_organiser? ? "approved organiser" : "regular user"
+    redirect_to users_path, notice: "#{@user.display_name} is now a #{status}."
+  end
+
   def destroy
     @user = User.find(params[:id])
     

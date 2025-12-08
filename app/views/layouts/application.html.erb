@@ -15,7 +15,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
 
     <!-- Pico CSS - Classless CSS Framework -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.pink.min.css">
 
     <!-- Custom styles -->
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
@@ -48,6 +48,16 @@
           <li><a href="<%= past_events_path %>" class="nav-link">Past Events</a></li>
           <% if logged_in? %>
             <% if Current.user.admin? %>
+              <li>
+                <a href="<%= admin_pending_events_path %>" class="nav-link">
+                  Pending Events
+                  <% if pending_events_count && pending_events_count > 0 %>
+                    <span class="badge badge-other" style="margin-left: 0.25rem; font-size: 0.75rem; padding: 0.125rem 0.5rem;">
+                      <%= pending_events_count %>
+                    </span>
+                  <% end %>
+                </a>
+              </li>
               <li><a href="<%= users_path %>" class="nav-link">Users</a></li>
             <% end %>
             <li><a href="<%= my_events_events_path %>" class="nav-link">My Events</a></li>

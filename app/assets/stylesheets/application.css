@@ -6,14 +6,6 @@
 
 :root {
   /* Primary accent - teal/cyan for a modern tech feel */
-  --accent: #0891b2;
-  --accent-light: #22d3ee;
-  --accent-dark: #0e7490;
-
-  /* Override Pico's primary color */
-  --pico-primary: var(--accent);
-  --pico-primary-hover: var(--accent-dark);
-  --pico-primary-focus: rgba(8, 145, 178, 0.25);
 
   /* Spacing */
   --space-xs: 0.25rem;
@@ -21,6 +13,9 @@
   --space-md: 1rem;
   --space-lg: 1.5rem;
   --space-xl: 2rem;
+
+  --pico-form-element-spacing-vertical: 0.5rem;
+  --pico-form-element-spacing-horizontal: 0.5rem;
 }
 
 [data-theme="dark"] {
@@ -29,6 +24,10 @@
   --accent-dark: #0891b2;
   --pico-primary: var(--accent);
   --pico-primary-hover: var(--accent-light);
+}
+
+[type="button"], [type="reset"], [type="submit"] {
+  margin-bottom: 0;
 }
 
 /* ========================================
@@ -82,18 +81,17 @@ h3 {
 .brand {
   font-weight: 700;
   font-size: 2rem;
-  color: var(--accent) !important;
   text-decoration: none;
-}
-
-.brand:hover {
-  color: var(--accent-dark) !important;
 }
 
 .nav-link {
   font-size: 0.9rem;
-  color: var(--pico-muted-color);
+  color: black;
   text-decoration: none;
+}
+
+[data-theme="dark"] .nav-link {
+  color: white;
 }
 
 .nav-link:hover {
@@ -224,14 +222,14 @@ h3 {
   padding: var(--space-lg);
   border: 1px solid var(--pico-muted-border-color);
   border-radius: 0.5rem;
-  border-left: 4px solid var(--accent);
+  border-left: 4px solid var(--pico-primary);
   background: var(--pico-card-background-color);
   transition: border-color 0.2s, box-shadow 0.2s;
   margin-bottom: 0;
 }
 
 .event-card:hover {
-  border-color: var(--accent);
+  border-color: var(--pico-primary);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 

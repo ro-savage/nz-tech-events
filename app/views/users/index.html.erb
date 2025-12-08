@@ -13,7 +13,7 @@
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Events</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
-          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admin</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
           <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
         </tr>
       </thead>
@@ -53,15 +53,29 @@
                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                   Admin
                 </span>
+              <% elsif user.approved_organiser? %>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                  Approved Organiser
+                </span>
+              <% else %>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                  Regular User
+                </span>
               <% end %>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <% if user != Current.user %>
-                <%= button_to "Delete", user_path(user), method: :delete, 
-                    data: { turbo_confirm: "Are you sure you want to delete #{user.display_name}? This will also delete all their events." },
-                    class: "text-red-600 hover:text-red-900" %>
+              <% if user != Current.user && !user.admin? %>
+                <div class="flex gap-2">
+                  <%= button_to user.approved_organiser? ? "Revoke Approval" : "Make Approved Organiser", 
+                      toggle_approved_organiser_user_path(user), 
+                      method: :post,
+                      class: "text-blue-600 hover:text-blue-900 text-sm" %>
+                  <%= button_to "Delete", user_path(user), method: :delete, 
+                      data: { turbo_confirm: "Are you sure you want to delete #{user.display_name}? This will also delete all their events." },
+                      class: "text-red-600 hover:text-red-900 text-sm" %>
+                </div>
               <% else %>
-                <span class="text-gray-400">(You)</span>
+                <span class="text-gray-400"><%= user.admin? ? "(Admin)" : "(You)" %></span>
               <% end %>
             </td>
           </tr>
@@ -71,12 +85,19 @@
   </div>
 
   <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-    <h3 class="text-sm font-semibold text-yellow-800 mb-2">Admin Note:</h3>
-    <p class="text-sm text-yellow-700">
-      To make a user an admin, you need to update the database directly. Use the Rails console or database tools to set the <code class="bg-yellow-100 px-1 rounded">admin</code> field to <code class="bg-yellow-100 px-1 rounded">true</code> for the desired user.
+    <h3 class="text-sm font-semibold text-yellow-800 mb-2">Admin Controls:</h3>
+    <p class="text-sm text-yellow-700 mb-2">
+      <strong>Admin Status:</strong> To make a user an admin, you need to update the database directly. Use the Rails console or database tools to set the <code class="bg-yellow-100 px-1 rounded">admin</code> field to <code class="bg-yellow-100 px-1 rounded">true</code>.
     </p>
-    <p class="text-sm text-yellow-700 mt-2">
-      Example in Rails console: <code class="bg-yellow-100 px-1 rounded">User.find_by(email_address: "user@example.com").update(admin: true)</code>
+    <p class="text-sm text-yellow-700 mb-2">
+      Example: <code class="bg-yellow-100 px-1 rounded">User.find_by(email_address: "user@example.com").update(admin: true)</code>
+    </p>
+    <hr class="my-3 border-yellow-300">
+    <p class="text-sm text-yellow-700 mb-2">
+      <strong>Approved Organiser:</strong> Users marked as "Approved Organiser" have their events automatically approved and appear immediately on the events list. Regular users' events require manual approval.
+    </p>
+    <p class="text-sm text-yellow-700">
+      Click the toggle button above to change a user's approved organiser status. New users are not approved by default.
     </p>
   </div>
 </div>

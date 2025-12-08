@@ -25,4 +25,9 @@ class User < ApplicationRecord
   def admin?
     admin == true
   end
+
+  # Check if user is an approved organiser
+  def approved_organiser?
+    approved_organiser == true
+  end
 end
