@@ -31,16 +31,8 @@
       <% end %>
     </div>
 
-    <% if @event.registration_url.present? %>
-      <div>
-        <a href="<%= @event.registration_url %>" target="_blank" rel="noopener noreferrer" role="button" type="button">
-          Register / Get Tickets &rarr;
-        </a>
-      </div>
-    <% end %>
-
     <div class="calendar-links">
-      <strong>Add to Calendar</strong><br>
+      <strong>Add to Calendar</strong>
       <a href="<%= google_calendar_url(@event) %>" target="_blank" rel="noopener noreferrer" class="calendar-link">
         Google Calendar
       </a>
@@ -58,6 +50,14 @@
   </div>
 
   <hr>
+
+  <% if @event.registration_url.present? %>
+    <div>
+      <a href="<%= @event.registration_url %>" target="_blank" rel="noopener noreferrer" role="button" type="button">
+        Register / Get Tickets &rarr;
+      </a>
+    </div>
+  <% end %>
 
   <footer>
     <small class="text-muted">

@@ -10,7 +10,7 @@ class EventsController < ApplicationController
   end
 
   def past
-    @events = Event.past.includes(:user)
+    @events = Event.past.includes(:user).limit(100)
   end
 
   def my_events

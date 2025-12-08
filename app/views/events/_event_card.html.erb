@@ -1,5 +1,5 @@
-<a class="event-card-link" href="<%= event_path(event) %>">
 <article class="event-card" data-region="<%= event.region %>" data-city="<%= event.city %>" data-event-type="<%= event.event_type %>">
+  <a class="event-card-link" href="<%= event_path(event) %>">
     <div class="event-card-header">
       <span class="<%= event_type_badge_class(event.event_type) %>">
         <%= event.event_type.titleize %>
@@ -22,5 +22,6 @@
     </p>
 
     <p><%= truncate(event.description, length: 600) %></p>
+  </a>
 </article>
-</a>
+
