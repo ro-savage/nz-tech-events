@@ -113,25 +113,26 @@ h3 {
   height: 2.25rem;
   padding: 0;
   border: none !important;
-  border-radius: 50%;
-  background: none;
+  background: none !important;
   color: var(--pico-muted-color);
   cursor: pointer;
   transition: border-color 0.2s, color 0.2s;
 }
 
 .profile-toggle:hover {
-  border-color: var(--accent);
-  color: var(--accent);
+  opacity: 0.8;
 }
 
 .profile-toggle::after {
   display: none;
 }
 
-.profile-toggle svg {
-  width: 18px;
-  height: 18px;
+.profile-toggle summary::after {
+  display: none !important;
+}
+
+details.dropdown > summary::after {
+  display: none !important;
 }
 
 /* ========================================
