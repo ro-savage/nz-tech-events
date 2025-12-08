@@ -38,6 +38,17 @@
         </a>
       </div>
     <% end %>
+
+    <div class="calendar-links">
+      <strong>Add to Calendar</strong><br>
+      <a href="<%= google_calendar_url(@event) %>" target="_blank" rel="noopener noreferrer" class="calendar-link">
+        Google Calendar
+      </a>
+      <span class="text-muted">&bull;</span>
+      <a href="<%= ical_event_path(@event) %>" class="calendar-link">
+        Apple / Outlook (.ics)
+      </a>
+    </div>
   </div>
 
   <hr>

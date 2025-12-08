@@ -399,6 +399,25 @@ h3 {
   margin-bottom: var(--space-md);
 }
 
+/* Calendar links */
+.calendar-links {
+  margin-top: var(--space-sm);
+}
+
+.calendar-links strong {
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+
+.calendar-link {
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.calendar-link:hover {
+  text-decoration: underline;
+}
+
 /* ========================================
    Forms
    ======================================== */

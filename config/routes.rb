@@ -24,6 +24,9 @@ Rails.application.routes.draw do
       get :past
       get :my_events
     end
+    member do
+      get :ical
+    end
   end
 
   # Health check for deployment
