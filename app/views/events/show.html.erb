@@ -65,7 +65,7 @@
       on <%= @event.created_at.strftime("%d %B %Y") %>
     </small>
 
-    <% if @event.owned_by?(Current.user) %>
+    <% if @event.editable_by?(Current.user) %>
       <div class="mt-2 flex gap-1">
         <a href="<%= edit_event_path(@event) %>" role="button" type="button" class="outline">Edit</a>
         <%= button_to "Delete", event_path(@event),

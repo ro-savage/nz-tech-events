@@ -1,0 +1,82 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">User Management</h1>
+    <span class="text-sm text-gray-600"><%= @users.count %> total users</span>
+  </div>
+
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Events</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admin</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% @users.each do |user| %>
+          <tr class="<%= 'bg-yellow-50' if user.admin? %>">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <% if user.avatar_url.present? %>
+                  <%= image_tag user.avatar_url, class: "h-8 w-8 rounded-full mr-2", alt: user.display_name %>
+                <% end %>
+                <div class="text-sm font-medium text-gray-900"><%= user.display_name %></div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900"><%= user.email_address %></div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <% if user.google_user? %>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                  Google
+                </span>
+              <% else %>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                  Email
+                </span>
+              <% end %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <%= user.events.count %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <%= user.created_at.strftime("%d %b %Y") %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <% if user.admin? %>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  Admin
+                </span>
+              <% end %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+              <% if user != Current.user %>
+                <%= button_to "Delete", user_path(user), method: :delete, 
+                    data: { turbo_confirm: "Are you sure you want to delete #{user.display_name}? This will also delete all their events." },
+                    class: "text-red-600 hover:text-red-900" %>
+              <% else %>
+                <span class="text-gray-400">(You)</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+    <h3 class="text-sm font-semibold text-yellow-800 mb-2">Admin Note:</h3>
+    <p class="text-sm text-yellow-700">
+      To make a user an admin, you need to update the database directly. Use the Rails console or database tools to set the <code class="bg-yellow-100 px-1 rounded">admin</code> field to <code class="bg-yellow-100 px-1 rounded">true</code> for the desired user.
+    </p>
+    <p class="text-sm text-yellow-700 mt-2">
+      Example in Rails console: <code class="bg-yellow-100 px-1 rounded">User.find_by(email_address: "user@example.com").update(admin: true)</code>
+    </p>
+  </div>
+</div>

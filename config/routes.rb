@@ -29,6 +29,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # Admin - Users management
+  resources :users, only: [:index, :destroy]
+
   # Health check for deployment
   get "up" => "rails/health#show", as: :rails_health_check
 end

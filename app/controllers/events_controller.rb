@@ -67,7 +67,7 @@ class EventsController < ApplicationController
   end
 
   def authorize_owner!
-    unless logged_in? && @event.owned_by?(Current.user)
+    unless logged_in? && (Current.user.admin? || @event.owned_by?(Current.user))
       redirect_to root_path, alert: "You are not authorized to modify this event."
     end
   end

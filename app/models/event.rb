@@ -54,6 +54,11 @@ class Event < ApplicationRecord
     user_id == check_user&.id
   end
 
+  def editable_by?(check_user)
+    return false unless check_user
+    check_user.admin? || owned_by?(check_user)
+  end
+
   def multi_day?
     end_date.present? && end_date != start_date
   end

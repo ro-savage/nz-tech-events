@@ -1,0 +1,28 @@
+class UsersController < ApplicationController
+  before_action :require_login
+  before_action :require_admin
+
+  def index
+    @users = User.order(created_at: :desc).includes(:events)
+  end
+
+  def destroy
+    @user = User.find(params[:id])
+    
+    if @user == Current.user
+      redirect_to users_path, alert: "You cannot delete your own account from this page."
+      return
+    end
+
+    @user.destroy
+    redirect_to users_path, notice: "User deleted successfully."
+  end
+
+  private
+
+  def require_admin
+    unless Current.user&.admin?
+      redirect_to root_path, alert: "You are not authorized to access this page."
+    end
+  end
+end

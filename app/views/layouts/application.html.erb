@@ -47,6 +47,9 @@
           <li><a href="<%= root_path %>" class="nav-link">Upcoming Events</a></li>
           <li><a href="<%= past_events_path %>" class="nav-link">Past Events</a></li>
           <% if logged_in? %>
+            <% if Current.user.admin? %>
+              <li><a href="<%= users_path %>" class="nav-link">Users</a></li>
+            <% end %>
             <li><a href="<%= my_events_events_path %>" class="nav-link">My Events</a></li>
             <li><a href="<%= new_event_path %>" role="button" type="button" class="btn-primary">Post Event</a></li>
             <li>

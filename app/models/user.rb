@@ -20,4 +20,9 @@ class User < ApplicationRecord
   def google_user?
     google_uid.present?
   end
+
+  # Check if user is an admin
+  def admin?
+    admin == true
+  end
 end
