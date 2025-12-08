@@ -1,0 +1,34 @@
+<div class="filters">
+  <div>
+    <label for="filter-region">Region</label>
+    <select id="filter-region">
+      <option value="">All Regions</option>
+      <% region_options.each do |label, value| %>
+        <option value="<%= value %>"><%= label %></option>
+      <% end %>
+    </select>
+  </div>
+
+  <div>
+    <label for="filter-city">City</label>
+    <select id="filter-city">
+      <option value="">All Cities</option>
+    </select>
+  </div>
+
+  <div class="filter-actions">
+    <a href="#" id="filter-clear" style="display: none;">Clear filters</a>
+  </div>
+</div>
+
+<div id="no-results-message" class="empty-state" style="display: none;">
+  <h3>No events match your filters</h3>
+  <p><a href="#" onclick="clearFilters(); return false;">Clear filters</a> to see all events</p>
+</div>
+
+<script type="text/javascript">
+  window.filterConfig = {
+    citiesByRegion: <%= cities_json %>,
+    storageKey: 'nzTechEventsFilters'
+  };
+</script>

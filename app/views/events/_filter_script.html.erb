@@ -1,0 +1,124 @@
+<script type="text/javascript">
+  (function() {
+    if (!window.filterConfig) return;
+
+    const citiesByRegion = window.filterConfig.citiesByRegion;
+    const STORAGE_KEY = window.filterConfig.storageKey;
+
+    const regionSelect = document.getElementById('filter-region');
+    const citySelect = document.getElementById('filter-city');
+    const clearLink = document.getElementById('filter-clear');
+    const noResultsMessage = document.getElementById('no-results-message');
+    const eventCards = document.querySelectorAll('.event-card');
+    const eventsList = document.querySelector('.events-list');
+
+    if (!regionSelect || !citySelect) return;
+
+    // Load saved filters from localStorage
+    function loadFilters() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          return JSON.parse(saved);
+        }
+      } catch (e) {}
+      return { region: '', city: '' };
+    }
+
+    // Save filters to localStorage
+    function saveFilters() {
+      const filters = {
+        region: regionSelect.value,
+        city: citySelect.value
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
+    }
+
+    // Update city dropdown based on selected region
+    function updateCityOptions(selectedCity) {
+      const region = regionSelect.value;
+      const cities = citiesByRegion[region] || [];
+
+      citySelect.innerHTML = '<option value="">All Cities</option>';
+      cities.forEach(function(city) {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        if (city === selectedCity) {
+          option.selected = true;
+        }
+        citySelect.appendChild(option);
+      });
+    }
+
+    // Apply filters to show/hide event cards
+    function applyFilters() {
+      const region = regionSelect.value;
+      const city = citySelect.value;
+
+      let visibleCount = 0;
+
+      eventCards.forEach(function(card) {
+        const cardRegion = card.dataset.region;
+        const cardCity = card.dataset.city;
+
+        const matchesRegion = !region || cardRegion === region;
+        const matchesCity = !city || cardCity === city;
+
+        if (matchesRegion && matchesCity) {
+          card.style.display = '';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Show/hide no results message
+      if (eventCards.length > 0) {
+        if (visibleCount === 0) {
+          noResultsMessage.style.display = '';
+          if (eventsList) eventsList.style.display = 'none';
+        } else {
+          noResultsMessage.style.display = 'none';
+          if (eventsList) eventsList.style.display = '';
+        }
+      }
+
+      // Show/hide clear link
+      if (region || city) {
+        clearLink.style.display = '';
+      } else {
+        clearLink.style.display = 'none';
+      }
+
+      saveFilters();
+    }
+
+    // Clear all filters
+    window.clearFilters = function() {
+      regionSelect.value = '';
+      citySelect.value = '';
+      updateCityOptions('');
+      applyFilters();
+    };
+
+    // Event listeners
+    regionSelect.onchange = function() {
+      updateCityOptions('');
+      applyFilters();
+    };
+
+    citySelect.onchange = applyFilters;
+
+    clearLink.onclick = function(e) {
+      e.preventDefault();
+      clearFilters();
+    };
+
+    // Initialize on page load
+    const saved = loadFilters();
+    regionSelect.value = saved.region;
+    updateCityOptions(saved.city);
+    applyFilters();
+  })();
+</script>

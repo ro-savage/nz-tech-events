@@ -1,0 +1,139 @@
+<%= form_with model: event do |f| %>
+  <% if event.errors.any? %>
+    <div class="alert alert-error">
+      <strong>Please fix the following errors:</strong>
+      <ul style="margin: 0.5rem 0 0 1rem;">
+        <% event.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <fieldset>
+    <legend>Event Details</legend>
+
+    <label for="event_title">
+      Title *
+      <%= f.text_field :title, required: true, placeholder: "e.g., Auckland JavaScript Meetup" %>
+    </label>
+
+    <label for="event_event_type">
+      Event Type *
+      <%= f.select :event_type, event_type_options, { prompt: "Select type..." }, { required: true } %>
+    </label>
+
+    <label for="event_description">
+      Description *
+      <%= f.text_area :description, required: true, rows: 6, placeholder: "Tell people what this event is about..." %>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Date & Time</legend>
+
+    <div class="grid">
+      <label for="event_start_date">
+        Start Date *
+        <%= f.date_field :start_date, required: true %>
+      </label>
+
+      <label for="event_end_date">
+        End Date <small class="text-muted">(multi-day events)</small>
+        <%= f.date_field :end_date %>
+      </label>
+    </div>
+
+    <div class="grid">
+      <label for="event_start_time">
+        Start Time
+        <%= f.time_field :start_time %>
+      </label>
+
+      <label for="event_end_time">
+        End Time
+        <%= f.time_field :end_time %>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Location</legend>
+
+    <div class="grid">
+      <label for="event_region">
+        Region *
+        <%= f.select :region, region_options, { prompt: "Select region..." },
+            { required: true, data: { action: "change->event-form#regionChanged", event_form_target: "region" } } %>
+      </label>
+
+      <label for="event_city">
+        City *
+        <%= f.select :city,
+            event.region.present? ? cities_for_region(event.region).map { |c| [c, c] } : [],
+            { prompt: "Select city..." },
+            { required: true, data: { event_form_target: "city" } } %>
+      </label>
+    </div>
+
+    <label for="event_address">
+      Address / Venue <small class="text-muted">(optional)</small>
+      <%= f.text_area :address, rows: 2, placeholder: "e.g., GridAKL, 12 Madden Street, Auckland" %>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Additional Info</legend>
+
+    <label for="event_cost">
+      Cost <small class="text-muted">(leave blank for free events)</small>
+      <%= f.text_field :cost, placeholder: "e.g., Free, $20, $50-100, Koha" %>
+    </label>
+
+    <label for="event_registration_url">
+      Registration Link <small class="text-muted">(optional)</small>
+      <%= f.url_field :registration_url, placeholder: "https://..." %>
+    </label>
+  </fieldset>
+
+  <div class="flex gap-1">
+    <button type="submit"><%= event.persisted? ? "Update Event" : "Create Event" %></button>
+    <a href="<%= event.persisted? ? event_path(event) : root_path %>" role="button" type="button" class="outline secondary">Cancel</a>
+  </div>
+<% end %>
+
+<script type="text/javascript">
+  (function() {
+    const citiesByRegion = <%= cities_json %>;
+
+    const regionSelect = document.getElementById('event_region');
+    const citySelect = document.getElementById('event_city');
+    const startDateInput = document.getElementById('event_start_date');
+    const endDateInput = document.getElementById('event_end_date');
+
+    // Region -> City dropdown
+    if (regionSelect && citySelect) {
+      regionSelect.onchange = function() {
+        const region = this.value;
+        const cities = citiesByRegion[region] || [];
+
+        citySelect.innerHTML = '<option value="">Select city...</option>';
+        cities.forEach(function(city) {
+          const option = document.createElement('option');
+          option.value = city;
+          option.textContent = city;
+          citySelect.appendChild(option);
+        });
+      };
+    }
+
+    // Start date -> End date auto-fill
+    if (startDateInput && endDateInput) {
+      startDateInput.onchange = function() {
+        if (!endDateInput.value && this.value) {
+          endDateInput.value = this.value;
+        }
+      };
+    }
+  })();
+</script>

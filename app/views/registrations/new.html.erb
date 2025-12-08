@@ -1,0 +1,55 @@
+<% content_for :title, "Sign Up - NZ Tech Events" %>
+
+<div class="form-container">
+  <h1>Create Account</h1>
+  <p class="text-muted" style="text-align: center; margin-bottom: 1.5rem;">You must register post and manage events.</p>
+
+  <hr>
+
+  <p style="text-align: center;" class="text-muted">
+    <a href="<%= new_session_path %>">Sign in to an existing account</a>
+  </p>
+
+  <hr>
+
+  <p style="text-align: center;">
+  <%= button_to "Signup with Google", "/auth/google_oauth2", method: :post, data: { turbo: false }, class: "outline secondary", form: { style: "display: inline" } %>
+  </p>
+
+  <hr>
+
+  <%= form_with model: @user, url: registration_path do |f| %>
+    <% if @user.errors.any? %>
+      <div class="alert alert-error">
+        <ul style="margin: 0; padding-left: 1rem;">
+          <% @user.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <label for="user_name">
+      Name / Organisation <small class="text-muted">(optional)</small>
+      <%= f.text_field :name, placeholder: "Your name" %>
+    </label>
+
+    <label for="user_email_address">
+      Email
+      <%= f.email_field :email_address, required: true, placeholder: "you@example.com" %>
+    </label>
+
+    <label for="user_password">
+      Password <small class="text-muted">(minimum 8 characters)</small>
+      <%= f.password_field :password, required: true, minlength: 8 %>
+    </label>
+
+    <label for="user_password_confirmation">
+      Confirm Password
+      <%= f.password_field :password_confirmation, required: true %>
+    </label>
+
+    <button type="submit">Create Account</button>
+  <% end %>
+
+</div>

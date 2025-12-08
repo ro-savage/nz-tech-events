@@ -1,0 +1,30 @@
+<% content_for :title, "Sign In - NZ Tech Events" %>
+
+<div class="form-container">
+  <h1>Sign In</h1>
+  <p class="text-muted" style="text-align: center; margin-bottom: 1.5rem;">Welcome back to NZ Tech Events.</p>
+
+  <%= form_with url: session_path do |f| %>
+    <label for="email_address">
+      Email
+      <%= f.email_field :email_address, required: true, autofocus: true, placeholder: "you@example.com" %>
+    </label>
+
+    <label for="password">
+      Password
+      <%= f.password_field :password, required: true %>
+    </label>
+
+    <button type="submit">Sign In</button>
+  <% end %>
+
+  <hr>
+
+  <p style="text-align: center;" class="text-muted">
+    Don't have an account? <a href="<%= new_registration_path %>">Sign up</a>
+  </p>
+
+  <p style="text-align: center;">
+    <%= button_to "Continue with Google", "/auth/google_oauth2", method: :post, data: { turbo: false }, class: "outline secondary", form: { style: "display: inline" } %>
+  </p>
+</div>

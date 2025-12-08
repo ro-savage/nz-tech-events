@@ -1,0 +1,23 @@
+<% content_for :title, "Upcoming Tech Events in New Zealand" %>
+
+<h1>Upcoming Events</h1>
+
+<%= render "filters" %>
+
+<% if @events.any? %>
+  <div class="events-list">
+    <%= render partial: "event_card", collection: @events, as: :event %>
+  </div>
+<% else %>
+  <div class="empty-state">
+    <h3>No upcoming events</h3>
+    <p>Be the first to post an event!</p>
+    <% if logged_in? %>
+      <a href="<%= new_event_path %>" role="button" type="button">Post an Event</a>
+    <% else %>
+      <a href="<%= new_registration_path %>" role="button" type="button">Sign up to post events</a>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render "filter_script" %>

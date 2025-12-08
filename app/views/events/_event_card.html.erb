@@ -1,0 +1,24 @@
+<article class="event-card" data-region="<%= event.region %>" data-city="<%= event.city %>" data-event-type="<%= event.event_type %>">
+  <div class="event-card-header">
+    <span class="<%= event_type_badge_class(event.event_type) %>">
+      <%= event.event_type.titleize %>
+    </span>
+    <span class="badge <%= event.free? ? 'badge-free' : 'badge-paid' %>">
+      <%= event.cost.presence || "Free" %>
+    </span>
+  </div>
+
+  <h3>
+    <a href="<%= event_path(event) %>"><%= event.title %></a>
+  </h3>
+
+  <p class="event-meta">
+    📅 <%= event.formatted_date %>
+    <% if event.formatted_time %>
+      &bull; <%= event.formatted_time %>
+    <% end %>
+    &bull; 📍 <%= event.city %>, <%= event.region_display %>
+  </p>
+
+  <p><%= truncate(event.description, length: 600) %></p>
+</article>

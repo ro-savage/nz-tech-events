@@ -1,0 +1,18 @@
+<% content_for :title, "Past Tech Events in New Zealand" %>
+
+<h1>Past Events</h1>
+
+<%= render "filters" %>
+
+<% if @events.any? %>
+  <div class="events-list">
+    <%= render partial: "event_card", collection: @events, as: :event %>
+  </div>
+<% else %>
+  <div class="empty-state">
+    <h3>No past events found</h3>
+    <p><a href="<%= root_path %>">View upcoming events</a></p>
+  </div>
+<% end %>
+
+<%= render "filter_script" %>

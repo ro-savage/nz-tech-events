@@ -1,0 +1,520 @@
+/* NZ Tech Events - Custom Styles */
+
+/* ========================================
+   CSS Custom Properties (Accent Colors)
+   ======================================== */
+
+:root {
+  /* Primary accent - teal/cyan for a modern tech feel */
+  --accent: #0891b2;
+  --accent-light: #22d3ee;
+  --accent-dark: #0e7490;
+
+  /* Override Pico's primary color */
+  --pico-primary: var(--accent);
+  --pico-primary-hover: var(--accent-dark);
+  --pico-primary-focus: rgba(8, 145, 178, 0.25);
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+}
+
+[data-theme="dark"] {
+  --accent: #22d3ee;
+  --accent-light: #67e8f9;
+  --accent-dark: #0891b2;
+  --pico-primary: var(--accent);
+  --pico-primary-hover: var(--accent-light);
+}
+
+/* ========================================
+   Typography - Smaller, Refined Headings
+   ======================================== */
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+/* Muted text */
+.text-muted {
+  color: var(--pico-muted-color);
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+/* ========================================
+   Site Header
+   ======================================== */
+
+.site-header {
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  margin-bottom: var(--space-xl);
+}
+
+.site-header nav {
+  margin-bottom: 0;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--accent) !important;
+  text-decoration: none;
+}
+
+.brand:hover {
+  color: var(--accent-dark) !important;
+}
+
+.nav-link {
+  font-size: 0.9rem;
+  color: var(--pico-muted-color);
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: var(--pico-color);
+}
+
+/* Primary button style */
+.btn-primary {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Profile dropdown toggle */
+.profile-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: none !important;
+  border-radius: 50%;
+  background: none;
+  color: var(--pico-muted-color);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.profile-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.profile-toggle::after {
+  display: none;
+}
+
+.profile-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ========================================
+   Theme Toggle
+   ======================================== */
+
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 50%;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  background: var(--pico-card-background-color);
+}
+
+/* Show/hide icons based on theme */
+[data-theme="light"] .theme-icon-dark,
+[data-theme="dark"] .theme-icon-light {
+  display: none;
+}
+
+[data-theme="light"] .theme-icon-light,
+[data-theme="dark"] .theme-icon-dark {
+  display: inline;
+}
+
+/* ========================================
+   Alerts / Flash Messages
+   ======================================== */
+
+.alert {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 0.375rem;
+  margin-bottom: var(--space-lg);
+  font-size: 0.9rem;
+}
+
+.alert-success {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.alert-error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+[data-theme="dark"] .alert-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+[data-theme="dark"] .alert-error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* ========================================
+   Event Cards
+   ======================================== */
+
+.events-list {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.event-card {
+  padding: var(--space-lg);
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 0.5rem;
+  border-left: 4px solid var(--accent);
+  background: var(--pico-card-background-color);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 0;
+}
+
+.event-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .event-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.event-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: var(--space-xs);
+}
+
+.event-card h3 a {
+  color: var(--pico-color);
+  text-decoration: none;
+}
+
+.event-card h3 a:hover {
+  color: var(--accent);
+}
+
+.event-meta {
+  color: var(--pico-muted-color);
+  font-size: 0.8rem;
+  margin-bottom: var(--space-sm);
+  line-height: 1.5;
+}
+
+.event-card p:last-child {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: var(--pico-muted-color);
+  line-height: 1.6;
+}
+
+.event-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+/* ========================================
+   Badges
+   ======================================== */
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* Event type badges */
+.badge-conference { background: #ede9fe; color: #6d28d9; }
+.badge-meetup { background: #d1fae5; color: #059669; }
+.badge-workshop { background: #fef3c7; color: #b45309; }
+.badge-hackathon { background: #fee2e2; color: #dc2626; }
+.badge-webinar { background: #cffafe; color: #0891b2; }
+.badge-networking { background: #fce7f3; color: #be185d; }
+.badge-other { background: #f3f4f6; color: #4b5563; }
+
+/* Cost badges */
+.badge-free { background: #d1fae5; color: #059669; }
+.badge-paid { background: #dbeafe; color: #2563eb; }
+
+/* Dark mode badge adjustments */
+[data-theme="dark"] .badge-conference { background: rgba(109, 40, 217, 0.2); color: #c4b5fd; }
+[data-theme="dark"] .badge-meetup { background: rgba(5, 150, 105, 0.2); color: #6ee7b7; }
+[data-theme="dark"] .badge-workshop { background: rgba(180, 83, 9, 0.2); color: #fcd34d; }
+[data-theme="dark"] .badge-hackathon { background: rgba(220, 38, 38, 0.2); color: #fca5a5; }
+[data-theme="dark"] .badge-webinar { background: rgba(8, 145, 178, 0.2); color: #67e8f9; }
+[data-theme="dark"] .badge-networking { background: rgba(190, 24, 93, 0.2); color: #f9a8d4; }
+[data-theme="dark"] .badge-other { background: rgba(75, 85, 99, 0.2); color: #d1d5db; }
+[data-theme="dark"] .badge-free { background: rgba(5, 150, 105, 0.2); color: #6ee7b7; }
+[data-theme="dark"] .badge-paid { background: rgba(37, 99, 235, 0.2); color: #93c5fd; }
+
+/* ========================================
+   Filter Bar
+   ======================================== */
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 0.5rem;
+  margin-bottom: var(--space-xl);
+  align-items: end;
+}
+
+.filters > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.filters label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pico-muted-color);
+  margin-bottom: var(--space-xs);
+}
+
+.filters select {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  padding-bottom: 0.5rem;
+}
+
+.filter-actions a {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* ========================================
+   Event Detail Page
+   ======================================== */
+
+.event-detail header {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.event-detail h1 {
+  margin-top: var(--space-sm);
+  margin-bottom: 0;
+}
+
+.event-details {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.event-details p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.event-details strong {
+  color: var(--pico-muted-color);
+  font-weight: 500;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.event-description {
+  line-height: 1.7;
+}
+
+.event-description p {
+  margin-bottom: var(--space-md);
+}
+
+/* ========================================
+   Forms
+   ======================================== */
+
+form label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+form small {
+  color: var(--pico-muted-color);
+  font-size: 0.8rem;
+}
+
+/* Form containers */
+.form-container {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.form-container h1 {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+/* ========================================
+   Empty State
+   ======================================== */
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-xl) var(--space-lg);
+  background: var(--pico-card-background-color);
+  border: 1px dashed var(--pico-muted-border-color);
+  border-radius: 0.5rem;
+}
+
+.empty-state h3 {
+  color: var(--pico-muted-color);
+  font-size: 1.1rem;
+  margin-bottom: var(--space-sm);
+}
+
+.empty-state p {
+  color: var(--pico-muted-color);
+  font-size: 0.9rem;
+  margin-bottom: var(--space-lg);
+}
+
+/* ========================================
+   Back Link
+   ======================================== */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--pico-muted-color);
+  text-decoration: none;
+  margin-bottom: var(--space-lg);
+}
+
+.back-link:hover {
+  color: var(--accent);
+}
+
+/* ========================================
+   Footer
+   ======================================== */
+
+.site-footer {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-lg);
+  border-top: 1px solid var(--pico-muted-border-color);
+  text-align: center;
+  color: var(--pico-muted-color);
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: var(--space-sm); }
+.mb-2 { margin-bottom: var(--space-md); }
+.mt-2 { margin-top: var(--space-md); }
+.flex { display: flex; }
+.gap-1 { gap: var(--space-sm); }
+.gap-2 { gap: var(--space-md); }
+.justify-between { justify-content: space-between; }
+.items-center { align-items: center; }
+
+/* ========================================
+   Responsive Adjustments
+   ======================================== */
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .site-header nav ul:last-child {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-actions {
+    justify-content: center;
+  }
+
+  .event-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+}

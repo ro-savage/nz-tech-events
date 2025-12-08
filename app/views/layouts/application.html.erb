@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= content_for(:title) || "NZ Tech Events - Find Tech Events in New Zealand" %></title>
+    <meta name="description" content="<%= content_for(:description) || 'Discover and share tech events across New Zealand. Conferences, meetups, workshops, and more.' %>">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="<%= content_for(:title) || 'NZ Tech Events' %>">
+    <meta property="og:description" content="<%= content_for(:description) || 'Discover and share tech events across New Zealand.' %>">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+
+    <!-- Pico CSS - Classless CSS Framework -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+
+    <!-- Custom styles -->
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+
+    <!-- Theme initialization (prevent flash) -->
+    <script>
+      (function() {
+        const saved = localStorage.getItem('theme');
+        if (saved) {
+          document.documentElement.setAttribute('data-theme', saved);
+        }
+      })();
+    </script>
+
+    <!-- Importmaps for JS (no build!) -->
+    <%= javascript_importmap_tags %>
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+  </head>
+
+  <body>
+    <header class="container site-header">
+      <nav>
+        <ul>
+          <li><a href="<%= root_path %>" class="brand">NZ Tech Events</a></li>
+        </ul>
+        <ul>
+          <li><a href="<%= root_path %>" class="nav-link">Upcoming Events</a></li>
+          <li><a href="<%= past_events_path %>" class="nav-link">Past Events</a></li>
+          <% if logged_in? %>
+            <li><a href="<%= my_events_events_path %>" class="nav-link">My Events</a></li>
+            <li><a href="<%= new_event_path %>" role="button" type="button" class="btn-primary">Post Event</a></li>
+            <li>
+              <details class="dropdown">
+                <summary class="profile-toggle" aria-label="Account menu">
+                  👤
+                </summary>
+                <ul dir="rtl">
+                  <li><%= button_to "Sign Out", logout_path, method: :delete %></li>
+                </ul>
+              </details>
+            </li>
+          <% else %>
+            <li><a href="<%= new_registration_path %>" role="button" type="button" class="btn-primary">Post Event</a></li>
+          <% end %>
+          <li>
+            <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+              <span class="theme-icon-light">☀️</span>
+              <span class="theme-icon-dark">🌙</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="container">
+      <% if notice.present? %>
+        <div class="alert alert-success" role="alert">
+          <%= notice %>
+        </div>
+      <% end %>
+      <% if alert.present? %>
+        <div class="alert alert-error" role="alert">
+          <%= alert %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <footer class="container site-footer">
+      <small><a href="<%= new_session_path %>" class="nav-link">Sign In</a></small>
+      <small> | NZ Tech Events &copy; <%= Date.current.year %></small>
+    </footer>
+
+    <script>
+      function toggleTheme() {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+      }
+    </script>
+  </body>
+</html>

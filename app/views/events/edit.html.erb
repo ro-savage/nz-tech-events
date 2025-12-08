@@ -1,0 +1,7 @@
+<% content_for :title, "Edit Event - NZ Tech Events" %>
+
+<a href="<%= event_path(@event) %>" class="back-link">&larr; Back to event</a>
+
+<h1>Edit Event</h1>
+
+<%= render "form", event: @event %>

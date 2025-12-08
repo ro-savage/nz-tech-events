@@ -1,0 +1,67 @@
+<% content_for :title, "#{@event.title} - NZ Tech Events" %>
+
+<a href="<%= root_path %>" class="back-link">&larr; Back to Events</a>
+
+<article class="event-detail">
+  <header>
+    <span class="<%= event_type_badge_class(@event.event_type) %>">
+      <%= @event.event_type.titleize %>
+    </span>
+    <span class="badge <%= @event.free? ? 'badge-free' : 'badge-paid' %>">
+      <%= @event.cost.presence || "Free" %>
+    </span>
+
+    <h1><%= @event.title %></h1>
+  </header>
+
+  <div class="event-details">
+    <div>
+      <strong>Date</strong><br>
+      <%= @event.formatted_date %>
+      <% if @event.formatted_time %>
+        &bull; <%= @event.formatted_time %>
+      <% end %>
+    </div>
+
+    <div>
+      <strong>Location</strong><br>
+      <%= @event.city %>, <%= @event.region_display %>
+      <% if @event.address.present? %>
+        <br><span class="text-muted text-sm"><%= @event.address %></span>
+      <% end %>
+    </div>
+
+    <% if @event.registration_url.present? %>
+      <div>
+        <a href="<%= @event.registration_url %>" target="_blank" rel="noopener noreferrer" role="button" type="button">
+          Register / Get Tickets &rarr;
+        </a>
+      </div>
+    <% end %>
+  </div>
+
+  <hr>
+
+  <div class="event-description">
+    <%= simple_format(@event.description) %>
+  </div>
+
+  <hr>
+
+  <footer>
+    <small class="text-muted">
+      Posted by <%= @event.user.display_name %>
+      on <%= @event.created_at.strftime("%d %B %Y") %>
+    </small>
+
+    <% if @event.owned_by?(Current.user) %>
+      <div class="mt-2 flex gap-1">
+        <a href="<%= edit_event_path(@event) %>" role="button" type="button" class="outline">Edit</a>
+        <%= button_to "Delete", event_path(@event),
+            method: :delete,
+            data: { turbo_confirm: "Are you sure you want to delete this event?" },
+            class: "outline secondary" %>
+      </div>
+    <% end %>
+  </footer>
+</article>
