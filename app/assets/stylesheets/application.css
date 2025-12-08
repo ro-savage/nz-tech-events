@@ -70,9 +70,9 @@ h3 {
 
 .site-header {
   padding-top: var(--space-md);
-  padding-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
   border-bottom: 1px solid var(--pico-muted-border-color);
-  margin-bottom: var(--space-xl);
+  margin-bottom: 0;
 }
 
 .site-header nav {
@@ -81,7 +81,7 @@ h3 {
 
 .brand {
   font-weight: 700;
-  font-size: 1.125rem;
+  font-size: 2rem;
   color: var(--accent) !important;
   text-decoration: none;
 }

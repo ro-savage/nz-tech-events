@@ -53,7 +53,7 @@ Before starting deployment:
 ls ~/.ssh/id_ed25519.pub
 
 # If not, generate one
-ssh-keygen -t ed25519 -C "your-email@example.com"
+ssh-keygen -t ed25519 -C "rowan.savage@gmail.com"
 ```
 
 **Checklist:**
