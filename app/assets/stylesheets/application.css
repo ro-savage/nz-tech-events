@@ -216,6 +216,10 @@ h3 {
   gap: var(--space-md);
 }
 
+.event-card-link {
+  text-decoration: none;
+}
+
 .event-card {
   padding: var(--space-lg);
   border: 1px solid var(--pico-muted-border-color);
