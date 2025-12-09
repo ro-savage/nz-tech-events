@@ -41,8 +41,8 @@ Before starting deployment:
 3. Create a new project: "NZ Tech Events"
 
 **Checklist:**
-- [ ] Hetzner account created
-- [ ] Project created
+- [x] Hetzner account created
+- [x] Project created
 
 ---
 
@@ -57,7 +57,7 @@ ssh-keygen -t ed25519 -C "rowan.savage@gmail.com"
 ```
 
 **Checklist:**
-- [ ] SSH key exists at `~/.ssh/id_ed25519.pub`
+- [x] SSH key exists at `~/.ssh/id_ed25519.pub`
 
 ---
 
@@ -76,8 +76,8 @@ In Hetzner Cloud Console:
 Note the server's **IP address** (e.g., `123.45.67.89`)
 
 **Checklist:**
-- [ ] Server created
-- [ ] IP address noted: `_______________`
+- [x] Server created
+- [ ] IP address noted: `77.42.38.51`
 
 ---
 
@@ -87,8 +87,8 @@ In your domain registrar (e.g., Namecheap, Cloudflare):
 
 ```
 Type    Name    Value               TTL
-A       @       123.45.67.89        3600
-A       www     123.45.67.89        3600
+A       @       77.42.38.51        3600
+A       www     77.42.38.51        3600
 ```
 
 Wait for DNS propagation (can take up to 48 hours, usually minutes).
