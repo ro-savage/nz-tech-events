@@ -2,6 +2,8 @@
 
 Step-by-step guide for deploying NZ Tech Events to Hetzner Cloud using Kamal 2 (Rails' default deployment tool).
 
+**Deploy from**: Local machine (no GitHub Actions or CI/CD required)
+
 ---
 
 ## Overview
@@ -9,7 +11,7 @@ Step-by-step guide for deploying NZ Tech Events to Hetzner Cloud using Kamal 2 (
 | Component | Choice | Cost |
 |-----------|--------|------|
 | Server | Hetzner Cloud CX22 | ~€5/month |
-| Registry | GitHub Container Registry | Free |
+| Registry | Local registry on server | Free |
 | SSL | Let's Encrypt (via Traefik) | Free |
 | Domain | techevents.co.nz | ~$25/year |
 
@@ -21,14 +23,13 @@ Step-by-step guide for deploying NZ Tech Events to Hetzner Cloud using Kamal 2 (
 
 Before starting deployment:
 
-- [ ] Rails app runs locally without errors
-- [ ] All tests pass (if any)
-- [ ] Git repository initialized
-- [ ] GitHub account (for container registry)
-- [ ] Hetzner Cloud account created
-- [ ] Domain name purchased
-- [ ] Docker installed locally (`docker --version`)
-- [ ] Kamal installed (`gem install kamal` or in Gemfile)
+- [x] Rails app runs locally without errors
+- [x] All tests pass (if any)
+- [x] Git repository initialized
+- [x] Hetzner Cloud account created
+- [x] Domain name purchased
+- [x] Docker installed locally (`docker --version`)
+- [x] Kamal installed (`gem install kamal` or in Gemfile)
 
 ---
 
@@ -73,11 +74,11 @@ In Hetzner Cloud Console:
 6. **Name**: `tech-events-web`
 7. Click "Create & Buy Now"
 
-Note the server's **IP address** (e.g., `123.45.67.89`)
+Note the server's **IP address** (e.g., `77.42.38.51`)
 
 **Checklist:**
 - [x] Server created
-- [ ] IP address noted: `77.42.38.51`
+- [x] IP address noted: `77.42.38.51`
 
 ---
 
@@ -100,39 +101,25 @@ dig +short techevents.co.nz
 ```
 
 **Checklist:**
-- [ ] A record for `@` points to server IP
-- [ ] A record for `www` points to server IP
-- [ ] DNS propagated (dig returns correct IP)
+- [x] A record for `@` points to server IP
+- [x] A record for `www` points to server IP
+- [x] DNS propagated (dig returns correct IP)
 
 ---
 
-## PHASE 2: GitHub Container Registry Setup
+## PHASE 2: Local Registry Setup
 
-### Step 2.1: Create GitHub Personal Access Token
+Kamal will automatically set up a local Docker registry on your server. No external registry (like GitHub or Docker Hub) is needed.
 
-1. Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
-2. Click "Generate new token (classic)"
-3. **Note**: "Kamal deployment"
-4. **Expiration**: 90 days (or longer)
-5. **Scopes**: Select `write:packages` and `read:packages`
-6. Click "Generate token"
-7. **Copy the token immediately** (you won't see it again)
-
-**Checklist:**
-- [ ] Token generated with `write:packages` scope
-- [ ] Token copied and saved securely
-
----
-
-### Step 2.2: Test Docker Login
+### Step 2.1: Verify Docker Works Locally
 
 ```bash
-echo YOUR_GITHUB_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
-# Should output: Login Succeeded
+docker --version
+# Should output Docker version
 ```
 
 **Checklist:**
-- [ ] Docker login to ghcr.io successful
+- [x] Docker installed and running locally
 
 ---
 
@@ -204,9 +191,7 @@ CMD ["./bin/rails", "server", "-b", "0.0.0.0"]
 ```
 
 **Checklist:**
-- [ ] Dockerfile created
-- [ ] No Node.js in Dockerfile (confirms no-build)
-
+- [x] Dockerfile created
 ---
 
 ### Step 3.2: Create Docker Entrypoint
@@ -229,8 +214,8 @@ chmod +x bin/docker-entrypoint
 ```
 
 **Checklist:**
-- [ ] docker-entrypoint created
-- [ ] Made executable
+- [x] docker-entrypoint created
+- [x] Made executable
 
 ---
 
@@ -275,7 +260,7 @@ spec/
 ```
 
 **Checklist:**
-- [ ] .dockerignore created
+- [x] .dockerignore created
 
 ---
 
@@ -290,8 +275,7 @@ docker run --rm -e SECRET_KEY_BASE=test123 tech-events-test bin/rails -v
 ```
 
 **Checklist:**
-- [ ] Docker build succeeds
-- [ ] No Node.js errors during build
+- [x] Docker build succeeds
 
 ---
 
@@ -312,8 +296,8 @@ This creates:
 - `.kamal/secrets` - Secrets file (gitignored)
 
 **Checklist:**
-- [ ] Kamal initialized
-- [ ] deploy.yml created
+- [x] Kamal initialized
+- [x] deploy.yml created
 
 ---
 
@@ -324,91 +308,69 @@ This creates:
 # Service name (used in Docker image name)
 service: tech-events
 
-# Docker image location
-image: ghcr.io/YOUR_GITHUB_USERNAME/tech-events
+# Docker image name
+image: tech-events
 
 # Deploy to these servers
 servers:
   web:
     hosts:
-      - YOUR_SERVER_IP  # e.g., 123.45.67.89
-    labels:
-      traefik.http.routers.tech-events.rule: Host(`techevents.co.nz`) || Host(`www.techevents.co.nz`)
-      traefik.http.routers.tech-events.tls: true
-      traefik.http.routers.tech-events.tls.certresolver: letsencrypt
-      traefik.http.routers.tech-events.entrypoints: websecure
-      # Redirect www to non-www
-      traefik.http.middlewares.www-redirect.redirectregex.regex: ^https://www\.(.*)
-      traefik.http.middlewares.www-redirect.redirectregex.replacement: https://$${1}
-      traefik.http.routers.tech-events.middlewares: www-redirect
+      - 77.42.38.51
 
-# Docker registry
+# Enable SSL via Let's Encrypt (Kamal 2 built-in proxy)
+# Requires config.assume_ssl and config.force_ssl in production.rb
+proxy:
+  ssl: true
+  host: techevents.co.nz
+  app_port: 3000
+
+# Use Kamal's built-in local registry on the server
 registry:
-  server: ghcr.io
-  username: YOUR_GITHUB_USERNAME
-  password:
-    - KAMAL_REGISTRY_PASSWORD
+  server: localhost:5555
 
 # Environment variables
 env:
-  clear:
-    RAILS_ENV: production
-    RAILS_LOG_TO_STDOUT: "1"
-    RAILS_SERVE_STATIC_FILES: "1"
   secret:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
-    - GOOGLE_CLIENT_ID
-    - GOOGLE_CLIENT_SECRET
+  clear:
+    SOLID_QUEUE_IN_PUMA: true
+    RAILS_LOG_TO_STDOUT: "1"
+
+# Aliases for common commands
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole --include-password"
 
 # SQLite volumes (persist data!)
 volumes:
   - "tech_events_storage:/rails/storage"
 
-# Health check
-healthcheck:
-  path: /up
-  port: 3000
-  max_attempts: 10
-  interval: 20s
+# Bridge assets between versions
+asset_path: /rails/public/assets
 
-# Traefik for SSL/routing
-traefik:
-  options:
-    publish:
-      - "443:443"
-      - "80:80"
-    volume:
-      - "/letsencrypt:/letsencrypt"
-  args:
-    entryPoints.web.address: ":80"
-    entryPoints.websecure.address: ":443"
-    entryPoints.web.http.redirections.entryPoint.to: websecure
-    entryPoints.web.http.redirections.entryPoint.scheme: https
-    certificatesResolvers.letsencrypt.acme.email: "your-email@example.com"
-    certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
-    certificatesResolvers.letsencrypt.acme.httpchallenge: true
-    certificatesResolvers.letsencrypt.acme.httpchallenge.entrypoint: web
-
-# Build configuration
+# Build for AMD64 (Hetzner servers)
 builder:
-  multiarch: false  # Set to true if building on ARM Mac for AMD64 server
+  arch: amd64
 
-# SSH configuration
+# SSH as root
 ssh:
   user: root
 ```
 
-**Replace:**
-- `YOUR_GITHUB_USERNAME` with your GitHub username
-- `YOUR_SERVER_IP` with your Hetzner server IP
-- `your-email@example.com` with your email (for Let's Encrypt)
+**Also enable SSL in production.rb** (uncomment these lines):
+```ruby
+config.assume_ssl = true
+config.force_ssl = true
+config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
+```
 
 **Checklist:**
-- [ ] deploy.yml configured
-- [ ] GitHub username set
-- [ ] Server IP set
-- [ ] Email for SSL set
+- [x] deploy.yml configured
+- [x] Server IP set (77.42.38.51)
+- [x] SSL enabled in production.rb
 
 ---
 
@@ -416,35 +378,25 @@ ssh:
 
 **File: `.kamal/secrets`**
 ```bash
-# GitHub Container Registry token
-KAMAL_REGISTRY_PASSWORD=ghp_your_github_token_here
+# Read master key from file (don't hardcode!)
+RAILS_MASTER_KEY=$(cat config/master.key)
 
-# Rails secrets
-RAILS_MASTER_KEY=your_master_key_here
+# Generate with: bin/rails secret
 SECRET_KEY_BASE=your_secret_key_base_here
-
-# Google OAuth (optional - leave blank if not using)
-GOOGLE_CLIENT_ID=your_client_id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your_client_secret
 ```
 
-Get your `RAILS_MASTER_KEY`:
-```bash
-cat config/master.key
-```
-
-Generate `SECRET_KEY_BASE`:
+Get your `SECRET_KEY_BASE`:
 ```bash
 bin/rails secret
+# Copy the output and paste it in .kamal/secrets
 ```
 
 **Important**: Ensure `.kamal/` is in `.gitignore`!
 
 **Checklist:**
-- [ ] KAMAL_REGISTRY_PASSWORD set (GitHub token)
-- [ ] RAILS_MASTER_KEY set (from config/master.key)
-- [ ] SECRET_KEY_BASE set (generated with rails secret)
-- [ ] .kamal/ in .gitignore
+- [x] RAILS_MASTER_KEY reads from config/master.key
+- [x] SECRET_KEY_BASE set (generated with rails secret)
+- [x] .kamal/ in .gitignore
 
 ---
 
@@ -461,7 +413,6 @@ kamal setup
 This will:
 - SSH into your server
 - Install Docker
-- Start Traefik (reverse proxy)
 - Configure SSL certificates
 
 **Checklist:**
@@ -476,11 +427,12 @@ kamal deploy
 ```
 
 This will:
-- Build Docker image locally
-- Push to GitHub Container Registry
-- Pull image on server
-- Start the application
+- Build Docker image locally on your Mac
+- Push image directly to the server via SSH
+- Start the application container
 - Configure health checks
+
+**Note**: First deploy may take a few minutes as it builds the image and transfers it to the server.
 
 **Checklist:**
 - [ ] `kamal deploy` completed
@@ -564,13 +516,15 @@ kamal app boot
 
 ## Ongoing Maintenance
 
-### Deploy Updates
+### Deploy Updates (from your local machine)
 
 ```bash
-# After making changes
+# After making changes locally
 git add .
 git commit -m "Your changes"
 kamal deploy
+
+# Kamal builds locally and pushes to server - no CI/CD needed
 ```
 
 ### View Logs
@@ -681,5 +635,5 @@ df -h
 | Hetzner CX22 | €4.51/month |
 | Domain (.co.nz) | ~$25/year |
 | SSL (Let's Encrypt) | Free |
-| GitHub Registry | Free |
+| Docker Registry | Free (local on server) |
 | **Total** | **~$9 NZD/month** |
