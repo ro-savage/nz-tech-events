@@ -266,6 +266,13 @@ details.dropdown > summary::after {
   line-height: 1.6;
 }
 
+.event-summary p {
+  font-size: 0.9rem;
+  color: var(--pico-muted-color);
+  line-height: 1.6;
+}
+
+
 .event-card-header {
   display: flex;
   justify-content: space-between;

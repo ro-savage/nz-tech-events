@@ -94,6 +94,14 @@ class Event < ApplicationRecord
     region.to_s.titleize.gsub("_", "-")
   end
 
+  def display_summary(limit: 500)
+    if short_summary.present?
+      short_summary
+    else
+      description.truncate(limit)
+    end
+  end
+
   private
 
   def set_approval_status

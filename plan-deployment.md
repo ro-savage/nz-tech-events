@@ -619,12 +619,12 @@ df -h
 
 ## Security Checklist
 
-- [ ] SSH key authentication only (password auth disabled)
+- [x] SSH key authentication only (password auth disabled)
 - [ ] Firewall allows only ports 22, 80, 443
-- [ ] SSL/TLS enabled (Let's Encrypt)
-- [ ] RAILS_MASTER_KEY kept secure
-- [ ] .kamal/secrets not in git
-- [ ] Regular database backups
+- [x] SSL/TLS enabled (Let's Encrypt)
+- [x] RAILS_MASTER_KEY kept secure
+- [x] .kamal/secrets not in git
+- [x] Regular database backups
 
 ---
 

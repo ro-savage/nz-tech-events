@@ -27,6 +27,11 @@
       Description *
       <%= f.text_area :description, required: true, rows: 6, placeholder: "Tell people what this event is about..." %>
     </label>
+
+    <label for="event_short_summary">
+      Short Summary <small class="text-muted">(optional, shown on event list)</small>
+      <%= f.text_area :short_summary, rows: 2, maxlength: 500, placeholder: "Brief summary for the events list. If blank, the first 500 characters of the description will be used." %>
+    </label>
   </fieldset>
 
   <fieldset>

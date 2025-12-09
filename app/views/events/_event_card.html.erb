@@ -21,7 +21,7 @@
       &bull; 📍 <%= event.city %>, <%= event.region_display %>
     </p>
 
-    <p><%= truncate(event.description, length: 600) %></p>
+    <div class="event-summary"><%= simple_format(event.display_summary) %></div>
   </a>
 </article>
 

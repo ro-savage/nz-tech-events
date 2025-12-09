@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_08_061829) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_10_093000) do
   create_table "events", force: :cascade do |t|
     t.text "address"
     t.boolean "approved", default: false, null: false
@@ -23,6 +23,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_08_061829) do
     t.integer "event_type", default: 0, null: false
     t.integer "region", null: false
     t.string "registration_url"
+    t.text "short_summary"
     t.date "start_date", null: false
     t.time "start_time"
     t.string "title", null: false
