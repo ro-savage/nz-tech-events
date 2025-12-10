@@ -519,6 +519,55 @@ form small {
 .items-center { align-items: center; }
 
 /* ========================================
+   Hamburger Menu
+   ======================================== */
+
+.hamburger {
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin: 0;
+  line-height: 1;
+  color: var(--pico-contrast);
+  width: auto;
+}
+
+.hamburger:hover {
+  background: transparent;
+}
+
+.hamburger-close {
+  display: none;
+}
+
+.menu-open .hamburger-icon {
+  display: none;
+}
+
+.menu-open .hamburger-close {
+  display: inline;
+}
+
+/* Secondary button style */
+.btn-secondary {
+  background: var(--pico-background-color);
+  border: 1px solid var(--pico-muted-border-color);
+  color: var(--pico-contrast);
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: var(--pico-border-radius);
+}
+
+.btn-secondary:hover {
+  background: var(--pico-muted-border-color);
+  border-color: var(--pico-primary);
+}
+
+/* ========================================
    Responsive Adjustments
    ======================================== */
 
@@ -527,8 +576,53 @@ form small {
     font-size: 1.5rem;
   }
 
-  .site-header nav ul:last-child {
-    gap: 0.5rem;
+  /* Show hamburger button */
+  .hamburger {
+    display: block;
+    order: 2;
+  }
+
+  /* Mobile navigation menu */
+  .site-header nav {
+    flex-wrap: wrap;
+  }
+
+  .nav-menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    order: 3;
+    padding: var(--space-md) 0;
+    gap: 0;
+    margin-top: var(--space-sm);
+    border-top: 1px solid var(--pico-muted-border-color);
+  }
+
+  .menu-open .nav-menu {
+    display: flex;
+  }
+
+  .nav-menu li {
+    width: 100%;
+    padding: 0;
+  }
+
+  .nav-menu .nav-link {
+    display: block;
+    padding: var(--space-sm) 0;
+    font-size: 1rem;
+  }
+
+  .nav-menu .btn-primary {
+    display: block;
+    text-align: center;
+    margin: var(--space-sm) 0;
+  }
+
+  .nav-theme {
+    padding: var(--space-sm) 0;
+    display: flex;
+    justify-content: center;
   }
 }
 

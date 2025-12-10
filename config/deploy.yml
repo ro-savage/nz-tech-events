@@ -26,6 +26,8 @@ env:
   secret:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
+    - GOOGLE_CLIENT_ID
+    - GOOGLE_CLIENT_SECRET
   clear:
     # Run Solid Queue inside Puma process
     SOLID_QUEUE_IN_PUMA: true

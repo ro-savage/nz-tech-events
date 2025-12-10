@@ -43,7 +43,15 @@
         <ul>
           <li><a href="<%= root_path %>" class="brand">NZ Tech Events</a></li>
         </ul>
-        <ul>
+
+        <!-- Hamburger button (mobile only) -->
+        <button class="hamburger" aria-label="Toggle menu" onclick="toggleMobileMenu()">
+          <span class="hamburger-icon">☰</span>
+          <span class="hamburger-close">✕</span>
+        </button>
+
+        <!-- Navigation links -->
+        <ul class="nav-menu">
           <li><a href="<%= root_path %>" class="nav-link">Upcoming Events</a></li>
           <li><a href="<%= past_events_path %>" class="nav-link">Past Events</a></li>
           <% if logged_in? %>
@@ -61,21 +69,12 @@
               <li><a href="<%= users_path %>" class="nav-link">Users</a></li>
             <% end %>
             <li><a href="<%= my_events_events_path %>" class="nav-link">My Events</a></li>
+            <li><%= link_to "Sign Out", logout_path, class: "nav-link", data: { turbo_method: :delete } %></li>
             <li><a href="<%= new_event_path %>" role="button" type="button" class="btn-primary">Post Event</a></li>
-            <li>
-              <details class="dropdown">
-                <summary class="profile-toggle" aria-label="Account menu">
-                  👤
-                </summary>
-                <ul dir="rtl">
-                  <li><%= button_to "Sign Out", logout_path, method: :delete %></li>
-                </ul>
-              </details>
-            </li>
           <% else %>
             <li><a href="<%= new_registration_path %>" role="button" type="button" class="btn-primary">Post Event</a></li>
           <% end %>
-          <li>
+          <li class="nav-theme">
             <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
               <span class="theme-icon-light">☀️</span>
               <span class="theme-icon-dark">🌙</span>
@@ -101,8 +100,7 @@
     </main>
 
     <footer class="container site-footer">
-      <small><a href="<%= new_session_path %>" class="nav-link">Sign In</a></small>
-      <small> | NZ Tech Events &copy; <%= Date.current.year %></small>
+      <small>NZ Tech Events &copy; <%= Date.current.year %></small>
     </footer>
 
     <script>
@@ -113,6 +111,18 @@
         html.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
       }
+
+      function toggleMobileMenu() {
+        const nav = document.querySelector('.site-header nav');
+        nav.classList.toggle('menu-open');
+      }
+
+      // Close mobile menu when clicking a link
+      document.querySelectorAll('.nav-menu a, .nav-menu button[type="submit"]').forEach(function(link) {
+        link.addEventListener('click', function() {
+          document.querySelector('.site-header nav').classList.remove('menu-open');
+        });
+      });
     </script>
   </body>
 </html>
