@@ -4,6 +4,8 @@
 
     const citiesByRegion = window.filterConfig.citiesByRegion;
     const STORAGE_KEY = window.filterConfig.storageKey;
+    const initialRegion = window.filterConfig.initialRegion;
+    const initialCity = window.filterConfig.initialCity;
 
     const regionSelect = document.getElementById('filter-region');
     const citySelect = document.getElementById('filter-city');
@@ -14,8 +16,27 @@
 
     if (!regionSelect || !citySelect) return;
 
-    // Load saved filters from localStorage
+    // Convert city name to URL slug (lowercase, underscores)
+    function cityToSlug(city) {
+      return city.toLowerCase().replace(/\s+/g, '_');
+    }
+
+    // Convert URL slug back to city name by finding match in cities list
+    function slugToCity(slug, region) {
+      if (!slug || !region) return '';
+      const cities = citiesByRegion[region] || [];
+      return cities.find(city => cityToSlug(city) === slug) || '';
+    }
+
+    // Load filters - URL params take priority, then localStorage
     function loadFilters() {
+      // URL params have priority (for shareable links)
+      if (initialRegion) {
+        // Convert city slug back to proper city name
+        const city = slugToCity(initialCity, initialRegion);
+        return { region: initialRegion, city: city };
+      }
+      // Fall back to localStorage
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
@@ -32,6 +53,25 @@
         city: citySelect.value
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
+    }
+
+    // Update URL without page reload
+    function updateUrl() {
+      const region = regionSelect.value;
+      const city = citySelect.value;
+
+      let path = '/';
+      if (region) {
+        path = '/' + region;
+        if (city) {
+          path += '/' + cityToSlug(city);
+        }
+      }
+
+      // Only update if path changed
+      if (window.location.pathname !== path) {
+        history.pushState({ region: region, city: city }, '', path);
+      }
     }
 
     // Update city dropdown based on selected region
@@ -52,7 +92,7 @@
     }
 
     // Apply filters to show/hide event cards
-    function applyFilters() {
+    function applyFilters(updateBrowserUrl = true) {
       const region = regionSelect.value;
       const city = citySelect.value;
 
@@ -92,6 +132,9 @@
       }
 
       saveFilters();
+      if (updateBrowserUrl) {
+        updateUrl();
+      }
     }
 
     // Clear all filters
@@ -108,17 +151,33 @@
       applyFilters();
     };
 
-    citySelect.onchange = applyFilters;
+    citySelect.onchange = function() {
+      applyFilters();
+    };
 
     clearLink.onclick = function(e) {
       e.preventDefault();
       clearFilters();
     };
 
+    // Handle browser back/forward buttons
+    window.onpopstate = function(event) {
+      if (event.state) {
+        regionSelect.value = event.state.region || '';
+        updateCityOptions(event.state.city || '');
+        applyFilters(false); // Don't update URL again
+      } else {
+        // Returned to initial state (no filters)
+        regionSelect.value = '';
+        updateCityOptions('');
+        applyFilters(false);
+      }
+    };
+
     // Initialize on page load
     const saved = loadFilters();
     regionSelect.value = saved.region;
     updateCityOptions(saved.city);
-    applyFilters();
+    applyFilters(false); // Don't update URL on initial load (already correct)
   })();
 </script>

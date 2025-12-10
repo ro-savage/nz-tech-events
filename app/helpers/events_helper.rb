@@ -1,22 +1,22 @@
 module EventsHelper
   CITIES_BY_REGION = {
-    "northland" => ["Whangarei", "Kerikeri", "Kaitaia", "Other"],
-    "auckland" => ["Auckland CBD", "North Shore", "West Auckland", "South Auckland", "East Auckland", "Other"],
-    "waikato" => ["Hamilton", "Cambridge", "Te Awamutu", "Other"],
-    "bay_of_plenty" => ["Tauranga", "Rotorua", "Whakatane", "Other"],
-    "gisborne" => ["Gisborne", "Other"],
-    "hawkes_bay" => ["Napier", "Hastings", "Other"],
-    "taranaki" => ["New Plymouth", "Hawera", "Other"],
-    "manawatu_whanganui" => ["Palmerston North", "Whanganui", "Other"],
-    "wellington" => ["Wellington CBD", "Lower Hutt", "Upper Hutt", "Porirua", "Kapiti Coast", "Other"],
-    "tasman" => ["Richmond", "Motueka", "Other"],
-    "nelson" => ["Nelson", "Other"],
-    "marlborough" => ["Blenheim", "Other"],
-    "west_coast" => ["Greymouth", "Hokitika", "Other"],
-    "canterbury" => ["Christchurch", "Timaru", "Ashburton", "Other"],
-    "otago" => ["Dunedin", "Queenstown", "Wanaka", "Other"],
-    "southland" => ["Invercargill", "Gore", "Other"],
-    "online" => ["Online"]
+    "northland" => [ "Whangarei", "Kerikeri", "Kaitaia", "Other" ],
+    "auckland" => [ "Auckland CBD", "North Shore", "West Auckland", "South Auckland", "East Auckland", "Other" ],
+    "waikato" => [ "Hamilton", "Cambridge", "Te Awamutu", "Other" ],
+    "bay_of_plenty" => [ "Tauranga", "Rotorua", "Whakatane", "Other" ],
+    "gisborne" => [ "Gisborne", "Other" ],
+    "hawkes_bay" => [ "Napier", "Hastings", "Other" ],
+    "taranaki" => [ "New Plymouth", "Hawera", "Other" ],
+    "manawatu_whanganui" => [ "Palmerston North", "Whanganui", "Other" ],
+    "wellington" => [ "Wellington CBD", "Lower Hutt", "Upper Hutt", "Porirua", "Kapiti Coast", "Other" ],
+    "tasman" => [ "Richmond", "Motueka", "Other" ],
+    "nelson" => [ "Nelson", "Other" ],
+    "marlborough" => [ "Blenheim", "Other" ],
+    "west_coast" => [ "Greymouth", "Hokitika", "Other" ],
+    "canterbury" => [ "Christchurch", "Timaru", "Ashburton", "Other" ],
+    "otago" => [ "Dunedin", "Queenstown", "Wanaka", "Other" ],
+    "southland" => [ "Invercargill", "Gore", "Other" ],
+    "online" => [ "Online" ]
   }.freeze
 
   def cities_for_region(region)
@@ -28,11 +28,11 @@ module EventsHelper
   end
 
   def region_options
-    Event.regions.keys.map { |r| [r.titleize.gsub("_", "-"), r] }
+    Event.regions.keys.map { |r| [ r.titleize.gsub("_", "-"), r ] }
   end
 
   def event_type_options
-    Event.event_types.keys.map { |t| [t.titleize, t] }
+    Event.event_types.keys.map { |t| [ t.titleize, t ] }
   end
 
   def event_type_badge_class(event_type)
@@ -118,11 +118,11 @@ module EventsHelper
       end_time = nz_zone.local(end_date.year, end_date.month, end_date.day, 17, 0)
     end
 
-    [start_time, end_time]
+    [ start_time, end_time ]
   end
 
   def calendar_location(event)
-    parts = [event.address, event.city, event.region_display].compact_blank
+    parts = [ event.address, event.city, event.region_display ].compact_blank
     parts.join(", ")
   end
 

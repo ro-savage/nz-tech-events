@@ -29,6 +29,8 @@
 <script type="text/javascript">
   window.filterConfig = {
     citiesByRegion: <%= cities_json %>,
-    storageKey: 'nzTechEventsFilters'
+    storageKey: 'nzTechEventsFilters',
+    initialRegion: '<%= @initial_region || '' %>',
+    initialCity: '<%= @initial_city || '' %>'
   };
 </script>

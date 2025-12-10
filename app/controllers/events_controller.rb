@@ -7,6 +7,8 @@ class EventsController < ApplicationController
 
   def index
     @events = Event.upcoming.approved.includes(:user)
+    @initial_region = params[:region] if params[:region].present?
+    @initial_city = params[:city] if params[:city].present?
   end
 
   def past

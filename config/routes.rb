@@ -30,7 +30,7 @@ Rails.application.routes.draw do
   end
 
   # Admin - Users management
-  resources :users, only: [:index, :destroy] do
+  resources :users, only: [ :index, :destroy ] do
     member do
       post :toggle_approved_organiser
     end
@@ -45,4 +45,11 @@ Rails.application.routes.draw do
 
   # Health check for deployment
   get "up" => "rails/health#show", as: :rails_health_check
+
+  # Filtered event views (at the end to avoid conflicts with other routes)
+  # URLs like /auckland or /wellington/Wellington%20CBD
+  get ":region/:city", to: "events#index", as: :filtered_events_city,
+      constraints: { region: /[a-z_]+/, city: /[a-z_]+/ }
+  get ":region", to: "events#index", as: :filtered_events_region,
+      constraints: { region: /[a-z_]+/ }
 end
