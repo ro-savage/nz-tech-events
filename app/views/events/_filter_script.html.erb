@@ -9,6 +9,7 @@
 
     const regionSelect = document.getElementById('filter-region');
     const citySelect = document.getElementById('filter-city');
+    const eventTypeSelect = document.getElementById('filter-event-type');
     const clearLink = document.getElementById('filter-clear');
     const noResultsMessage = document.getElementById('no-results-message');
     const eventCards = document.querySelectorAll('.event-card');
@@ -95,17 +96,20 @@
     function applyFilters(updateBrowserUrl = true) {
       const region = regionSelect.value;
       const city = citySelect.value;
+      const eventType = eventTypeSelect ? eventTypeSelect.value : '';
 
       let visibleCount = 0;
 
       eventCards.forEach(function(card) {
         const cardRegion = card.dataset.region;
         const cardCity = card.dataset.city;
+        const cardEventType = card.dataset.eventType;
 
         const matchesRegion = !region || cardRegion === region;
         const matchesCity = !city || cardCity === city;
+        const matchesEventType = !eventType || cardEventType === eventType;
 
-        if (matchesRegion && matchesCity) {
+        if (matchesRegion && matchesCity && matchesEventType) {
           card.style.display = '';
           visibleCount++;
         } else {
@@ -124,8 +128,8 @@
         }
       }
 
-      // Show/hide clear link
-      if (region || city) {
+      // Show/hide clear link (event type not included - it doesn't persist)
+      if (region || city || eventType) {
         clearLink.style.display = '';
       } else {
         clearLink.style.display = 'none';
@@ -141,6 +145,7 @@
     window.clearFilters = function() {
       regionSelect.value = '';
       citySelect.value = '';
+      if (eventTypeSelect) eventTypeSelect.value = '';
       updateCityOptions('');
       applyFilters();
     };
@@ -155,6 +160,12 @@
       applyFilters();
     };
 
+    if (eventTypeSelect) {
+      eventTypeSelect.onchange = function() {
+        applyFilters(false); // Don't update URL for event type
+      };
+    }
+
     clearLink.onclick = function(e) {
       e.preventDefault();
       clearFilters();
@@ -164,11 +175,13 @@
     window.onpopstate = function(event) {
       if (event.state) {
         regionSelect.value = event.state.region || '';
+        if (eventTypeSelect) eventTypeSelect.value = ''; // Reset event type (not in URL)
         updateCityOptions(event.state.city || '');
         applyFilters(false); // Don't update URL again
       } else {
         // Returned to initial state (no filters)
         regionSelect.value = '';
+        if (eventTypeSelect) eventTypeSelect.value = '';
         updateCityOptions('');
         applyFilters(false);
       }

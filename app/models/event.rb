@@ -29,7 +29,8 @@ class Event < ApplicationRecord
     canterbury: 13,
     otago: 14,
     southland: 15,
-    online: 16
+    apac: 16,
+    online: 17
   }, prefix: true
 
   # Validations
@@ -91,6 +92,7 @@ class Event < ApplicationRecord
   end
 
   def region_display
+    return "Asia Pacific" if region == "apac"
     region.to_s.titleize.gsub("_", "-")
   end
 

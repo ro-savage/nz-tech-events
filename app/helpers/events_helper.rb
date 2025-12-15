@@ -16,6 +16,7 @@ module EventsHelper
     "canterbury" => [ "Christchurch", "Timaru", "Ashburton", "Other" ],
     "otago" => [ "Dunedin", "Queenstown", "Wanaka", "Other" ],
     "southland" => [ "Invercargill", "Gore", "Other" ],
+    "apac" => [ "Sydney", "Melbourne", "Brisbane", "Singapore", "Kuala Lumpur", "Jakarta", "Bangkok", "Ho Chi Minh City", "Hanoi", "Manila", "Pacific Islands", "China", "Japan", "Other Australia", "Other APAC" ],
     "online" => [ "Online" ]
   }.freeze
 
@@ -28,7 +29,10 @@ module EventsHelper
   end
 
   def region_options
-    Event.regions.keys.map { |r| [ r.titleize.gsub("_", "-"), r ] }
+    Event.regions.keys.map do |r|
+      label = r == "apac" ? "Asia Pacific" : r.titleize.gsub("_", "-")
+      [ label, r ]
+    end
   end
 
   def event_type_options

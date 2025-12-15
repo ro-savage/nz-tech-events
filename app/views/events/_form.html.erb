@@ -132,12 +132,18 @@
       };
     }
 
-    // Start date -> End date auto-fill
+    // Start date -> End date auto-sync
     if (startDateInput && endDateInput) {
+      let previousStartDate = startDateInput.value;
+
       startDateInput.onchange = function() {
-        if (!endDateInput.value && this.value) {
+        // Update end date if:
+        // 1. End date is empty, OR
+        // 2. End date matches the previous start date (user hasn't manually changed it)
+        if (!endDateInput.value || endDateInput.value === previousStartDate) {
           endDateInput.value = this.value;
         }
+        previousStartDate = this.value;
       };
     }
   })();

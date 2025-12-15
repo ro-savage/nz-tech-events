@@ -16,6 +16,16 @@
     </select>
   </div>
 
+  <div>
+    <label for="filter-event-type">Event Type</label>
+    <select id="filter-event-type">
+      <option value="">All Types</option>
+      <% event_type_options.each do |label, value| %>
+        <option value="<%= value %>"><%= label %></option>
+      <% end %>
+    </select>
+  </div>
+
   <div class="filter-actions">
     <a href="#" id="filter-clear" style="display: none;">Clear filters</a>
   </div>
