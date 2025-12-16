@@ -101,12 +101,15 @@
       let visibleCount = 0;
 
       eventCards.forEach(function(card) {
-        const cardRegion = card.dataset.region;
-        const cardCity = card.dataset.city;
+        // Multi-location: data-regions and data-cities are comma-separated
+        const cardRegions = (card.dataset.regions || '').split(',').filter(Boolean);
+        const cardCities = (card.dataset.cities || '').split(',').filter(Boolean);
         const cardEventType = card.dataset.eventType;
 
-        const matchesRegion = !region || cardRegion === region;
-        const matchesCity = !city || cardCity === city;
+        // Match if filter region is in card's regions array
+        const matchesRegion = !region || cardRegions.includes(region);
+        // Match if filter city is in card's cities array
+        const matchesCity = !city || cardCities.includes(city);
         const matchesEventType = !eventType || cardEventType === eventType;
 
         if (matchesRegion && matchesCity && matchesEventType) {

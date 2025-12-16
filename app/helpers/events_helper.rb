@@ -126,7 +126,8 @@ module EventsHelper
   end
 
   def calendar_location(event)
-    parts = [ event.address, event.city, event.region_display ].compact_blank
+    primary = event.primary_location
+    parts = [ event.address, primary&.city, primary&.region_display ].compact_blank
     parts.join(", ")
   end
 

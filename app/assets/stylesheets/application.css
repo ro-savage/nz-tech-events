@@ -739,3 +739,22 @@ form small {
     gap: var(--space-xs);
   }
 }
+
+/* Multi-location hover indicator */
+.location-hover {
+  border-bottom: 1px dotted currentColor;
+  cursor: help;
+}
+
+/* Location form rows */
+.location-row {
+  margin-bottom: var(--pico-spacing);
+  padding-bottom: var(--pico-spacing);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.location-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}

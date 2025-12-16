@@ -1,0 +1,33 @@
+<div class="location-row" data-location-index="<%= f.index %>">
+  <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: end;">
+    <%= f.hidden_field :id if f.object.persisted? %>
+    <%= f.hidden_field :position, value: f.index %>
+    <%= f.hidden_field :_destroy, class: "destroy-field" %>
+
+    <label>
+      Region *
+      <%= f.select :region, region_options,
+          { prompt: "Select region..." },
+          { required: true, class: "location-region-select", data: { index: f.index } } %>
+    </label>
+
+    <label>
+      City
+      <% cities = f.object&.region.present? ? cities_for_region(f.object.region) : [] %>
+      <%= f.select :city,
+          cities.map { |c| [c, c] },
+          { prompt: "Select city..." },
+          { class: "location-city-select", data: { index: f.index } } %>
+    </label>
+
+    <% if f.index.to_i > 0 %>
+      <button type="button" class="remove-location-btn outline secondary"
+              data-index="<%= f.index %>"
+              style="margin-bottom: 0; padding: 0.5rem 0.75rem;">
+        &times;
+      </button>
+    <% else %>
+      <div style="width: 40px;"></div>
+    <% end %>
+  </div>
+</div>

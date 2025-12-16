@@ -374,8 +374,8 @@ cat config/importmap.rb   # JavaScript imports via importmaps
 ## Adding New Features
 
 ### New Event Field
-1. Generate migration: `bin/rails g migration AddXxxToEvents xxx:type`
-2. Run migration: `bin/rails db:migrate`
+1. Generate migration: `rails g migration AddXxxToEvents xxx:type`
+2. Run migration: `rails db:migrate`
 3. Add to `event_params` in `EventsController`
 4. Add to `_form.html.erb`
 5. Display in `show.html.erb` and `_event_card.html.erb`

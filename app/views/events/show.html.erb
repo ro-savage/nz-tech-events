@@ -34,10 +34,12 @@
     </div>
 
     <div>
-      <strong>Location</strong><br>
-      <%= @event.city %>, <%= @event.region_display %>
+      <strong>Location<%= @event.multi_location? ? "s" : "" %></strong><br>
+      <% @event.event_locations.each do |loc| %>
+        <%= loc.full_display %><br>
+      <% end %>
       <% if @event.address.present? %>
-        <br><span class="text-muted text-sm"><%= @event.address %></span>
+        <span class="text-muted text-sm"><%= @event.address %></span>
       <% end %>
     </div>
 

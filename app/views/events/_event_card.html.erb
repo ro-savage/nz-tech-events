@@ -1,4 +1,4 @@
-<article class="event-card" data-region="<%= event.region %>" data-city="<%= event.city %>" data-event-type="<%= event.event_type %>">
+<article class="event-card" data-regions="<%= event.location_region_keys %>" data-cities="<%= event.location_city_values %>" data-event-type="<%= event.event_type %>">
   <a class="event-card-link" href="<%= event_path(event) %>">
     <div class="event-card-header">
       <span class="<%= event_type_badge_class(event.event_type) %>">
@@ -14,14 +14,20 @@
     </h3>
 
     <p class="event-meta">
-      📅 <%= event.formatted_date %>
+      <%= event.formatted_date %>
       <% if event.formatted_time %>
         &bull; <%= event.formatted_time %>
       <% end %>
-      &bull; 📍 <%= event.city %>, <%= event.region_display %>
+      &bull;
+      <% if event.multi_location? %>
+        <span class="location-hover" title="<%= event.locations_tooltip %>">
+          <%= event.location_regions_display %>
+        </span>
+      <% else %>
+        <%= event.primary_location&.full_display || event.region_display %>
+      <% end %>
     </p>
 
     <div class="event-summary"><%= simple_format(event.display_summary) %></div>
   </a>
 </article>
-

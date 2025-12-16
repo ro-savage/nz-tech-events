@@ -10,18 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_10_093000) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_16_100001) do
+  create_table "event_locations", force: :cascade do |t|
+    t.string "city"
+    t.datetime "created_at", null: false
+    t.integer "event_id", null: false
+    t.integer "position", default: 0, null: false
+    t.integer "region", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "region"], name: "index_event_locations_on_event_id_and_region"
+    t.index ["event_id"], name: "index_event_locations_on_event_id"
+    t.index ["region", "city"], name: "index_event_locations_on_region_and_city"
+    t.index ["region"], name: "index_event_locations_on_region"
+  end
+
   create_table "events", force: :cascade do |t|
     t.text "address"
     t.boolean "approved", default: false, null: false
-    t.string "city", null: false
+    t.string "city"
     t.string "cost"
     t.datetime "created_at", null: false
     t.text "description", null: false
     t.date "end_date"
     t.time "end_time"
     t.integer "event_type", default: 0, null: false
-    t.integer "region", null: false
+    t.integer "region"
     t.string "registration_url"
     t.text "short_summary"
     t.date "start_date", null: false
@@ -59,6 +72,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_10_093000) do
     t.index ["google_uid"], name: "index_users_on_google_uid", unique: true, where: "google_uid IS NOT NULL"
   end
 
+  add_foreign_key "event_locations", "events"
   add_foreign_key "events", "users"
   add_foreign_key "sessions", "users"
 end

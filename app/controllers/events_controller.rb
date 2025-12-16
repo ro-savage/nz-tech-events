@@ -6,17 +6,17 @@ class EventsController < ApplicationController
   before_action :authorize_owner!, only: [ :edit, :update, :destroy ]
 
   def index
-    @events = Event.upcoming.approved.includes(:user)
+    @events = Event.upcoming.approved.includes(:user, :event_locations)
     @initial_region = params[:region] if params[:region].present?
     @initial_city = params[:city] if params[:city].present?
   end
 
   def past
-    @events = Event.past.includes(:user).limit(100)
+    @events = Event.past.includes(:user, :event_locations).limit(100)
   end
 
   def my_events
-    @events = Current.user.events.order(start_date: :desc)
+    @events = Current.user.events.includes(:event_locations).order(start_date: :desc)
   end
 
   def show
@@ -25,6 +25,7 @@ class EventsController < ApplicationController
   def new
     @event = Current.user.events.build
     @event.start_date = Date.tomorrow
+    @event.event_locations.build
   end
 
   def create
@@ -42,6 +43,7 @@ class EventsController < ApplicationController
   end
 
   def edit
+    @event.event_locations.build if @event.event_locations.empty?
   end
 
   def update
@@ -82,7 +84,8 @@ class EventsController < ApplicationController
     params.require(:event).permit(
       :title, :description, :short_summary, :start_date, :end_date,
       :start_time, :end_time, :cost, :event_type,
-      :registration_url, :region, :city, :address
+      :registration_url, :region, :city, :address,
+      event_locations_attributes: [ :id, :region, :city, :position, :_destroy ]
     )
   end
 end

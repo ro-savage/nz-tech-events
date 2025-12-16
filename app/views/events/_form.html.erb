@@ -63,26 +63,20 @@
   </fieldset>
 
   <fieldset>
-    <legend>Location</legend>
+    <legend>Location(s)</legend>
 
-    <div class="grid">
-      <label for="event_region">
-        Region *
-        <%= f.select :region, region_options, { prompt: "Select region..." },
-            { required: true, data: { action: "change->event-form#regionChanged", event_form_target: "region" } } %>
-      </label>
-
-      <label for="event_city">
-        City *
-        <%= f.select :city,
-            event.region.present? ? cities_for_region(event.region).map { |c| [c, c] } : [],
-            { prompt: "Select city..." },
-            { required: true, data: { event_form_target: "city" } } %>
-      </label>
+    <div id="locations-container">
+      <%= f.fields_for :event_locations do |loc| %>
+        <%= render "event_location_fields", f: loc %>
+      <% end %>
     </div>
 
-    <label for="event_address">
-      Address / Venue <small class="text-muted">(optional)</small>
+    <button type="button" id="add-location-btn" class="outline secondary" style="margin-top: var(--pico-spacing);">
+      + Add Another Location
+    </button>
+
+    <label for="event_address" style="margin-top: var(--pico-spacing);">
+      Address / Venue <small class="text-muted">(optional, for primary location)</small>
       <%= f.text_area :address, rows: 2, placeholder: "e.g., GridAKL, 12 Madden Street, Auckland" %>
     </label>
   </fieldset>
@@ -110,36 +104,110 @@
 <script type="text/javascript">
   (function() {
     const citiesByRegion = <%= cities_json %>;
-
-    const regionSelect = document.getElementById('event_region');
-    const citySelect = document.getElementById('event_city');
+    const locationsContainer = document.getElementById('locations-container');
+    const addBtn = document.getElementById('add-location-btn');
     const startDateInput = document.getElementById('event_start_date');
     const endDateInput = document.getElementById('event_end_date');
 
-    // Region -> City dropdown
-    if (regionSelect && citySelect) {
-      regionSelect.onchange = function() {
-        const region = this.value;
-        const cities = citiesByRegion[region] || [];
+    let locationIndex = document.querySelectorAll('.location-row').length;
 
-        citySelect.innerHTML = '<option value="">Select city...</option>';
-        cities.forEach(function(city) {
-          const option = document.createElement('option');
-          option.value = city;
-          option.textContent = city;
-          citySelect.appendChild(option);
-        });
+    // Generate region options HTML
+    const regionOptionsHtml = '<option value="">Select region...</option>' +
+      <%= region_options.map { |label, value| "<option value=\"#{value}\">#{j(label)}</option>" }.join.to_json.html_safe %>;
+
+    // Template for new location row
+    function createLocationRow(index) {
+      return `
+        <div class="location-row" data-location-index="${index}">
+          <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: end;">
+            <input type="hidden" name="event[event_locations_attributes][${index}][position]" value="${index}">
+            <input type="hidden" name="event[event_locations_attributes][${index}][_destroy]" value="false" class="destroy-field">
+
+            <label>
+              Region *
+              <select name="event[event_locations_attributes][${index}][region]"
+                      required class="location-region-select" data-index="${index}">
+                ${regionOptionsHtml}
+              </select>
+            </label>
+
+            <label>
+              City
+              <select name="event[event_locations_attributes][${index}][city]"
+                      class="location-city-select" data-index="${index}">
+                <option value="">Select city...</option>
+              </select>
+            </label>
+
+            <button type="button" class="remove-location-btn outline secondary"
+                    data-index="${index}"
+                    style="margin-bottom: 0; padding: 0.5rem 0.75rem;">
+              &times;
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Add location button handler
+    if (addBtn) {
+      addBtn.onclick = function() {
+        const html = createLocationRow(locationIndex);
+        locationsContainer.insertAdjacentHTML('beforeend', html);
+        locationIndex++;
+        attachLocationHandlers();
       };
     }
+
+    // Update city dropdown when region changes
+    function updateCityDropdown(regionSelect) {
+      const index = regionSelect.dataset.index;
+      const citySelect = document.querySelector(`.location-city-select[data-index="${index}"]`);
+      const region = regionSelect.value;
+      const cities = citiesByRegion[region] || [];
+
+      citySelect.innerHTML = '<option value="">Select city...</option>';
+      cities.forEach(function(city) {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        citySelect.appendChild(option);
+      });
+    }
+
+    // Remove location handler
+    function removeLocation(btn) {
+      const index = btn.dataset.index;
+      const row = document.querySelector(`.location-row[data-location-index="${index}"]`);
+
+      // If row has an ID field (existing record), mark for destruction instead of removing
+      const idField = row.querySelector('input[name*="[id]"]');
+      if (idField) {
+        row.querySelector('.destroy-field').value = 'true';
+        row.style.display = 'none';
+      } else {
+        row.remove();
+      }
+    }
+
+    // Attach handlers to all location selects and remove buttons
+    function attachLocationHandlers() {
+      document.querySelectorAll('.location-region-select').forEach(function(select) {
+        select.onchange = function() { updateCityDropdown(this); };
+      });
+
+      document.querySelectorAll('.remove-location-btn').forEach(function(btn) {
+        btn.onclick = function() { removeLocation(this); };
+      });
+    }
+
+    attachLocationHandlers();
 
     // Start date -> End date auto-sync
     if (startDateInput && endDateInput) {
       let previousStartDate = startDateInput.value;
 
       startDateInput.onchange = function() {
-        // Update end date if:
-        // 1. End date is empty, OR
-        // 2. End date matches the previous start date (user hasn't manually changed it)
         if (!endDateInput.value || endDateInput.value === previousStartDate) {
           endDateInput.value = this.value;
         }
