@@ -1,9 +1,9 @@
 class EventsController < ApplicationController
   include EventsHelper
 
-  before_action :require_login, only: [:new, :create, :edit, :update, :destroy, :my_events]
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :ical]
-  before_action :authorize_owner!, only: [:edit, :update, :destroy]
+  before_action :require_login, only: [ :new, :create, :edit, :update, :destroy, :my_events ]
+  before_action :set_event, only: [ :show, :edit, :update, :destroy, :ical ]
+  before_action :authorize_owner!, only: [ :edit, :update, :destroy ]
 
   def index
     @events = Event.upcoming.approved.includes(:user)
@@ -85,5 +85,4 @@ class EventsController < ApplicationController
       :registration_url, :region, :city, :address
     )
   end
-
 end

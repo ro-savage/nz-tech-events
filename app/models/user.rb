@@ -13,7 +13,7 @@ class User < ApplicationRecord
 
   # For display purposes
   def display_name
-    name.presence || email_address.split('@').first
+    name.presence || email_address.split("@").first
   end
 
   # Check if user signed up via Google

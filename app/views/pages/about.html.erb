@@ -1,0 +1,25 @@
+<% content_for(:title) { "About - NZ Tech Events" } %>
+
+<article>
+  <header>
+    <h1>About NZ Tech Events</h1>
+  </header>
+
+  <p>NZ Tech Events was created to create a free, single source to find and share tech events across New Zealand.</p> 
+  <p>It was created by <a href="https://www.linkedin.com/in/savagerowan" target="_blank" rel="noopener">Rowan</a> as a side project to help the tech community, no ads, no sponsors and no profit motive, just an easy to find out whats happening locally.</p>
+
+  <h2>For Event Organisers</h2>
+  <p>
+    If you're organising a tech event, you can <a href="<%= logged_in? ? new_event_path : new_registration_path %>">post your event</a> for free. If you are a regularly organiser, contract <a href="https://www.linkedin.com/in/savagerowan" target="_blank" rel="noopener">Rowan</a> and he can allow auto-approved events to be posted for your account.
+  </p>
+
+  <h2>Open Source</h2>
+  <p>
+    Our source code is found on <a href="https://github.com/ro-savage/nz-tech-events" target="_blank" rel="noopener">Github</a>. Feel free to contribute, or fork it to use for your own event calendar needs.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Feel free to find me on LinkedIn and send a message if you have any questions or suggestions!
+  </p>
+</article>

@@ -519,24 +519,52 @@ form small {
 .items-center { align-items: center; }
 
 /* ========================================
+   Navigation - Primary (Desktop visible)
+   ======================================== */
+
+.nav-primary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin: 0;
+  margin-left: auto;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-primary li {
+  margin: 0;
+  padding: 0;
+}
+
+/* ========================================
    Hamburger Menu
    ======================================== */
 
 .hamburger {
-  display: none;
-  background: transparent;
-  border: none;
+  display: block;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
   margin: 0;
   line-height: 1;
   color: var(--pico-contrast);
-  width: auto;
+  width: 2.5rem;
+  text-align: center;
 }
 
-.hamburger:hover {
-  background: transparent;
+.hamburger:hover,
+.hamburger:focus,
+.hamburger:active {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: var(--pico-primary);
 }
 
 .hamburger-close {
@@ -549,6 +577,70 @@ form small {
 
 .menu-open .hamburger-close {
   display: inline;
+}
+
+/* ========================================
+   Dropdown Menu (Desktop)
+   ======================================== */
+
+.nav-menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  padding: var(--space-sm) 0;
+  margin: 0;
+  list-style: none;
+  z-index: 1000;
+}
+
+.menu-open .nav-menu {
+  display: flex;
+}
+
+.nav-menu li {
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu .nav-link {
+  display: block;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.nav-menu .nav-link:hover {
+  color: var(--pico-primary);
+}
+
+.nav-menu .nav-theme {
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.menu-divider {
+  height: 1px;
+  background: var(--pico-muted-border-color);
+  margin: var(--space-xs) 0;
+}
+
+/* Hide mobile-only items on desktop */
+.mobile-only {
+  display: none;
+}
+
+/* Position the nav for dropdown */
+.site-header nav {
+  position: relative;
 }
 
 /* Secondary button style */
@@ -576,26 +668,36 @@ form small {
     font-size: 1.5rem;
   }
 
-  /* Show hamburger button */
-  .hamburger {
-    display: block;
-    order: 2;
+  /* Hide primary nav on mobile */
+  .nav-primary {
+    display: none;
   }
 
-  /* Mobile navigation menu */
+  /* Show mobile-only items */
+  .mobile-only {
+    display: block;
+  }
+
+  /* Mobile navigation menu - full width dropdown */
   .site-header nav {
     flex-wrap: wrap;
   }
 
+  .hamburger {
+    order: 2;
+  }
+
   .nav-menu {
-    display: none;
-    flex-direction: column;
+    position: static;
     width: 100%;
     order: 3;
-    padding: var(--space-md) 0;
-    gap: 0;
-    margin-top: var(--space-sm);
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
     border-top: 1px solid var(--pico-muted-border-color);
+    margin-top: var(--space-sm);
+    padding: var(--space-md) 0;
+    background: transparent;
   }
 
   .menu-open .nav-menu {
@@ -604,25 +706,21 @@ form small {
 
   .nav-menu li {
     width: 100%;
-    padding: 0;
   }
 
   .nav-menu .nav-link {
-    display: block;
     padding: var(--space-sm) 0;
     font-size: 1rem;
+    text-align: right;
   }
 
-  .nav-menu .btn-primary {
-    display: block;
-    text-align: center;
-    margin: var(--space-sm) 0;
-  }
-
-  .nav-theme {
+  .nav-menu .nav-theme {
     padding: var(--space-sm) 0;
-    display: flex;
-    justify-content: center;
+    justify-content: flex-end;
+  }
+
+  .menu-divider {
+    margin: var(--space-sm) 0;
   }
 }
 

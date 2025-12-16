@@ -9,14 +9,14 @@ class UsersController < ApplicationController
   def toggle_approved_organiser
     @user = User.find(params[:id])
     @user.update(approved_organiser: !@user.approved_organiser)
-    
+
     status = @user.approved_organiser? ? "approved organiser" : "regular user"
     redirect_to users_path, notice: "#{@user.display_name} is now a #{status}."
   end
 
   def destroy
     @user = User.find(params[:id])
-    
+
     if @user == Current.user
       redirect_to users_path, alert: "You cannot delete your own account from this page."
       return

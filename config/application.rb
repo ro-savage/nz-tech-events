@@ -34,7 +34,7 @@ module TechEventsRails
     # in config/environments, which are processed later.
     #
     # Set timezone to New Zealand
-    config.time_zone = 'Auckland'
+    config.time_zone = "Auckland"
 
     # config.eager_load_paths << Rails.root.join("extras")
 

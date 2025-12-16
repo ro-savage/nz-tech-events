@@ -20,7 +20,7 @@ class CreateEvents < ActiveRecord::Migration[8.1]
 
     add_index :events, :start_date
     add_index :events, :region
-    add_index :events, [:start_date, :region]
+    add_index :events, [ :start_date, :region ]
     add_index :events, :event_type
   end
 end

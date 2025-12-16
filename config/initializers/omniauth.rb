@@ -11,7 +11,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 end
 
 # Allow both GET and POST for OAuth callbacks
-OmniAuth.config.allowed_request_methods = [:post, :get]
+OmniAuth.config.allowed_request_methods = [ :post, :get ]
 
 # Handle OAuth failures gracefully
 OmniAuth.config.on_failure = Proc.new { |env|

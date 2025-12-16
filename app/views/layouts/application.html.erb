@@ -44,17 +44,39 @@
           <li><a href="<%= root_path %>" class="brand">NZ Tech Events</a></li>
         </ul>
 
-        <!-- Hamburger button (mobile only) -->
+        <!-- Primary nav items (visible on desktop) -->
+        <ul class="nav-primary">
+          <li><a href="<%= root_path %>" class="nav-link">Upcoming Events</a></li>
+          <% if logged_in? %>
+            <li><a href="<%= new_event_path %>" role="button" type="button" class="btn-primary">Post Event</a></li>
+          <% else %>
+            <li><a href="<%= new_registration_path %>" role="button" type="button" class="btn-primary">Post Event</a></li>
+          <% end %>
+        </ul>
+
+        <!-- Hamburger button -->
         <button class="hamburger" aria-label="Toggle menu" onclick="toggleMobileMenu()">
           <span class="hamburger-icon">☰</span>
           <span class="hamburger-close">✕</span>
         </button>
 
-        <!-- Navigation links -->
+        <!-- Dropdown menu -->
         <ul class="nav-menu">
-          <li><a href="<%= root_path %>" class="nav-link">Upcoming Events</a></li>
+          <!-- Mobile only: primary items -->
+          <li class="mobile-only"><a href="<%= root_path %>" class="nav-link">Upcoming Events</a></li>
+          <li class="mobile-only">
+            <% if logged_in? %>
+              <a href="<%= new_event_path %>" class="nav-link">Post Event</a>
+            <% else %>
+              <a href="<%= new_registration_path %>" class="nav-link">Post Event</a>
+            <% end %>
+          </li>
+          <li class="mobile-only menu-divider"></li>
+
+          <!-- All screens: secondary items -->
           <li><a href="<%= past_events_path %>" class="nav-link">Past Events</a></li>
           <% if logged_in? %>
+            <li><a href="<%= my_events_events_path %>" class="nav-link">My Events</a></li>
             <% if Current.user.admin? %>
               <li>
                 <a href="<%= admin_pending_events_path %>" class="nav-link">
@@ -68,12 +90,14 @@
               </li>
               <li><a href="<%= users_path %>" class="nav-link">Users</a></li>
             <% end %>
-            <li><a href="<%= my_events_events_path %>" class="nav-link">My Events</a></li>
-            <li><%= link_to "Sign Out", logout_path, class: "nav-link", data: { turbo_method: :delete } %></li>
-            <li><a href="<%= new_event_path %>" role="button" type="button" class="btn-primary">Post Event</a></li>
-          <% else %>
-            <li><a href="<%= new_registration_path %>" role="button" type="button" class="btn-primary">Post Event</a></li>
           <% end %>
+          <li><a href="<%= about_path %>" class="nav-link">About</a></li>
+          <% if logged_in? %>
+            <li><%= link_to "Sign Out", logout_path, class: "nav-link", data: { turbo_method: :delete } %></li>
+          <% else %>
+            <li><a href="<%= new_session_path %>" class="nav-link">Sign In</a></li>
+          <% end %>
+          <li class="menu-divider"></li>
           <li class="nav-theme">
             <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
               <span class="theme-icon-light">☀️</span>
@@ -117,11 +141,24 @@
         nav.classList.toggle('menu-open');
       }
 
-      // Close mobile menu when clicking a link
+      // Close menu when clicking a link
       document.querySelectorAll('.nav-menu a, .nav-menu button[type="submit"]').forEach(function(link) {
         link.addEventListener('click', function() {
           document.querySelector('.site-header nav').classList.remove('menu-open');
         });
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', function(e) {
+        const nav = document.querySelector('.site-header nav');
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        if (nav.classList.contains('menu-open') &&
+            !hamburger.contains(e.target) &&
+            !navMenu.contains(e.target)) {
+          nav.classList.remove('menu-open');
+        }
       });
     </script>
   </body>
