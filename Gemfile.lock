@@ -216,6 +216,7 @@ GEM
     omniauth-rails_csrf_protection (2.0.0)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
+    openssl (4.0.0)
     ostruct (0.6.3)
     parallel (1.27.0)
     parser (3.3.10.0)
@@ -284,6 +285,7 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
+    recaptcha (5.21.1)
     regexp_parser (2.11.3)
     reline (0.6.3)
       io-console (~> 0.5)
@@ -400,9 +402,11 @@ DEPENDENCIES
   omniauth
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
+  openssl
   propshaft
   puma (>= 5.0)
   rails (~> 8.1.1)
+  recaptcha (~> 5.21)
   rubocop-rails-omakase
   solid_cache
   solid_queue

@@ -18,7 +18,7 @@
 
   <hr>
 
-  <%= form_with model: @user, url: registration_path do |f| %>
+  <%= form_with model: @user, url: registration_path, data: { turbo: false } do |f| %>
     <% if @user.errors.any? %>
       <div class="alert alert-error">
         <ul style="margin: 0; padding-left: 1rem;">
@@ -48,6 +48,16 @@
       Confirm Password
       <%= f.password_field :password_confirmation, required: true %>
     </label>
+
+    <% if recaptcha_enabled? %>
+      <% if @show_checkbox_recaptcha %>
+        <div style="margin-top: 1rem; margin-bottom: 1rem;">
+          <%= recaptcha_tags site_key: ENV['RECAPTCHA_V2_SITE_KEY'] %>
+        </div>
+      <% else %>
+        <%= recaptcha_v3(action: 'signup', site_key: ENV['RECAPTCHA_V3_SITE_KEY']) %>
+      <% end %>
+    <% end %>
 
     <button type="submit">Create Account</button>
   <% end %>
