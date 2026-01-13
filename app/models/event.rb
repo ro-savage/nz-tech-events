@@ -44,6 +44,7 @@ class Event < ApplicationRecord
 
   validate :end_date_after_start_date, if: -> { end_date.present? }
   validate :at_least_one_location
+  validate :user_within_rate_limit, on: :create
 
   # Scopes
   scope :upcoming, -> { where("start_date >= ?", Date.current).order(start_date: :asc, start_time: :asc) }
@@ -163,6 +164,15 @@ class Event < ApplicationRecord
     valid_locations = event_locations.reject(&:marked_for_destruction?)
     if valid_locations.empty?
       errors.add(:base, "At least one location is required")
+    end
+  end
+
+  def user_within_rate_limit
+    return if user.blank?
+    return if user.admin? || user.approved_organiser?
+
+    if user.events_created_in_last_24_hours >= 10
+      errors.add(:base, "You can only create 10 events in a 24-hour period. Please try again later.")
     end
   end
 end

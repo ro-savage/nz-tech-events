@@ -30,4 +30,14 @@ class User < ApplicationRecord
   def approved_organiser?
     approved_organiser == true
   end
+
+  # Check if user can create a new event (rate limited for unapproved users)
+  def can_create_event?
+    return true if admin? || approved_organiser?
+    events_created_in_last_24_hours < 10
+  end
+
+  def events_created_in_last_24_hours
+    events.where("created_at >= ?", 24.hours.ago).count
+  end
 end

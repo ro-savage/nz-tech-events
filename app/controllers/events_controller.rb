@@ -23,6 +23,11 @@ class EventsController < ApplicationController
   end
 
   def new
+    unless Current.user.can_create_event?
+      redirect_to events_path, alert: "You can only create 10 events in a 24-hour period. Please try again later or ask to become an approved organiser."
+      return
+    end
+
     @event = Current.user.events.build
     @event.start_date = Date.tomorrow
     @event.event_locations.build
