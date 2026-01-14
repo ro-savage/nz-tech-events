@@ -26,6 +26,16 @@
     </select>
   </div>
 
+  <div>
+    <label for="filter-month">Month</label>
+    <select id="filter-month">
+      <option value="">All Months</option>
+      <% month_filter_options.each do |label, value| %>
+        <option value="<%= value %>"><%= label %></option>
+      <% end %>
+    </select>
+  </div>
+
   <div class="filter-actions">
     <a href="#" id="filter-clear" style="display: none;">Clear filters</a>
   </div>

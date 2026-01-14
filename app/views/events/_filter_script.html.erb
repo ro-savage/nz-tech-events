@@ -10,6 +10,7 @@
     const regionSelect = document.getElementById('filter-region');
     const citySelect = document.getElementById('filter-city');
     const eventTypeSelect = document.getElementById('filter-event-type');
+    const monthSelect = document.getElementById('filter-month');
     const clearLink = document.getElementById('filter-clear');
     const noResultsMessage = document.getElementById('no-results-message');
     const eventCards = document.querySelectorAll('.event-card');
@@ -97,6 +98,7 @@
       const region = regionSelect.value;
       const city = citySelect.value;
       const eventType = eventTypeSelect ? eventTypeSelect.value : '';
+      const month = monthSelect ? monthSelect.value : '';
 
       let visibleCount = 0;
 
@@ -105,14 +107,16 @@
         const cardRegions = (card.dataset.regions || '').split(',').filter(Boolean);
         const cardCities = (card.dataset.cities || '').split(',').filter(Boolean);
         const cardEventType = card.dataset.eventType;
+        const cardMonth = card.dataset.month;
 
         // Match if filter region is in card's regions array
         const matchesRegion = !region || cardRegions.includes(region);
         // Match if filter city is in card's cities array
         const matchesCity = !city || cardCities.includes(city);
         const matchesEventType = !eventType || cardEventType === eventType;
+        const matchesMonth = !month || cardMonth === month;
 
-        if (matchesRegion && matchesCity && matchesEventType) {
+        if (matchesRegion && matchesCity && matchesEventType && matchesMonth) {
           card.style.display = '';
           visibleCount++;
         } else {
@@ -131,8 +135,8 @@
         }
       }
 
-      // Show/hide clear link (event type not included - it doesn't persist)
-      if (region || city || eventType) {
+      // Show/hide clear link (event type and month not included - they don't persist)
+      if (region || city || eventType || month) {
         clearLink.style.display = '';
       } else {
         clearLink.style.display = 'none';
@@ -149,6 +153,7 @@
       regionSelect.value = '';
       citySelect.value = '';
       if (eventTypeSelect) eventTypeSelect.value = '';
+      if (monthSelect) monthSelect.value = '';
       updateCityOptions('');
       applyFilters();
     };
@@ -169,6 +174,12 @@
       };
     }
 
+    if (monthSelect) {
+      monthSelect.onchange = function() {
+        applyFilters(false); // Don't update URL for month
+      };
+    }
+
     clearLink.onclick = function(e) {
       e.preventDefault();
       clearFilters();
@@ -179,12 +190,14 @@
       if (event.state) {
         regionSelect.value = event.state.region || '';
         if (eventTypeSelect) eventTypeSelect.value = ''; // Reset event type (not in URL)
+        if (monthSelect) monthSelect.value = ''; // Reset month (not in URL)
         updateCityOptions(event.state.city || '');
         applyFilters(false); // Don't update URL again
       } else {
         // Returned to initial state (no filters)
         regionSelect.value = '';
         if (eventTypeSelect) eventTypeSelect.value = '';
+        if (monthSelect) monthSelect.value = '';
         updateCityOptions('');
         applyFilters(false);
       }

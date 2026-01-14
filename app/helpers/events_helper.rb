@@ -39,6 +39,13 @@ module EventsHelper
     Event.event_types.keys.map { |t| [ t.titleize, t ] }
   end
 
+  def month_filter_options
+    (0..12).map do |i|
+      date = Date.current + i.months
+      [date.strftime("%B %Y"), date.strftime("%Y-%m")]
+    end
+  end
+
   def event_type_badge_class(event_type)
     "badge badge-#{event_type}"
   end
