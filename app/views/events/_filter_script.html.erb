@@ -14,6 +14,7 @@
     const clearLink = document.getElementById('filter-clear');
     const noResultsMessage = document.getElementById('no-results-message');
     const eventCards = document.querySelectorAll('.event-card');
+    const monthSeparators = document.querySelectorAll('.month-separator');
     const eventsList = document.querySelector('.events-list');
 
     if (!regionSelect || !citySelect) return;
@@ -122,6 +123,15 @@
         } else {
           card.style.display = 'none';
         }
+      });
+
+      // Show/hide month separators based on visible events
+      monthSeparators.forEach(function(separator) {
+        const separatorMonth = separator.dataset.month;
+        const hasVisibleEvents = Array.from(eventCards).some(function(card) {
+          return card.dataset.month === separatorMonth && card.style.display !== 'none';
+        });
+        separator.style.display = hasVisibleEvents ? '' : 'none';
       });
 
       // Show/hide no results message

@@ -4,9 +4,12 @@
 
 <%= render "filters" %>
 
-<% if @events.any? %>
+<% if @events_by_month.any? %>
   <div class="events-list">
-    <%= render partial: "event_card", collection: @events, as: :event %>
+    <% @events_by_month.each do |month, events| %>
+      <h2 class="month-separator" data-month="<%= month.strftime('%Y-%m') %>"><%= month.strftime('%B %Y') %></h2>
+      <%= render partial: "event_card", collection: events, as: :event %>
+    <% end %>
   </div>
 <% else %>
   <div class="empty-state">

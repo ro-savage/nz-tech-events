@@ -283,6 +283,26 @@ details.dropdown>summary::after {
 }
 
 /* ========================================
+   Month Separators
+   ======================================== */
+
+.month-separator {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pico-muted-color);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--pico-muted-border-color);
+}
+
+.month-separator:first-child {
+  margin-top: 0;
+}
+
+/* ========================================
    Badges
    ======================================== */
 
@@ -395,7 +415,7 @@ details.dropdown>summary::after {
 
 .filters {
   display: grid;
-  grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr) minmax(120px, 1fr) minmax(120px, 1fr);
+  grid-template-columns: repeat(5, minmax(100px, 1fr));
   gap: var(--space-md);
   padding: var(--space-lg);
   background: var(--pico-card-background-color);
@@ -760,13 +780,19 @@ form small {
    Responsive Adjustments
    ======================================== */
 
+@media (max-width: 992px) {
+  .filters {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   h1 {
     font-size: 1.5rem;
   }
 
   .filters {
-    grid-template-columns: 2fr 2fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   /* Hide primary nav on mobile */

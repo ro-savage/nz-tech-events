@@ -6,13 +6,15 @@ class EventsController < ApplicationController
   before_action :authorize_owner!, only: [ :edit, :update, :destroy ]
 
   def index
-    @events = Event.upcoming.approved.includes(:user, :event_locations)
+    events = Event.upcoming.approved.includes(:user, :event_locations)
+    @events_by_month = events.group_by { |e| e.start_date.beginning_of_month }
     @initial_region = params[:region] if params[:region].present?
     @initial_city = params[:city] if params[:city].present?
   end
 
   def past
-    @events = Event.past.includes(:user, :event_locations).limit(100)
+    events = Event.past.includes(:user, :event_locations).limit(100)
+    @events_by_month = events.group_by { |e| e.start_date.beginning_of_month }
   end
 
   def my_events
