@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_16_100001) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_26_215554) do
+  create_table "email_subscriptions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email_address", null: false
+    t.datetime "last_sent_at"
+    t.integer "region", null: false
+    t.string "unsubscribe_token", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email_address", "region"], name: "index_email_subscriptions_on_email_address_and_region", unique: true
+    t.index ["region"], name: "index_email_subscriptions_on_region"
+    t.index ["unsubscribe_token"], name: "index_email_subscriptions_on_unsubscribe_token", unique: true
+  end
+
   create_table "event_locations", force: :cascade do |t|
     t.string "city"
     t.datetime "created_at", null: false

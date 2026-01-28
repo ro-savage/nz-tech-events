@@ -46,6 +46,11 @@ Rails.application.routes.draw do
     delete "events/:id/reject", to: "events#reject", as: :reject_event
   end
 
+  # Email subscriptions (weekly digest)
+  get  "subscribe", to: "email_subscriptions#new", as: :new_email_subscription
+  post "subscribe", to: "email_subscriptions#create", as: :email_subscriptions
+  get  "unsubscribe/:token", to: "email_subscriptions#destroy", as: :unsubscribe
+
   # Health check for deployment
   get "up" => "rails/health#show", as: :rails_health_check
 

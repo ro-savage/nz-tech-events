@@ -1,0 +1,33 @@
+<%= @region_display.upcase %> TECH EVENTS - Week of <%= @week_of %>
+============================================================
+
+<% if @new_events.any? %>
+NEW EVENTS ADDED THIS WEEK
+------------------------------------------------------------
+<% @new_events.each do |event| %>
+<%= event.title %>
+Date: <%= event.formatted_date %><%= event.formatted_time ? " at #{event.formatted_time}" : "" %>
+Location: <%= event.location_regions_display %>
+<%= event_url(event) %>
+
+<% end %>
+<% else %>
+No new events were added this week for <%= @region_display %>.
+
+<% end %>
+<% if @upcoming_events.any? %>
+ALL UPCOMING EVENTS IN <%= @region_display.upcase %>
+------------------------------------------------------------
+<% @upcoming_events.each do |event| %>
+<%= event.title %>
+Date: <%= event.formatted_date %><%= event.formatted_time ? " at #{event.formatted_time}" : "" %>
+Location: <%= event.location_regions_display %>
+<%= event_url(event) %>
+
+<% end %>
+<% else %>
+No upcoming events in <%= @region_display %> at this time.
+
+<% end %>
+------------------------------------------------------------
+Unsubscribe: <%= @unsubscribe_url %>

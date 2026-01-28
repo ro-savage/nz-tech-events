@@ -1,0 +1,15 @@
+<% content_for(:title) { "Unsubscribed - NZ Tech Events" } %>
+
+<article>
+  <header>
+    <h1>You've Been Unsubscribed</h1>
+  </header>
+
+  <p>You will no longer receive weekly email updates for <strong><%= @region_display %></strong> tech events.</p>
+
+  <p>Changed your mind? You can <%= link_to "subscribe again", new_email_subscription_path %> anytime.</p>
+
+  <footer>
+    <%= link_to "Browse Events", root_path, role: "button" %>
+  </footer>
+</article>

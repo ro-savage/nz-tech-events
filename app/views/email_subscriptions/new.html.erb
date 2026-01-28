@@ -1,0 +1,46 @@
+<% content_for(:title) { "Subscribe to Weekly Tech Events - NZ Tech Events" } %>
+<% content_for(:description) { "Get weekly email updates about tech events in your region." } %>
+
+<article>
+  <header>
+    <h1>Subscribe to Weekly Email Updates</h1>
+    <p>Get a weekly digest of new and upcoming tech events in your region, delivered every Monday morning.</p>
+  </header>
+
+  <%= form_with model: @email_subscription, url: email_subscriptions_path do |f| %>
+    <% if @email_subscription.errors.any? %>
+      <div class="alert alert-error">
+        <ul style="margin: 0; padding-left: 1rem;">
+          <% @email_subscription.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div>
+      <%= f.label :email_address, "Email Address" %>
+      <%= f.email_field :email_address, required: true, placeholder: "your@email.com", autofocus: true %>
+    </div>
+
+    <div>
+      <%= f.label :region, "Region" %>
+      <%= f.select :region,
+          options_for_select(
+            EmailSubscription.regions.keys.map { |r|
+              display = r == "apac" ? "Asia Pacific" : r.titleize.gsub("_", "-")
+              [display, r]
+            },
+            @email_subscription.region
+          ),
+          { prompt: "Select a region..." },
+          { required: true } %>
+    </div>
+
+    <footer>
+      <%= f.submit "Subscribe", class: "btn-primary" %>
+    </footer>
+  <% end %>
+
+  <p><small>You can unsubscribe at any time via the link in each email.</small></p>
+</article>
