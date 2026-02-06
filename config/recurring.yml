@@ -16,4 +16,4 @@ production:
 
   send_weekly_digest:
     class: SendWeeklyDigestJob
-    schedule: every monday at 9am
+    schedule: "0 9 * * 1 Pacific/Auckland"

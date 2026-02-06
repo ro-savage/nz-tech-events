@@ -3,7 +3,7 @@
 <b>Week of <%= @week_of %></b>
 
 <% if @new_events.any? %>
-<h2>Events Added This Week</h2>
+<h2>New Events in <%= @region_display %></h2>
 <% @new_events.each do |event| %>
 <b><%= event.title %></b><br>
 Date: <%= event.formatted_date %><%= event.formatted_time ? " at #{event.formatted_time}" : "" %><br>
@@ -12,7 +12,7 @@ Location: <%= event.location_regions_display %><br>
 <br><br>
 <% end %>
 <% else %>
-<p>No new events were added this week for <%= @region_display %>.</p>
+<p>No new events were added last week for <%= @region_display %>.</p>
 <% end %>
 
 <% if @upcoming_events.any? %>
@@ -26,6 +26,17 @@ Location: <%= event.location_regions_display %><br>
 <% end %>
 <% else %>
 <p>No upcoming events in <%= @region_display %> at this time.</p>
+<% end %>
+
+<% if @new_events_nz.any? %>
+<h2>New Events Across New Zealand</h2>
+<% @new_events_nz.each do |event| %>
+<b><%= event.title %></b><br>
+Date: <%= event.formatted_date %><%= event.formatted_time ? " at #{event.formatted_time}" : "" %><br>
+Location: <%= event.location_regions_display %><br>
+<%= link_to "View event", event_url(event) %>
+<br><br>
+<% end %>
 <% end %>
 
 <hr>
