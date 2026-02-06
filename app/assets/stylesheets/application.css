@@ -217,11 +217,10 @@ details.dropdown>summary::after {
   gap: var(--space-md);
 }
 
-.event-card-link {
-  text-decoration: none;
-}
-
 .event-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
   padding: var(--space-lg);
   border: 1px solid var(--pico-muted-border-color);
   border-radius: 0.5rem;
@@ -243,15 +242,6 @@ details.dropdown>summary::after {
 .event-card h3 {
   font-size: 1.1rem;
   margin-bottom: var(--space-xs);
-}
-
-.event-card h3 a {
-  color: var(--pico-color);
-  text-decoration: none;
-}
-
-.event-card h3 a:hover {
-  color: var(--accent);
 }
 
 .event-meta {
