@@ -1,0 +1,9 @@
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<p>Hi <%= @user.name || @user.email_address %>,</p>
+
+<p>Just wanted to let you know your event <%= link_to @event.title, event_url(@event) %> has been approved and is now live on NZ Tech Events.</p>
+
+<p>Thanks for contributing to the NZ tech community, if you plan on posting often shoot me an email (rowan.savage@gmail.com) and I'll update your account to auto approve future events.</p>
+
+<p>Kind regards,<br>Rowan</p>
+</div>

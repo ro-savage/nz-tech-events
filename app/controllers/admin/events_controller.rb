@@ -9,6 +9,7 @@ class Admin::EventsController < ApplicationController
   def approve
     @event = Event.find(params[:id])
     @event.update(approved: true)
+    EventMailer.approved(@event).deliver_later unless @event.user.approved_organiser?
     redirect_to admin_pending_events_path, notice: "Event approved successfully."
   end
 
