@@ -9,6 +9,7 @@ class UsersController < ApplicationController
   def toggle_approved_organiser
     @user = User.find(params[:id])
     @user.update(approved_organiser: !@user.approved_organiser)
+    UserMailer.approved_organiser(@user).deliver_later if @user.approved_organiser?
 
     status = @user.approved_organiser? ? "approved organiser" : "regular user"
     redirect_to users_path, notice: "#{@user.display_name} is now a #{status}."

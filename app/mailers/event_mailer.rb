@@ -6,6 +6,7 @@ class EventMailer < ApplicationMailer
     mail(
       to: @user.email_address,
       subject: "Your NZ Tech Event has been approved",
+      reply_to: "rowan.savage@gmail.com",
       content_type: "text/html"
     )
   end
