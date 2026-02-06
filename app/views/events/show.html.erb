@@ -73,7 +73,7 @@
 
   <footer>
     <small class="text-muted">
-      Posted by <%= @event.user.display_name %>
+      Posted by <a href="<%= user_path(@event.user) %>"><%= @event.user.display_name %></a>
       on <%= @event.created_at.strftime("%d %B %Y") %>
     </small>
 

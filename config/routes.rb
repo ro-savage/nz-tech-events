@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   end
 
   # Admin - Users management
-  resources :users, only: [ :index, :destroy ] do
+  resources :users, only: [ :index, :show, :destroy ] do
     member do
       post :toggle_approved_organiser
     end

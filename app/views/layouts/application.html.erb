@@ -47,6 +47,7 @@
         <!-- Primary nav items (visible on desktop) -->
         <ul class="nav-primary">
           <li><a href="<%= root_path %>" class="nav-link">Upcoming Events</a></li>
+          <li><a href="<%= new_email_subscription_path %>" class="nav-link">Subscribe</a></li>
           <% if logged_in? %>
             <li><a href="<%= new_event_path %>" role="button" type="button" class="btn-primary">Post Event</a></li>
           <% else %>
@@ -64,6 +65,7 @@
         <ul class="nav-menu">
           <!-- Mobile only: primary items -->
           <li class="mobile-only"><a href="<%= root_path %>" class="nav-link">Upcoming Events</a></li>
+          <li class="mobile-only"><a href="<%= new_email_subscription_path %>" class="nav-link">Subscribe</a></li>
           <li class="mobile-only">
             <% if logged_in? %>
               <a href="<%= new_event_path %>" class="nav-link">Post Event</a>

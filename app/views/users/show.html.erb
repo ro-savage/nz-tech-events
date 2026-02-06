@@ -1,0 +1,26 @@
+<% content_for :title, "Events by #{@user.display_name} - NZ Tech Events" %>
+
+<a href="<%= root_path %>" class="back-link">&larr; Back to Events</a>
+
+<h1>Events by <%= @user.display_name %></h1>
+
+<% if @upcoming_events.any? %>
+  <h2>Upcoming Events</h2>
+  <div class="events-list">
+    <%= render partial: "events/event_card", collection: @upcoming_events, as: :event %>
+  </div>
+<% end %>
+
+<% if @past_events.any? %>
+  <h2>Past Events</h2>
+  <div class="events-list">
+    <%= render partial: "events/event_card", collection: @past_events, as: :event %>
+  </div>
+<% end %>
+
+<% if @upcoming_events.empty? && @past_events.empty? %>
+  <div class="empty-state">
+    <h3>No events yet</h3>
+    <p>This user hasn't posted any events.</p>
+  </div>
+<% end %>

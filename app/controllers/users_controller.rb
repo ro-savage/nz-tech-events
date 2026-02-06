@@ -1,9 +1,16 @@
 class UsersController < ApplicationController
-  before_action :require_login
-  before_action :require_admin
+  before_action :require_login, except: [ :show ]
+  before_action :require_admin, except: [ :show ]
 
   def index
     @users = User.order(created_at: :desc).includes(:events)
+  end
+
+  def show
+    @user = User.find(params[:id])
+    events = @user.events.approved.includes(:event_locations)
+    @upcoming_events = events.upcoming
+    @past_events = events.past
   end
 
   def toggle_approved_organiser

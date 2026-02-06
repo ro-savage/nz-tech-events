@@ -43,7 +43,7 @@
               <% end %>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <%= user.events.count %>
+              <a href="<%= user_path(user) %>"><%= user.events.count %></a>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               <%= user.created_at.strftime("%d %b %Y") %>
