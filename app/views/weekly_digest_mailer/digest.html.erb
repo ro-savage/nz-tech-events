@@ -1,0 +1,33 @@
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<h1><%= @region_display.upcase %> TECH EVENTS</h1>
+<b>Week of <%= @week_of %></b>
+
+<% if @new_events.any? %>
+<h2>Events Added This Week</h2>
+<% @new_events.each do |event| %>
+<b><%= event.title %></b><br>
+Date: <%= event.formatted_date %><%= event.formatted_time ? " at #{event.formatted_time}" : "" %><br>
+Location: <%= event.location_regions_display %><br>
+<%= link_to "View event", event_url(event) %>
+<br><br>
+<% end %>
+<% else %>
+<p>No new events were added this week for <%= @region_display %>.</p>
+<% end %>
+
+<% if @upcoming_events.any? %>
+<h2>Upcoming Events in <%= @region_display %></h2>
+<% @upcoming_events.each do |event| %>
+<b><%= event.title %></b><br>
+Date: <%= event.formatted_date %><%= event.formatted_time ? " at #{event.formatted_time}" : "" %><br>
+Location: <%= event.location_regions_display %><br>
+<%= link_to "View event", event_url(event) %>
+<br><br>
+<% end %>
+<% else %>
+<p>No upcoming events in <%= @region_display %> at this time.</p>
+<% end %>
+
+<hr>
+<%= link_to "Unsubscribe from updates", @unsubscribe_url %>
+</div>

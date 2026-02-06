@@ -9,7 +9,8 @@ class WeeklyDigestMailer < ApplicationMailer
 
     mail(
       to: subscription.email_address,
-      subject: "#{@region_display} Tech Events - Week of #{@week_of}"
+      subject: "#{@region_display} Tech Events - Week of #{@week_of}",
+      content_type: "text/html"
     )
   end
 end

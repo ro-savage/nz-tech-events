@@ -33,6 +33,8 @@ env:
     - RECAPTCHA_V3_SECRET_KEY
     - RECAPTCHA_V2_SITE_KEY
     - RECAPTCHA_V2_SECRET_KEY
+    - SMTP_USERNAME
+    - SMTP_PASSWORD
 
   clear:
     # Run Solid Queue inside Puma process

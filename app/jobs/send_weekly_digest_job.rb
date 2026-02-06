@@ -12,12 +12,14 @@ class SendWeeklyDigestJob < ApplicationJob
                         .approved
                         .by_region(region)
                         .where("events.created_at >= ?", 7.days.ago)
+                        .order(:start_date)
                         .distinct
 
       # Fetch all upcoming approved events for this region
       upcoming_events = Event.upcoming
                              .approved
                              .by_region(region)
+                             .order(:start_date)
                              .distinct
 
       # Convert to arrays for serialization (deliver_later can't serialize ActiveRecord::Relation)

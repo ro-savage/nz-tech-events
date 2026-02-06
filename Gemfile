@@ -64,4 +64,5 @@ group :development do
   gem "web-console"
   # Load environment variables from .env
   gem "dotenv-rails"
+  gem "letter_opener"
 end
