@@ -267,8 +267,9 @@ details.dropdown>summary::after {
 
 .event-card-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+  gap: 5px;
   margin-bottom: var(--space-sm);
 }
 
@@ -313,8 +314,8 @@ details.dropdown>summary::after {
 }
 
 .badge-meetup {
-  background: #d1fae5;
-  color: #059669;
+  background: #e0f2fe;
+  color: #0369a1;
 }
 
 .badge-workshop {
@@ -323,28 +324,28 @@ details.dropdown>summary::after {
 }
 
 .badge-hackathon {
-  background: #fee2e2;
-  color: #dc2626;
+  background: #ecfccb;
+  color: #4d7c0f;
 }
 
 .badge-webinar {
   background: #cffafe;
-  color: #0891b2;
+  color: #0e7490;
 }
 
 .badge-networking {
-  background: #fce7f3;
-  color: #be185d;
+  background: #fee2e2;
+  color: #b91c1c;
 }
 
 .badge-talk {
-  background: #dcfce7;
-  color: #15803d;
+  background: #e0e7ff;
+  color: #4338ca;
 }
 
 .badge-awards {
-  background: #fef3c7;
-  color: #b45309;
+  background: #fef9c3;
+  color: #a16207;
 }
 
 .badge-other {
@@ -355,12 +356,12 @@ details.dropdown>summary::after {
 /* Cost badges */
 .badge-free {
   background: #d1fae5;
-  color: #059669;
+  color: #047857;
 }
 
 .badge-paid {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #fce7f3;
+  color: #be185d;
 }
 
 /* Dark mode badge adjustments */
@@ -370,8 +371,8 @@ details.dropdown>summary::after {
 }
 
 [data-theme="dark"] .badge-meetup {
-  background: rgba(5, 150, 105, 0.2);
-  color: #6ee7b7;
+  background: rgba(2, 132, 199, 0.2);
+  color: #7dd3fc;
 }
 
 [data-theme="dark"] .badge-workshop {
@@ -380,8 +381,8 @@ details.dropdown>summary::after {
 }
 
 [data-theme="dark"] .badge-hackathon {
-  background: rgba(220, 38, 38, 0.2);
-  color: #fca5a5;
+  background: rgba(77, 124, 15, 0.2);
+  color: #bef264;
 }
 
 [data-theme="dark"] .badge-webinar {
@@ -390,18 +391,18 @@ details.dropdown>summary::after {
 }
 
 [data-theme="dark"] .badge-networking {
-  background: rgba(190, 24, 93, 0.2);
-  color: #f9a8d4;
+  background: rgba(220, 38, 38, 0.2);
+  color: #fca5a5;
 }
 
 [data-theme="dark"] .badge-talk {
-  background: rgba(21, 128, 61, 0.2);
-  color: #86efac;
+  background: rgba(67, 56, 202, 0.2);
+  color: #a5b4fc;
 }
 
 [data-theme="dark"] .badge-awards {
-  background: rgba(180, 83, 9, 0.2);
-  color: #fcd34d;
+  background: rgba(161, 98, 7, 0.2);
+  color: #fde047;
 }
 
 [data-theme="dark"] .badge-other {
@@ -415,8 +416,8 @@ details.dropdown>summary::after {
 }
 
 [data-theme="dark"] .badge-paid {
-  background: rgba(37, 99, 235, 0.2);
-  color: #93c5fd;
+  background: rgba(190, 24, 93, 0.2);
+  color: #f9a8d4;
 }
 
 /* ========================================
