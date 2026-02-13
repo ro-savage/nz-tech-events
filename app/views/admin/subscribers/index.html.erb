@@ -1,0 +1,21 @@
+<div class="container mx-auto px-4 py-8">
+  <h1>Email Subscribers</h1>
+  <p><strong><%= @subscriber_count %></strong> <%= "subscriber".pluralize(@subscriber_count) %></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Regions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @subscribers.each do |subscriber| %>
+        <tr>
+          <td><%= subscriber[:email] %></td>
+          <td><%= subscriber[:regions].join(", ") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

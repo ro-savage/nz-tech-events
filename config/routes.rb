@@ -44,6 +44,7 @@ Rails.application.routes.draw do
     get "events/pending", to: "events#pending", as: :pending_events
     post "events/:id/approve", to: "events#approve", as: :approve_event
     delete "events/:id/reject", to: "events#reject", as: :reject_event
+    get "subscribers", to: "subscribers#index", as: :subscribers
   end
 
   # Email subscriptions (weekly digest)
