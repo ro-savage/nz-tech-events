@@ -191,6 +191,8 @@ Replace the entire file:
 .badge-hackathon { background: #fee2e2; color: #991b1b; }
 .badge-webinar { background: #cffafe; color: #0e7490; }
 .badge-networking { background: #fce7f3; color: #9d174d; }
+.badge-talk { background: #dcfce7; color: #15803d; }
+.badge-awards { background: #fef3c7; color: #b45309; }
 .badge-other { background: #f3f4f6; color: #374151; }
 
 /* Cost badge */
@@ -802,7 +804,9 @@ class Event < ApplicationRecord
     hackathon: 3,
     webinar: 4,
     networking: 5,
-    other: 6
+    other: 6,
+    talk: 7,
+    awards: 8
   }, prefix: true
 
   enum :region, {

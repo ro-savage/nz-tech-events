@@ -12,7 +12,9 @@ class Event < ApplicationRecord
     hackathon: 3,
     webinar: 4,
     networking: 5,
-    other: 6
+    other: 6,
+    talk: 7,
+    awards: 8
   }, prefix: true
 
   enum :region, {

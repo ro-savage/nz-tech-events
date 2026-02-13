@@ -337,6 +337,16 @@ details.dropdown>summary::after {
   color: #be185d;
 }
 
+.badge-talk {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge-awards {
+  background: #fef3c7;
+  color: #b45309;
+}
+
 .badge-other {
   background: #f3f4f6;
   color: #4b5563;
@@ -382,6 +392,16 @@ details.dropdown>summary::after {
 [data-theme="dark"] .badge-networking {
   background: rgba(190, 24, 93, 0.2);
   color: #f9a8d4;
+}
+
+[data-theme="dark"] .badge-talk {
+  background: rgba(21, 128, 61, 0.2);
+  color: #86efac;
+}
+
+[data-theme="dark"] .badge-awards {
+  background: rgba(180, 83, 9, 0.2);
+  color: #fcd34d;
 }
 
 [data-theme="dark"] .badge-other {

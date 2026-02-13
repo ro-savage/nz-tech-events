@@ -1,4 +1,16 @@
 module EventsHelper
+  EVENT_TYPE_DROPDOWN_ORDER = %w[
+    conference
+    meetup
+    talk
+    networking
+    workshop
+    webinar
+    hackathon
+    awards
+    other
+  ].freeze
+
   CITIES_BY_REGION = {
     "northland" => [ "Whangarei", "Kerikeri", "Kaitaia", "Other" ],
     "auckland" => [ "Auckland CBD", "North Shore", "West Auckland", "South Auckland", "East Auckland", "Other" ],
@@ -36,13 +48,18 @@ module EventsHelper
   end
 
   def event_type_options
-    Event.event_types.keys.map { |t| [ t.titleize, t ] }
+    keys = Event.event_types.keys
+    known_ordered_keys = EVENT_TYPE_DROPDOWN_ORDER.select { |type| keys.include?(type) }
+    unknown_keys = keys - EVENT_TYPE_DROPDOWN_ORDER
+    ordered_keys = known_ordered_keys + unknown_keys
+
+    ordered_keys.map { |type| [ type.titleize, type ] }
   end
 
   def month_filter_options
     (0..12).map do |i|
       date = Date.current + i.months
-      [date.strftime("%B %Y"), date.strftime("%Y-%m")]
+      [ date.strftime("%B %Y"), date.strftime("%Y-%m") ]
     end
   end
 

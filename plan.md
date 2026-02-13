@@ -86,6 +86,8 @@ A simple, clean website for listing tech events in New Zealand. Users can browse
 | Hackathon | Red |
 | Webinar | Teal |
 | Networking | Pink |
+| Talk | Green |
+| Awards | Amber |
 | Other | Gray |
 
 ---

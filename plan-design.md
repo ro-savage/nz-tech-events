@@ -59,6 +59,14 @@ Visual design guide for making NZ Tech Events look professional and clean.
 --networking: #db2777;
 --networking-bg: #fdf2f8;
 
+/* Talk - Green */
+--talk: #15803d;
+--talk-bg: #dcfce7;
+
+/* Awards - Amber */
+--awards: #b45309;
+--awards-bg: #fef3c7;
+
 /* Other - Gray */
 --other: #6b7280;
 --other-bg: #f9fafb;

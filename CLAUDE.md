@@ -110,7 +110,9 @@ enum :event_type, {
   hackathon: 3,
   webinar: 4,
   networking: 5,
-  other: 6
+  other: 6,
+  talk: 7,
+  awards: 8
 }, prefix: true
 ```
 
@@ -329,6 +331,8 @@ kamal app exec -i 'bin/rails console'  # Production console
 .badge-hackathon    /* Red */
 .badge-webinar      /* Teal */
 .badge-networking   /* Pink */
+.badge-talk        /* Green */
+.badge-awards      /* Amber */
 .badge-free         /* Green */
 .badge-paid         /* Blue */
 .event-card         /* Event list item */

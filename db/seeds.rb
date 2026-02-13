@@ -59,7 +59,7 @@ future_events = [
     event_type: :meetup,
     cost: "Free",
     user: test_user,
-    event_locations_attributes: [loc(region: :auckland, city: "Auckland CBD")]
+    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
   },
   {
     title: "Wellington Tech Conference 2026",
@@ -72,7 +72,7 @@ future_events = [
     cost: "$199",
     registration_url: "https://example.com/register",
     user: sarah,
-    event_locations_attributes: [loc(region: :wellington, city: "Wellington CBD")]
+    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
   },
   {
     title: "Christchurch Python Workshop",
@@ -83,7 +83,7 @@ future_events = [
     event_type: :workshop,
     cost: "$50",
     user: james,
-    event_locations_attributes: [loc(region: :canterbury, city: "Christchurch")]
+    event_locations_attributes: [ loc(region: :canterbury, city: "Christchurch") ]
   },
   {
     title: "Remote Work Webinar",
@@ -95,7 +95,7 @@ future_events = [
     cost: "Free",
     registration_url: "https://zoom.us/example",
     user: aroha,
-    event_locations_attributes: [loc(region: :online, city: "Online")]
+    event_locations_attributes: [ loc(region: :online, city: "Online") ]
   },
   {
     title: "Hamilton Hackathon",
@@ -106,7 +106,7 @@ future_events = [
     event_type: :hackathon,
     cost: "$25",
     user: liam,
-    event_locations_attributes: [loc(region: :waikato, city: "Hamilton")]
+    event_locations_attributes: [ loc(region: :waikato, city: "Hamilton") ]
   },
   {
     title: "Auckland Cloud Infrastructure Meetup",
@@ -117,7 +117,7 @@ future_events = [
     event_type: :meetup,
     cost: "Free",
     user: sarah,
-    event_locations_attributes: [loc(region: :auckland, city: "Auckland CBD")]
+    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
   },
   {
     title: "Dunedin Data Science Workshop",
@@ -128,7 +128,7 @@ future_events = [
     event_type: :workshop,
     cost: "$75",
     user: james,
-    event_locations_attributes: [loc(region: :otago, city: "Dunedin")]
+    event_locations_attributes: [ loc(region: :otago, city: "Dunedin") ]
   },
   {
     title: "Wellington Ruby on Rails Meetup",
@@ -139,7 +139,7 @@ future_events = [
     event_type: :meetup,
     cost: "Free",
     user: aroha,
-    event_locations_attributes: [loc(region: :wellington, city: "Wellington CBD")]
+    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
   },
   {
     title: "NZ Cybersecurity Conference",
@@ -152,7 +152,7 @@ future_events = [
     cost: "$350",
     registration_url: "https://example.com/cybersec",
     user: test_user,
-    event_locations_attributes: [loc(region: :auckland, city: "Auckland CBD")]
+    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
   },
   {
     title: "Tauranga Startup Networking",
@@ -163,7 +163,7 @@ future_events = [
     event_type: :networking,
     cost: "Free",
     user: liam,
-    event_locations_attributes: [loc(region: :bay_of_plenty, city: "Tauranga")]
+    event_locations_attributes: [ loc(region: :bay_of_plenty, city: "Tauranga") ]
   },
   {
     title: "Intro to Kubernetes Webinar",
@@ -175,7 +175,7 @@ future_events = [
     cost: "Free",
     registration_url: "https://example.com/k8s-webinar",
     user: sarah,
-    event_locations_attributes: [loc(region: :online, city: "Online")]
+    event_locations_attributes: [ loc(region: :online, city: "Online") ]
   },
   {
     title: "Auckland AI/ML Meetup",
@@ -186,7 +186,7 @@ future_events = [
     event_type: :meetup,
     cost: "Free",
     user: james,
-    event_locations_attributes: [loc(region: :auckland, city: "North Shore")]
+    event_locations_attributes: [ loc(region: :auckland, city: "North Shore") ]
   },
   {
     title: "Wellington UX Design Workshop",
@@ -197,7 +197,7 @@ future_events = [
     event_type: :workshop,
     cost: "$120",
     user: aroha,
-    event_locations_attributes: [loc(region: :wellington, city: "Wellington CBD")]
+    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
   },
   {
     title: "Queenstown Tech Retreat",
@@ -210,7 +210,7 @@ future_events = [
     cost: "$450",
     registration_url: "https://example.com/tech-retreat",
     user: liam,
-    event_locations_attributes: [loc(region: :otago, city: "Queenstown")]
+    event_locations_attributes: [ loc(region: :otago, city: "Queenstown") ]
   },
   {
     title: "Palmerston North DevOps Meetup",
@@ -221,7 +221,7 @@ future_events = [
     event_type: :meetup,
     cost: "Free",
     user: test_user,
-    event_locations_attributes: [loc(region: :manawatu_whanganui, city: "Palmerston North")]
+    event_locations_attributes: [ loc(region: :manawatu_whanganui, city: "Palmerston North") ]
   },
   {
     title: "React & TypeScript Workshop",
@@ -232,7 +232,7 @@ future_events = [
     event_type: :workshop,
     cost: "$95",
     user: sarah,
-    event_locations_attributes: [loc(region: :auckland, city: "Auckland CBD")]
+    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
   },
   {
     title: "New Plymouth Tech Drinks",
@@ -243,7 +243,7 @@ future_events = [
     event_type: :networking,
     cost: "Free",
     user: james,
-    event_locations_attributes: [loc(region: :taranaki, city: "New Plymouth")]
+    event_locations_attributes: [ loc(region: :taranaki, city: "New Plymouth") ]
   },
   {
     title: "GovTech Hackathon Wellington",
@@ -255,7 +255,7 @@ future_events = [
     cost: "Free",
     registration_url: "https://example.com/govtech-hack",
     user: aroha,
-    event_locations_attributes: [loc(region: :wellington, city: "Wellington CBD")]
+    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
   },
   {
     title: "Mobile App Development Webinar",
@@ -267,7 +267,7 @@ future_events = [
     cost: "Free",
     registration_url: "https://example.com/mobile-webinar",
     user: liam,
-    event_locations_attributes: [loc(region: :online, city: "Online")]
+    event_locations_attributes: [ loc(region: :online, city: "Online") ]
   },
   {
     title: "Nelson Tech Community Meetup",
@@ -278,7 +278,29 @@ future_events = [
     event_type: :meetup,
     cost: "Free",
     user: test_user,
-    event_locations_attributes: [loc(region: :nelson, city: "Nelson")]
+    event_locations_attributes: [ loc(region: :nelson, city: "Nelson") ]
+  },
+  {
+    title: "Wellington Engineering Leadership Talk",
+    description: "An evening talk on scaling engineering teams, decision-making under uncertainty, and practical leadership lessons from local tech leaders.",
+    start_date: Date.current + 11.days,
+    start_time: "18:00",
+    end_time: "19:30",
+    event_type: :talk,
+    cost: "Free",
+    user: sarah,
+    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
+  },
+  {
+    title: "Canterbury Tech Excellence Awards",
+    description: "Celebrating standout teams and individuals across the Canterbury tech ecosystem with awards, short acceptance talks, and networking.",
+    start_date: Date.current + 55.days,
+    start_time: "18:30",
+    end_time: "22:00",
+    event_type: :awards,
+    cost: "$120",
+    user: liam,
+    event_locations_attributes: [ loc(region: :canterbury, city: "Christchurch") ]
   }
 ]
 
@@ -304,7 +326,7 @@ past_events = [
     event_type: :meetup,
     cost: "Free",
     user: test_user,
-    event_locations_attributes: [loc(region: :auckland, city: "Auckland CBD")]
+    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
   },
   {
     title: "Christchurch Web Dev Workshop",
@@ -315,7 +337,7 @@ past_events = [
     event_type: :workshop,
     cost: "$60",
     user: james,
-    event_locations_attributes: [loc(region: :canterbury, city: "Christchurch")]
+    event_locations_attributes: [ loc(region: :canterbury, city: "Christchurch") ]
   },
   {
     title: "Wellington Startup Weekend",
@@ -326,7 +348,7 @@ past_events = [
     event_type: :hackathon,
     cost: "$99",
     user: aroha,
-    event_locations_attributes: [loc(region: :wellington, city: "Wellington CBD")]
+    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
   },
   {
     title: "API Design Best Practices Webinar",
@@ -337,7 +359,7 @@ past_events = [
     event_type: :webinar,
     cost: "Free",
     user: sarah,
-    event_locations_attributes: [loc(region: :online, city: "Online")]
+    event_locations_attributes: [ loc(region: :online, city: "Online") ]
   },
   {
     title: "NZ Tech Awards Gala",
@@ -348,7 +370,7 @@ past_events = [
     event_type: :conference,
     cost: "$175",
     user: liam,
-    event_locations_attributes: [loc(region: :auckland, city: "Auckland CBD")]
+    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
   }
 ]
 
