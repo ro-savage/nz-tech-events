@@ -310,58 +310,58 @@ details.dropdown>summary::after {
 /* Event type badges */
 .badge-conference {
   background: #ede9fe;
-  color: #6d28d9;
+  color: #5b21b6;
 }
 
 .badge-meetup {
   background: #e0f2fe;
-  color: #0369a1;
+  color: #0c4a6e;
 }
 
 .badge-workshop {
   background: #fef3c7;
-  color: #b45309;
+  color: #78350f;
 }
 
 .badge-hackathon {
   background: #ecfccb;
-  color: #4d7c0f;
+  color: #365314;
 }
 
 .badge-webinar {
   background: #cffafe;
-  color: #0e7490;
+  color: #164e63;
 }
 
 .badge-networking {
   background: #fee2e2;
-  color: #b91c1c;
+  color: #7f1d1d;
 }
 
 .badge-talk {
   background: #e0e7ff;
-  color: #4338ca;
+  color: #3730a3;
 }
 
 .badge-awards {
   background: #fef9c3;
-  color: #a16207;
+  color: #713f12;
 }
 
 .badge-other {
   background: #f3f4f6;
-  color: #4b5563;
+  color: #374151;
 }
 
 /* Cost badges */
 .badge-free {
   background: #d1fae5;
-  color: #047857;
+  color: #064e3b;
 }
 
 .badge-paid {
   background: #fce7f3;
-  color: #be185d;
+  color: #831843;
 }
 
 /* Dark mode badge adjustments */
