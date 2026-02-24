@@ -23,7 +23,7 @@ class SendWeeklyDigestJob < ApplicationJob
                              .distinct
 
 
-      # Fetch all new events across New Zealand once per digest run (excluding current region)
+      # Fetch all new events across New Zealand once per digest run
       new_events_nz = Event.upcoming
                           .approved
                           .where("events.created_at >= ?", 7.days.ago)

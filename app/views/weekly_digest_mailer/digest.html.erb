@@ -37,6 +37,8 @@ Location: <%= event.location_regions_display %><br>
 <%= link_to "View event", event_url(event) %>
 <br><br>
 <% end %>
+<% else %>
+<p>No events in other regions added this week.</p>
 <% end %>
 
 <hr>

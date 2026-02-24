@@ -438,3 +438,164 @@ trix-editor .attachment__metadata {
   padding: 0 !important;
   max-width: 100% !important;
 }
+
+/*
+ * Action Text / Trix overwrites for Pico CSS theme.
+*/
+
+/* Hide file attachment button */
+.trix-button-group--file-tools {
+  display: none !important;
+}
+
+/* Toolbar container */
+trix-toolbar {
+  background: var(--pico-form-element-background-color);
+  border: var(--pico-border-width) solid var(--pico-form-element-border-color);
+  border-bottom: var(--pico-border-width) solid var(--pico-muted-border-color);
+  border-radius: var(--pico-border-radius) var(--pico-border-radius) 0 0;
+  padding: 0.3rem 0.5rem;
+}
+
+trix-toolbar .trix-button-row {
+  gap: 0.25rem;
+}
+
+trix-toolbar .trix-button-group {
+  border: 1px solid var(--pico-form-element-border-color);
+  border-top-color: var(--pico-form-element-border-color);
+  border-bottom-color: var(--pico-form-element-border-color);
+  border-radius: var(--pico-border-radius);
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+trix-toolbar .trix-button-group:not(:first-child) {
+  margin-left: 0;
+}
+
+trix-toolbar .trix-button {
+  background: transparent;
+  border: none;
+  border-bottom: none;
+  color: var(--pico-color);
+  padding: 0 0.5rem;
+  height: 2rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+trix-toolbar .trix-button:not(:first-child) {
+  border-left: 1px solid var(--pico-form-element-border-color);
+}
+
+trix-toolbar .trix-button:not(:disabled):hover,
+trix-toolbar .trix-button.trix-active {
+  background: var(--pico-primary);
+  color: var(--pico-primary-inverse);
+}
+
+/* Icons: default light mode */
+trix-toolbar .trix-button--icon::before {
+  opacity: 0.7;
+  background-size: auto 55%;
+}
+
+/* Icons: invert when button is active or hovered */
+trix-toolbar .trix-button--icon:not(:disabled):hover::before,
+trix-toolbar .trix-button--icon.trix-active::before {
+  filter: brightness(0) invert(1);
+  opacity: 1;
+}
+
+/* Icons: dark mode — invert inactive icons to white */
+[data-theme="dark"] trix-toolbar .trix-button--icon::before {
+  filter: invert(1);
+  opacity: 0.8;
+}
+
+[data-theme="dark"] trix-toolbar .trix-button--icon:not(:disabled):hover::before,
+[data-theme="dark"] trix-toolbar .trix-button--icon.trix-active::before {
+  filter: brightness(0) invert(1);
+  opacity: 1;
+}
+
+/* Link dialog */
+trix-toolbar .trix-dialog {
+  background: var(--pico-card-background-color, var(--pico-background-color));
+  border-top: 2px solid var(--pico-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 0 0 var(--pico-border-radius) var(--pico-border-radius);
+}
+
+trix-toolbar .trix-input--dialog {
+  background: var(--pico-form-element-background-color);
+  border: 1px solid var(--pico-form-element-border-color);
+  border-radius: var(--pico-border-radius);
+  color: var(--pico-color);
+  padding: 0.4rem 0.6rem;
+}
+
+trix-toolbar .trix-button--dialog {
+  color: var(--pico-primary);
+  border-bottom: none;
+  font-weight: 600;
+}
+
+/* Editor area */
+trix-editor {
+  background: var(--pico-form-element-background-color);
+  border: var(--pico-border-width) solid var(--pico-form-element-border-color);
+  border-top: none;
+  border-radius: 0 0 var(--pico-border-radius) var(--pico-border-radius);
+  color: var(--pico-color);
+  min-height: 200px;
+  padding: var(--pico-form-element-spacing-vertical) var(--pico-form-element-spacing-horizontal);
+  font-family: var(--pico-font-family);
+  font-size: var(--pico-font-size);
+  line-height: var(--pico-line-height);
+  outline: none;
+}
+
+trix-editor:focus {
+  border-color: var(--pico-form-element-active-border-color);
+  box-shadow: 0 0 0 var(--pico-outline-width) var(--pico-form-element-focus-color);
+}
+
+/* Formatting within the editor */
+trix-editor h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+trix-editor ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+trix-editor ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}
+
+trix-editor blockquote {
+  border-left: 3px solid var(--pico-primary);
+  padding-left: 0.875rem;
+  color: var(--pico-muted-color);
+}
+
+/* Rendered content on show page */
+.trix-content h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.trix-content blockquote {
+  border-left-color: var(--pico-primary);
+  color: var(--pico-muted-color);
+}
+
+.trix-content pre {
+  background: var(--pico-code-background-color, var(--pico-card-background-color));
+  border-radius: var(--pico-border-radius);
+  padding: 0.75rem 1rem;
+}
