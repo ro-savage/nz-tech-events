@@ -25,8 +25,8 @@
 
     <label for="event_description">
       Description *
-      <%= f.text_area :description, required: true, rows: 6, placeholder: "Tell people what this event is about..." %>
     </label>
+    <%= f.rich_text_area :description, required: true %>
 
     <label for="event_short_summary">
       Short Summary <small class="text-muted">(optional, shown on event list)</small>

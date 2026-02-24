@@ -77,7 +77,7 @@ module EventsHelper
       action: "TEMPLATE",
       text: event.title,
       dates: "#{format_google_time(start_time)}/#{format_google_time(end_time)}",
-      details: event.description.truncate(1000),
+      details: event.description.to_plain_text.truncate(1000),
       location: calendar_location(event),
       ctz: NZ_TIMEZONE
     }
@@ -103,7 +103,7 @@ module EventsHelper
     ical << "DTSTART;TZID=Pacific/Auckland:#{format_ical_local_time(start_time)}"
     ical << "DTEND;TZID=Pacific/Auckland:#{format_ical_local_time(end_time)}"
     ical << "SUMMARY:#{escape_ical_text(event.title)}"
-    ical << "DESCRIPTION:#{escape_ical_text(event.description.truncate(1000))}"
+    ical << "DESCRIPTION:#{escape_ical_text(event.description.to_plain_text.truncate(1000))}"
     ical << "LOCATION:#{escape_ical_text(calendar_location(event))}"
     ical << "URL:#{event.registration_url}" if event.registration_url.present?
     ical << "END:VEVENT"

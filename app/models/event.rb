@@ -1,6 +1,7 @@
 class Event < ApplicationRecord
   belongs_to :user
   has_many :event_locations, dependent: :destroy
+  has_rich_text :description
   accepts_nested_attributes_for :event_locations, allow_destroy: true,
                                 reject_if: proc { |attrs| attrs["region"].blank? }
 
@@ -145,7 +146,7 @@ class Event < ApplicationRecord
     if short_summary.present?
       short_summary
     else
-      description.truncate(limit)
+      description.to_plain_text.truncate(limit)
     end
   end
 
