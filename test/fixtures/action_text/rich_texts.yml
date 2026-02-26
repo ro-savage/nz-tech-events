@@ -1,0 +1,35 @@
+approved_upcoming_description:
+  name: description
+  body: "<div>Wellington Ruby Meetup description. Join us for talks and networking.</div>"
+  record_type: Event
+  record_id: <%= ActiveRecord::FixtureSet.identify(:approved_upcoming) %>
+
+unapproved_upcoming_description:
+  name: description
+  body: "<div>Startup Hackathon description. Build something amazing in a weekend.</div>"
+  record_type: Event
+  record_id: <%= ActiveRecord::FixtureSet.identify(:unapproved_upcoming) %>
+
+past_event_description:
+  name: description
+  body: "<div>NZ Tech Conference 2025 description. The biggest tech event of the year.</div>"
+  record_type: Event
+  record_id: <%= ActiveRecord::FixtureSet.identify(:past_event) %>
+
+multi_day_event_description:
+  name: description
+  body: "<div>Rails Workshop Weekend description. Learn Rails from scratch over multiple days.</div>"
+  record_type: Event
+  record_id: <%= ActiveRecord::FixtureSet.identify(:multi_day_event) %>
+
+free_event_description:
+  name: description
+  body: "<div>Tech Networking Evening description. Meet other tech professionals in Wellington.</div>"
+  record_type: Event
+  record_id: <%= ActiveRecord::FixtureSet.identify(:free_event) %>
+
+paid_event_description:
+  name: description
+  body: "<div>AI Conference NZ description. Explore the latest in artificial intelligence.</div>"
+  record_type: Event
+  record_id: <%= ActiveRecord::FixtureSet.identify(:paid_event) %>

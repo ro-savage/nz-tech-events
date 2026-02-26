@@ -1,0 +1,78 @@
+approved_upcoming:
+  title: "Wellington Ruby Meetup"
+  start_date: <%= 7.days.from_now.to_date %>
+  start_time: "18:00"
+  end_time: "20:00"
+  cost: "Free"
+  event_type: 1
+  short_summary: "Monthly Ruby meetup in Wellington"
+  approved: true
+  user: regular
+  city: "Wellington CBD"
+  registration_url: "https://example.com/register"
+
+unapproved_upcoming:
+  title: "Startup Hackathon"
+  start_date: <%= 14.days.from_now.to_date %>
+  start_time: "09:00"
+  end_time: "17:00"
+  cost: "$20"
+  event_type: 3
+  short_summary: "A weekend hackathon for startups"
+  approved: false
+  user: regular
+  city: "Auckland CBD"
+  registration_url: "https://example.com/hackathon"
+
+past_event:
+  title: "NZ Tech Conference 2025"
+  start_date: <%= 30.days.ago.to_date %>
+  start_time: "09:00"
+  end_time: "17:00"
+  cost: "$100"
+  event_type: 0
+  short_summary: "Annual NZ tech conference"
+  approved: true
+  user: regular
+  city: "Auckland CBD"
+  registration_url: "https://example.com/conference"
+
+multi_day_event:
+  title: "Rails Workshop Weekend"
+  start_date: <%= 14.days.from_now.to_date %>
+  end_date: <%= 19.days.from_now.to_date %>
+  start_time: "09:00"
+  end_time: "17:00"
+  cost: "$200"
+  event_type: 2
+  short_summary: "An intensive Rails workshop over multiple days"
+  approved: true
+  user: organiser
+  city: "Christchurch"
+  registration_url: "https://example.com/workshop"
+
+free_event:
+  title: "Tech Networking Evening"
+  start_date: <%= 7.days.from_now.to_date %>
+  start_time: "17:30"
+  end_time: "19:30"
+  cost: "Free"
+  event_type: 5
+  short_summary: "Casual networking for tech professionals"
+  approved: true
+  user: organiser
+  city: "Wellington CBD"
+  registration_url: "https://example.com/networking"
+
+paid_event:
+  title: "AI Conference NZ"
+  start_date: <%= 7.days.from_now.to_date %>
+  start_time: "09:00"
+  end_time: "17:00"
+  cost: "$50"
+  event_type: 0
+  short_summary: "New Zealand AI conference"
+  approved: true
+  user: organiser
+  city: "Auckland CBD"
+  registration_url: "https://example.com/ai-conf"

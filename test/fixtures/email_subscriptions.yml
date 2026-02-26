@@ -1,0 +1,9 @@
+wellington_sub:
+  email_address: "subscriber@example.com"
+  region: 8
+  unsubscribe_token: "test_token_wellington_123abc"
+
+auckland_sub:
+  email_address: "auckland_subscriber@example.com"
+  region: 1
+  unsubscribe_token: "test_token_auckland_456def"

@@ -1,0 +1,20 @@
+regular:
+  email_address: "regular@example.com"
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  name: "Regular User"
+  admin: false
+  approved_organiser: false
+
+admin:
+  email_address: "admin@example.com"
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  name: "Admin User"
+  admin: true
+  approved_organiser: false
+
+organiser:
+  email_address: "organiser@example.com"
+  password_digest: <%= BCrypt::Password.create('password123') %>
+  name: "Organiser User"
+  admin: false
+  approved_organiser: true

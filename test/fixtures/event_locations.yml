@@ -1,0 +1,35 @@
+wellington_location:
+  event: approved_upcoming
+  region: 8
+  city: "Wellington CBD"
+  position: 0
+
+auckland_location:
+  event: past_event
+  region: 1
+  city: "Auckland CBD"
+  position: 0
+
+unapproved_location:
+  event: unapproved_upcoming
+  region: 1
+  city: "Auckland CBD"
+  position: 0
+
+multi_day_location:
+  event: multi_day_event
+  region: 13
+  city: "Christchurch"
+  position: 0
+
+free_event_location:
+  event: free_event
+  region: 8
+  city: "Wellington CBD"
+  position: 0
+
+paid_event_location:
+  event: paid_event
+  region: 1
+  city: "Auckland CBD"
+  position: 0

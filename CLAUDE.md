@@ -375,6 +375,25 @@ cat config/importmap.rb   # JavaScript imports via importmaps
 
 ---
 
+## Testing
+
+**Run all tests before finishing any task:**
+```bash
+bin/rails test
+```
+
+Tests run in parallel (~3 seconds). A pre-commit hook also runs them automatically before each commit.
+
+**Write tests for every new feature and bug fix:**
+- New model validation → test in `test/models/<model>_test.rb`
+- New controller action → test in `test/requests/<controller>_test.rb`
+- Bug fix → add a test that would have caught the bug
+- New page or view change → add/update a smoke test that verifies the page returns 200
+
+See `docs/testing.md` for full guidance on fixtures, auth helpers, and test patterns.
+
+---
+
 ## Adding New Features
 
 ### New Event Field
@@ -383,6 +402,8 @@ cat config/importmap.rb   # JavaScript imports via importmaps
 3. Add to `event_params` in `EventsController`
 4. Add to `_form.html.erb`
 5. Display in `show.html.erb` and `_event_card.html.erb`
+6. Update `test/fixtures/events.yml` with the new field
+7. Add a smoke test in `test/requests/events_test.rb` verifying show renders without error
 
 ### New Region
 1. Add to `enum :region` in `Event` model

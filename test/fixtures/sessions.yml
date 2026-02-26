@@ -1,0 +1,14 @@
+regular_session:
+  user: regular
+  ip_address: "127.0.0.1"
+  user_agent: "Rails Testing"
+
+admin_session:
+  user: admin
+  ip_address: "127.0.0.1"
+  user_agent: "Rails Testing"
+
+organiser_session:
+  user: organiser
+  ip_address: "127.0.0.1"
+  user_agent: "Rails Testing"
