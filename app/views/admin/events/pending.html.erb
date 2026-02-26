@@ -43,7 +43,7 @@
               </div>
 
               <div class="text-gray-700 mb-3">
-                <%= truncate(event.description, length: 200) %>
+                <%= event.display_summary(limit: 200) %>
               </div>
 
               <p class="text-xs text-gray-500">
