@@ -77,6 +77,16 @@
       on <%= @event.created_at.strftime("%d %B %Y") %>
     </small>
 
+    <% if logged_in? && !@event.owned_by?(Current.user) %>
+      <div class="mt-2">
+        <% if @pending_ownership_request.present? %>
+          <p class="text-muted">Your ownership request is pending admin review.</p>
+        <% else %>
+          <%= link_to "Request ownership", new_event_ownership_request_path(@event), role: "button", class: "outline" %>
+        <% end %>
+      </div>
+    <% end %>
+
     <% if @event.editable_by?(Current.user) %>
       <div class="mt-2 flex gap-1">
         <a href="<%= edit_event_path(@event) %>" role="button" type="button" class="outline">Edit</a>

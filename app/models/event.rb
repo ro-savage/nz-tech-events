@@ -1,6 +1,7 @@
 class Event < ApplicationRecord
   belongs_to :user
   has_many :event_locations, dependent: :destroy
+  has_many :ownership_requests, dependent: :destroy
   has_rich_text :description
   accepts_nested_attributes_for :event_locations, allow_destroy: true,
                                 reject_if: proc { |attrs| attrs["region"].blank? }
@@ -79,6 +80,12 @@ class Event < ApplicationRecord
   def editable_by?(check_user)
     return false unless check_user
     check_user.admin? || owned_by?(check_user)
+  end
+
+  def pending_ownership_request_for(check_user)
+    return unless check_user
+
+    ownership_requests.pending.find_by(requester: check_user)
   end
 
   def multi_day?

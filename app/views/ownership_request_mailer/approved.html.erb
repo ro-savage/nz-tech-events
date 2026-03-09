@@ -1,0 +1,9 @@
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <p>Hi <%= @user.name || @user.email_address %>,</p>
+
+  <p>Your request to take ownership of <%= link_to @event.title, event_url(@event) %> has been approved.</p>
+
+  <p>You can now edit or delete this event from the event page whenever you need to make changes.</p>
+
+  <p>Kind regards,<br>Rowan</p>
+</div>

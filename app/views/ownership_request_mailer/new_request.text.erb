@@ -1,0 +1,14 @@
+Hi <%= @admin_user.name || @admin_user.email_address %>,
+
+<%= @requester.display_name %> has requested ownership of <%= @event.title %>.
+
+Current owner: <%= @current_owner.display_name %> (<%= @current_owner.email_address %>)
+Event link: <%= event_url(@event) %>
+
+Reason:
+<%= @ownership_request.reason %>
+
+Review the request here: <%= admin_ownership_requests_url %>
+
+Kind regards,
+Rowan

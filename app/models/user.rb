@@ -2,6 +2,11 @@ class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
   has_many :events, dependent: :destroy
+  has_many :ownership_requests, foreign_key: :requester_id, dependent: :destroy, inverse_of: :requester
+  has_many :reviewed_ownership_requests, class_name: "OwnershipRequest",
+                                         foreign_key: :reviewed_by_id,
+                                         dependent: :nullify,
+                                         inverse_of: :reviewed_by
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 

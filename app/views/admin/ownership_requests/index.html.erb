@@ -1,0 +1,72 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Ownership Requests</h1>
+    <span class="text-sm text-gray-600"><%= @ownership_requests.count %> pending</span>
+  </div>
+
+  <% if @ownership_requests.empty? %>
+    <div class="bg-white shadow-md rounded-lg p-8 text-center">
+      <p class="text-gray-600">No ownership requests are waiting for review.</p>
+    </div>
+  <% else %>
+    <div class="space-y-4">
+      <% @ownership_requests.each do |ownership_request| %>
+        <% event = ownership_request.event %>
+        <% requester = ownership_request.requester %>
+        <article class="bg-white shadow-md rounded-lg p-6">
+          <div class="flex justify-between items-start gap-4">
+            <div class="flex-1">
+              <h2 class="text-2xl font-bold mb-2">
+                <a href="<%= event_path(event) %>" class="text-blue-600 hover:text-blue-800">
+                  <%= event.title %>
+                </a>
+              </h2>
+
+              <div class="text-sm text-gray-600 mb-3">
+                <strong>Current owner:</strong>
+                <%= event.user.display_name %> (<%= event.user.email_address %>)<br>
+                <strong>Requester:</strong>
+                <%= requester.display_name %> (<%= requester.email_address %>)
+              </div>
+
+              <div class="grid grid-cols-2 gap-4 mb-3">
+                <div>
+                  <p class="text-sm text-gray-600"><strong>Date:</strong> <%= event.formatted_date %></p>
+                  <% if event.formatted_time %>
+                    <p class="text-sm text-gray-600"><strong>Time:</strong> <%= event.formatted_time %></p>
+                  <% end %>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600"><strong>Type:</strong> <%= event.event_type.titleize %></p>
+                  <p class="text-sm text-gray-600"><strong>Submitted:</strong> <%= time_ago_in_words(ownership_request.created_at) %> ago</p>
+                </div>
+              </div>
+
+              <div class="text-gray-700 mb-3">
+                <strong>Reason:</strong>
+                <%= simple_format(ownership_request.reason) %>
+              </div>
+            </div>
+
+            <div class="ml-4 flex flex-col gap-2">
+              <%= button_to "Approve ownership", approve_admin_ownership_request_path(ownership_request),
+                  method: :post,
+                  data: { turbo_confirm: "Approve this ownership request and transfer the event?" },
+                  class: "px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-medium" %>
+
+              <%= button_to "Reject request", reject_admin_ownership_request_path(ownership_request),
+                  method: :post,
+                  data: { turbo_confirm: "Reject this ownership request?" },
+                  class: "px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-medium" %>
+
+              <a href="<%= event_path(event) %>"
+                 class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 text-sm font-medium text-center">
+                View Event
+              </a>
+            </div>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  <% end %>
+</div>

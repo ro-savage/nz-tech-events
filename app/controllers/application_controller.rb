@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
 
-  helper_method :logged_in?, :pending_events_count, :recaptcha_enabled?
+  helper_method :logged_in?, :pending_events_count, :pending_ownership_requests_count, :recaptcha_enabled?
 
   private
 
@@ -26,6 +26,10 @@ class ApplicationController < ActionController::Base
     @pending_events_count ||= Event.pending_approval.count if Current.user&.admin?
   end
 
+  def pending_ownership_requests_count
+    @pending_ownership_requests_count ||= OwnershipRequest.pending.count if Current.user&.admin?
+  end
+
   def recaptcha_enabled?
     ENV["ENABLE_RECAPTCHA"] == "true"
   end
@@ -33,6 +37,12 @@ class ApplicationController < ActionController::Base
   def require_login
     unless logged_in?
       redirect_to new_session_path, alert: "Please sign in to continue."
+    end
+  end
+
+  def require_admin
+    unless Current.user&.admin?
+      redirect_to root_path, alert: "You are not authorized to access this page."
     end
   end
 end

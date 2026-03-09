@@ -100,6 +100,45 @@ class EventsTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", new_event_path(copy_from: event.id), count: 0
   end
 
+  test "show displays take ownership link for logged-in non-owner" do
+    sign_in_as users(:organiser)
+    event = events(:approved_upcoming)
+
+    get event_path(event)
+    assert_response :success
+    assert_select "a[href=?]", new_event_ownership_request_path(event), text: "Request ownership"
+  end
+
+  test "show does not display take ownership link for anonymous user" do
+    event = events(:approved_upcoming)
+
+    get event_path(event)
+    assert_response :success
+    assert_select "a[href=?]", new_event_ownership_request_path(event), count: 0
+  end
+
+  test "show does not display take ownership link for event owner" do
+    sign_in_as users(:regular)
+    event = events(:approved_upcoming)
+
+    get event_path(event)
+    assert_response :success
+    assert_select "a[href=?]", new_event_ownership_request_path(event), count: 0
+  end
+
+  test "show displays pending ownership request message when current user already requested ownership" do
+    event = events(:approved_upcoming)
+    requester = users(:organiser)
+    OwnershipRequest.create!(event: event, requester: requester, reason: "I now run this meetup.")
+
+    sign_in_as requester
+    get event_path(event)
+
+    assert_response :success
+    assert_match(/pending admin review/i, response.body)
+    assert_select "a[href=?]", new_event_ownership_request_path(event), count: 0
+  end
+
   test "show returns 404 for nonexistent event" do
     get event_path(id: 999999)
     assert_response :not_found

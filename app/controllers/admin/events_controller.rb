@@ -18,12 +18,4 @@ class Admin::EventsController < ApplicationController
     @event.destroy
     redirect_to admin_pending_events_path, notice: "Event rejected and deleted."
   end
-
-  private
-
-  def require_admin
-    unless Current.user&.admin?
-      redirect_to root_path, alert: "You are not authorized to access this page."
-    end
-  end
 end

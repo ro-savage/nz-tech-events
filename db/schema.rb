@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_24_092510) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_09_050824) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -98,6 +98,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_24_092510) do
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
+  create_table "ownership_requests", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "event_id", null: false
+    t.text "reason", null: false
+    t.integer "requester_id", null: false
+    t.datetime "reviewed_at"
+    t.integer "reviewed_by_id"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id", "requester_id"], name: "index_ownership_requests_on_event_and_requester_pending", unique: true, where: "status = 0"
+    t.index ["event_id", "status", "created_at"], name: "index_ownership_requests_on_event_id_and_status_and_created_at"
+    t.index ["event_id"], name: "index_ownership_requests_on_event_id"
+    t.index ["requester_id"], name: "index_ownership_requests_on_requester_id"
+    t.index ["reviewed_by_id"], name: "index_ownership_requests_on_reviewed_by_id"
+    t.index ["status", "created_at"], name: "index_ownership_requests_on_status_and_created_at"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "ip_address"
@@ -125,5 +142,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_24_092510) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "event_locations", "events"
   add_foreign_key "events", "users"
+  add_foreign_key "ownership_requests", "events"
+  add_foreign_key "ownership_requests", "users", column: "requester_id"
+  add_foreign_key "ownership_requests", "users", column: "reviewed_by_id"
   add_foreign_key "sessions", "users"
 end

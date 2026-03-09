@@ -1,0 +1,14 @@
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <p>Hi <%= @admin_user.name || @admin_user.email_address %>,</p>
+
+  <p><%= @requester.display_name %> has requested ownership of <%= link_to @event.title, event_url(@event) %>.</p>
+
+  <p><strong>Current owner:</strong> <%= @current_owner.display_name %> (<%= @current_owner.email_address %>)</p>
+
+  <p><strong>Reason:</strong></p>
+  <%= simple_format(@ownership_request.reason) %>
+
+  <p>You can review this request from the <%= link_to "ownership requests page", admin_ownership_requests_url %>.</p>
+
+  <p>Kind regards,<br>Rowan</p>
+</div>

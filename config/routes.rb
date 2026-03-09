@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     member do
       get :ical
     end
+    resources :ownership_requests, only: [ :new, :create ]
   end
 
   # Admin - Users management
@@ -44,6 +45,12 @@ Rails.application.routes.draw do
     get "events/pending", to: "events#pending", as: :pending_events
     post "events/:id/approve", to: "events#approve", as: :approve_event
     delete "events/:id/reject", to: "events#reject", as: :reject_event
+    resources :ownership_requests, only: [ :index ] do
+      member do
+        post :approve
+        post :reject
+      end
+    end
     get "subscribers", to: "subscribers#index", as: :subscribers
   end
 

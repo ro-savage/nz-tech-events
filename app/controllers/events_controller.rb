@@ -22,6 +22,7 @@ class EventsController < ApplicationController
   end
 
   def show
+    @pending_ownership_request = @event.pending_ownership_request_for(Current.user)
   end
 
   def new

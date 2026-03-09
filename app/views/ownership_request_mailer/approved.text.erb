@@ -1,0 +1,8 @@
+Hi <%= @user.name || @user.email_address %>,
+
+Your request to take ownership of <%= @event.title %> has been approved.
+
+You can now manage the event here: <%= event_url(@event) %>
+
+Kind regards,
+Rowan

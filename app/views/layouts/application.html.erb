@@ -92,6 +92,16 @@
                   <% end %>
                 </a>
               </li>
+              <li>
+                <a href="<%= admin_ownership_requests_path %>" class="nav-link">
+                  Ownership Requests
+                  <% if pending_ownership_requests_count && pending_ownership_requests_count > 0 %>
+                    <span class="badge badge-other" style="margin-left: 0.25rem; font-size: 0.75rem; padding: 0.125rem 0.5rem;">
+                      <%= pending_ownership_requests_count %>
+                    </span>
+                  <% end %>
+                </a>
+              </li>
               <li><a href="<%= users_path %>" class="nav-link">Users</a></li>
               <li><a href="<%= admin_subscribers_path %>" class="nav-link">Subscribers</a></li>
             <% end %>

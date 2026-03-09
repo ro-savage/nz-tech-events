@@ -1,0 +1,42 @@
+<% content_for :title, "Request ownership of #{@event.title} - NZ Tech Events" %>
+
+<a href="<%= event_path(@event) %>" class="back-link">&larr; Back to Event</a>
+
+<article>
+  <header>
+    <h1>Request ownership of <%= @event.title %></h1>
+    <p class="text-muted">Tell the admins why you should manage this event. Ownership will only change after an admin approves your request.</p>
+  </header>
+
+  <p>
+    <strong>Current owner:</strong>
+    <a href="<%= user_path(@event.user) %>"><%= @event.user.display_name %></a>
+  </p>
+
+  <%= form_with model: [ @event, @ownership_request ] do |form| %>
+    <% if @ownership_request.errors.any? %>
+      <div class="alert alert-error">
+        <strong>Please fix the following errors:</strong>
+        <ul style="margin: 0.5rem 0 0 1rem;">
+          <% @ownership_request.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <label for="ownership_request_reason">
+      Why are you taking ownership? *
+      <%= form.text_area :reason,
+                         rows: 8,
+                         required: true,
+                         autofocus: true,
+                         placeholder: "Explain your connection to the event, why you should manage it, and anything the admins should know." %>
+    </label>
+
+    <div class="grid">
+      <%= form.submit "Submit ownership request" %>
+      <%= link_to "Cancel", event_path(@event), role: "button", class: "outline secondary" %>
+    </div>
+  <% end %>
+</article>
