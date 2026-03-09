@@ -1,5 +1,5 @@
 <div class="location-row" data-location-index="<%= f.index %>">
-  <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: end;">
+  <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: center;">
     <%= f.hidden_field :id if f.object.persisted? %>
     <%= f.hidden_field :position, value: f.index %>
     <%= f.hidden_field :_destroy, class: "destroy-field" %>
@@ -23,11 +23,11 @@
     <% if f.index.to_i > 0 %>
       <button type="button" class="remove-location-btn outline secondary"
               data-index="<%= f.index %>"
-              style="margin-bottom: 0; padding: 0.5rem 0.75rem;">
+              style="padding: 0.5rem 0.75rem;">
         &times;
       </button>
     <% else %>
-      <div style="width: 40px;"></div>
+      <div></div>
     <% end %>
   </div>
 </div>

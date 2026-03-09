@@ -897,6 +897,25 @@ form small {
   padding-bottom: 0;
 }
 
+/* Aligns a remove button with the input fields in a grid row.
+   Fills the grid cell and pushes the button down to match the inputs' baseline. */
+.form-btn-align {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: var(--pico-spacing);
+}
+
+/* Secondary outline buttons: use primary colour on hover for a clearer affordance */
+button.outline.secondary:hover,
+[role="button"].outline.secondary:hover,
+a.outline.secondary:hover {
+  background-color: var(--pico-primary);
+  border-color: var(--pico-primary);
+  color: var(--pico-primary-inverse);
+  opacity: 1;
+}
+
 /* Transistions */
 @keyframes fade-in {
   from {

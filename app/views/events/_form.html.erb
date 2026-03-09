@@ -56,7 +56,7 @@
               </label>
             </div>
 
-            <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: end;">
+            <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: center;">
               <label>
                 Start Time
                 <input type="time" name="event[dates][<%= i %>][start_time]"
@@ -68,12 +68,11 @@
                 <input type="time" name="event[dates][<%= i %>][end_time]"
                        value="<%= date["end_time"] %>">
               </label>
-
-              <button type="button" class="remove-date-btn outline secondary"
-                      data-date-index="<%= i %>"
-                      style="margin-bottom: 0; padding: 0.5rem 0.75rem;">
-                &times;
-              </button>
+               <button type="button" class="remove-date-btn outline secondary"
+                        data-date-index="<%= i %>"
+                        style="padding: 0.5rem 0.75rem;">
+                  &times;
+                </button>
             </div>
           </div>
         <% end %>
@@ -172,7 +171,7 @@
     function createLocationRow(index) {
       return `
         <div class="location-row" data-location-index="${index}">
-          <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: end;">
+          <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: center;">
             <input type="hidden" name="event[event_locations_attributes][${index}][position]" value="${index}">
             <input type="hidden" name="event[event_locations_attributes][${index}][_destroy]" value="false" class="destroy-field">
 
@@ -191,10 +190,9 @@
                 <option value="">Select city...</option>
               </select>
             </label>
-
             <button type="button" class="remove-location-btn outline secondary"
                     data-index="${index}"
-                    style="margin-bottom: 0; padding: 0.5rem 0.75rem;">
+                    style="padding: 0.5rem 0.75rem;">
               &times;
             </button>
           </div>
@@ -266,7 +264,7 @@
               <input type="date" name="event[dates][${index}][end_date]" class="date-end-input">
             </label>
           </div>
-          <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: end;">
+          <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: center;">
             <label>
               Start Time
               <input type="time" name="event[dates][${index}][start_time]">
@@ -276,10 +274,10 @@
               <input type="time" name="event[dates][${index}][end_time]">
             </label>
             <button type="button" class="remove-date-btn outline secondary"
-                    data-date-index="${index}"
-                    style="margin-bottom: 0; padding: 0.5rem 0.75rem;">
-              &times;
-            </button>
+                      data-date-index="${index}"
+                      style="padding: 0.5rem 0.75rem;">
+                &times;
+              </button>
           </div>
         </div>
       `;
