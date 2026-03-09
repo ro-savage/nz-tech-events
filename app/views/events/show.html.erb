@@ -80,6 +80,7 @@
     <% if @event.editable_by?(Current.user) %>
       <div class="mt-2 flex gap-1">
         <a href="<%= edit_event_path(@event) %>" role="button" type="button" class="outline">Edit</a>
+        <a href="<%= new_event_path(copy_from: @event.id) %>" role="button" type="button" class="outline">Copy</a>
         <%= button_to "Delete", event_path(@event),
             method: :delete,
             data: { turbo_confirm: "Are you sure you want to delete this event?" },

@@ -25,14 +25,22 @@ class EventsController < ApplicationController
   end
 
   def new
+    source_event = copy_source_event
+    return if performed?
+
     unless Current.user.can_create_event?
       redirect_to events_path, alert: "You can only create 10 events in a 24-hour period. Please try again later or ask to become an approved organiser."
       return
     end
 
-    @event = Current.user.events.build
-    @event.event_locations.build
-    @submitted_dates = [ { "start_date" => Date.tomorrow.to_s } ]
+    if source_event
+      @event = duplicate_event(source_event)
+      @submitted_dates = [ duplicate_date(source_event) ]
+    else
+      @event = Current.user.events.build
+      @event.event_locations.build
+      @submitted_dates = [ { "start_date" => Date.tomorrow.to_s } ]
+    end
   end
 
   def create
@@ -136,9 +144,55 @@ class EventsController < ApplicationController
   end
 
   def authorize_owner!
-    unless logged_in? && (Current.user.admin? || @event.owned_by?(Current.user))
+    unless can_modify_event?(@event)
       redirect_to root_path, alert: "You are not authorized to modify this event."
     end
+  end
+
+  def copy_source_event
+    return if params[:copy_from].blank?
+
+    source_event = Event.find(params[:copy_from])
+    return source_event if can_modify_event?(source_event)
+
+    redirect_to root_path, alert: "You are not authorized to modify this event."
+    nil
+  end
+
+  def duplicate_event(source_event)
+    Current.user.events.build(
+      title: source_event.title,
+      short_summary: source_event.short_summary,
+      cost: source_event.cost,
+      event_type: source_event.event_type,
+      registration_url: source_event.registration_url,
+      region: source_event.region,
+      city: source_event.city,
+      address: source_event.address,
+      event_locations_attributes: source_event.event_locations.map.with_index do |location, index|
+        {
+          region: location.region,
+          city: location.city,
+          position: index
+        }
+      end
+    ).tap do |event|
+      event.description = source_event.description.body.to_s
+      event.event_locations.build if event.event_locations.empty?
+    end
+  end
+
+  def duplicate_date(source_event)
+    {
+      "start_date" => source_event.start_date&.to_s,
+      "end_date" => source_event.end_date&.to_s,
+      "start_time" => source_event.start_time&.strftime("%H:%M"),
+      "end_time" => source_event.end_time&.strftime("%H:%M")
+    }
+  end
+
+  def can_modify_event?(event)
+    logged_in? && (Current.user.admin? || event.owned_by?(Current.user))
   end
 
   def event_params

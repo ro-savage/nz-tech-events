@@ -82,6 +82,24 @@ class EventsTest < ActionDispatch::IntegrationTest
     assert_match event.title, response.body
   end
 
+  test "show displays copy link for event owner" do
+    sign_in_as users(:regular)
+    event = events(:approved_upcoming)
+
+    get event_path(event)
+    assert_response :success
+    assert_select "a[href=?]", new_event_path(copy_from: event.id), text: "Copy"
+  end
+
+  test "show does not display copy link for non-owner" do
+    sign_in_as users(:organiser)
+    event = events(:approved_upcoming)
+
+    get event_path(event)
+    assert_response :success
+    assert_select "a[href=?]", new_event_path(copy_from: event.id), count: 0
+  end
+
   test "show returns 404 for nonexistent event" do
     get event_path(id: 999999)
     assert_response :not_found
@@ -343,6 +361,50 @@ class EventsTest < ActionDispatch::IntegrationTest
     assert_match(/not authorized/i, flash[:alert])
   end
 
+  test "new prepopulates fields when copying an event" do
+    sign_in_as users(:regular)
+    source_event = events(:approved_upcoming)
+
+    get new_event_path(copy_from: source_event.id)
+    assert_response :success
+
+    assert_select 'input[name="event[title]"][value=?]', source_event.title
+    assert_select 'select[name="event[event_type]"] option[selected][value=?]', source_event.event_type
+    assert_select 'textarea[name="event[short_summary]"]', text: source_event.short_summary
+    assert_select 'input[name="event[cost]"][value=?]', source_event.cost
+    assert_select 'input[name="event[registration_url]"][value=?]', source_event.registration_url
+    assert_select 'input[name="event[dates][0][start_date]"][value=?]', source_event.start_date.to_s
+    assert_select 'input[name="event[dates][0][start_time]"][value=?]', source_event.start_time.strftime("%H:%M")
+    assert_select 'input[name="event[dates][0][end_time]"][value=?]', source_event.end_time.strftime("%H:%M")
+    assert_select 'select[name="event[event_locations_attributes][0][region]"] option[selected][value=?]', source_event.primary_location.region
+    assert_select 'select[name="event[event_locations_attributes][0][city]"] option[selected][value=?]', source_event.primary_location.city
+    assert_match source_event.description.to_plain_text, response.body
+  end
+
+  test "new copies all event locations when copying an event" do
+    sign_in_as users(:organiser)
+    source_event = events(:multi_day_event)
+    source_event.event_locations.create!(region: :online, city: "Online", position: 1)
+
+    get new_event_path(copy_from: source_event.id)
+    assert_response :success
+
+    assert_select 'select[name="event[event_locations_attributes][0][region]"] option[selected][value=?]', "canterbury"
+    assert_select 'select[name="event[event_locations_attributes][1][region]"] option[selected][value=?]', "online"
+    assert_select 'select[name="event[event_locations_attributes][1][city]"] option[selected][value=?]', "Online"
+    assert_select 'input[name="event[dates][0][start_date]"][value=?]', source_event.start_date.to_s
+    assert_select 'input[name="event[dates][0][end_date]"][value=?]', source_event.end_date.to_s
+  end
+
+  test "new rejects copying someone else's event" do
+    sign_in_as users(:organiser)
+
+    get new_event_path(copy_from: events(:approved_upcoming).id)
+    assert_response :redirect
+    follow_redirect!
+    assert_match(/not authorized/i, flash[:alert])
+  end
+
   # ── UPDATE (PATCH /events/:id) ────────────────────────────────────
 
   test "update redirects to login if not authenticated" do
@@ -450,6 +512,14 @@ class EventsTest < ActionDispatch::IntegrationTest
     get my_events_events_path
     assert_response :success
     assert_match events(:approved_upcoming).title, response.body
+  end
+
+  test "my_events displays copy links for user events" do
+    sign_in_as users(:regular)
+
+    get my_events_events_path
+    assert_response :success
+    assert_select "a[href=?]", new_event_path(copy_from: events(:approved_upcoming).id), text: "Copy"
   end
 
   # ── ICAL (GET /events/:id/ical) ───────────────────────────────────
