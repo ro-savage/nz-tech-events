@@ -12,6 +12,13 @@ A simple New Zealand tech events listing website. Users can browse events, filte
 
 ---
 
+## Expected AI Behaviour
+- Never commit files. Always make changes then finish, so they can be reviewed, tested and committed by a human.
+- Always plan first, then write code, then review code, then test code, then make any other changes required, then repeat until task is complete.
+- Always write tests for new features and bug fixes, and run tests after you think something is complete, before finishing the task.
+
+---
+
 ## Tech Stack (No-Build)
 
 | Component | Technology | Notes |
