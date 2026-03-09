@@ -34,33 +34,84 @@
     </label>
   </fieldset>
 
-  <fieldset>
-    <legend>Date & Time</legend>
+  <% unless event.persisted? %>
+    <fieldset>
+      <legend>Dates</legend>
+      <p class="text-muted" style="margin-bottom: var(--pico-spacing);"><small>Add one or more dates. A separate event will be created for each date, sharing all other details above.</small></p>
 
-    <div class="grid">
-      <label for="event_start_date">
-        Start Date *
-        <%= f.date_field :start_date, required: true %>
-      </label>
+      <div id="dates-container">
+        <% (@submitted_dates || [ { "start_date" => Date.tomorrow.to_s } ]).each_with_index do |date, i| %>
+          <div class="date-row" data-date-index="<%= i %>" style="margin-bottom: var(--pico-spacing); padding-bottom: var(--pico-spacing); border-bottom: 1px solid var(--pico-muted-border-color);">
+            <div class="grid">
+              <label>
+                Start Date *
+                <input type="date" name="event[dates][<%= i %>][start_date]"
+                       value="<%= date["start_date"] %>" required class="date-start-input">
+              </label>
 
-      <label for="event_end_date">
-        End Date <small class="text-muted">(multi-day events)</small>
-        <%= f.date_field :end_date %>
-      </label>
-    </div>
+              <label>
+                End Date <small class="text-muted">(multi-day events)</small>
+                <input type="date" name="event[dates][<%= i %>][end_date]"
+                       value="<%= date["end_date"] %>" class="date-end-input">
+              </label>
+            </div>
 
-    <div class="grid">
-      <label for="event_start_time">
-        Start Time
-        <%= f.time_field :start_time %>
-      </label>
+            <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: end;">
+              <label>
+                Start Time
+                <input type="time" name="event[dates][<%= i %>][start_time]"
+                       value="<%= date["start_time"] %>">
+              </label>
 
-      <label for="event_end_time">
-        End Time
-        <%= f.time_field :end_time %>
-      </label>
-    </div>
-  </fieldset>
+              <label>
+                End Time
+                <input type="time" name="event[dates][<%= i %>][end_time]"
+                       value="<%= date["end_time"] %>">
+              </label>
+
+              <button type="button" class="remove-date-btn outline secondary"
+                      data-date-index="<%= i %>"
+                      style="margin-bottom: 0; padding: 0.5rem 0.75rem;">
+                &times;
+              </button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <button type="button" id="add-date-btn" class="outline secondary" style="margin-top: var(--pico-spacing);">
+        + Add Another Date
+      </button>
+    </fieldset>
+  <% else %>
+    <fieldset>
+      <legend>Date & Time</legend>
+
+      <div class="grid">
+        <label for="event_start_date">
+          Start Date *
+          <%= f.date_field :start_date, required: true %>
+        </label>
+
+        <label for="event_end_date">
+          End Date <small class="text-muted">(multi-day events)</small>
+          <%= f.date_field :end_date %>
+        </label>
+      </div>
+
+      <div class="grid">
+        <label for="event_start_time">
+          Start Time
+          <%= f.time_field :start_time %>
+        </label>
+
+        <label for="event_end_time">
+          End Time
+          <%= f.time_field :end_time %>
+        </label>
+      </div>
+    </fieldset>
+  <% end %>
 
   <fieldset>
     <legend>Location(s)</legend>
@@ -105,17 +156,19 @@
   (function() {
     const citiesByRegion = <%= cities_json %>;
     const locationsContainer = document.getElementById('locations-container');
-    const addBtn = document.getElementById('add-location-btn');
-    const startDateInput = document.getElementById('event_start_date');
-    const endDateInput = document.getElementById('event_end_date');
+    const addLocationBtn = document.getElementById('add-location-btn');
+    const datesContainer = document.getElementById('dates-container');
+    const addDateBtn = document.getElementById('add-date-btn');
 
     let locationIndex = document.querySelectorAll('.location-row').length;
+    let dateIndex = datesContainer ? datesContainer.querySelectorAll('.date-row').length : 0;
 
     // Generate region options HTML
     const regionOptionsHtml = '<option value="">Select region...</option>' +
       <%= region_options.map { |label, value| "<option value=\"#{value}\">#{j(label)}</option>" }.join.to_json.html_safe %>;
 
-    // Template for new location row
+    // ── Location management ──────────────────────────────────────────
+
     function createLocationRow(index) {
       return `
         <div class="location-row" data-location-index="${index}">
@@ -149,9 +202,8 @@
       `;
     }
 
-    // Add location button handler
-    if (addBtn) {
-      addBtn.onclick = function() {
+    if (addLocationBtn) {
+      addLocationBtn.onclick = function() {
         const html = createLocationRow(locationIndex);
         locationsContainer.insertAdjacentHTML('beforeend', html);
         locationIndex++;
@@ -159,7 +211,6 @@
       };
     }
 
-    // Update city dropdown when region changes
     function updateCityDropdown(regionSelect) {
       const index = regionSelect.dataset.index;
       const citySelect = document.querySelector(`.location-city-select[data-index="${index}"]`);
@@ -175,12 +226,10 @@
       });
     }
 
-    // Remove location handler
     function removeLocation(btn) {
       const index = btn.dataset.index;
       const row = document.querySelector(`.location-row[data-location-index="${index}"]`);
 
-      // If row has an ID field (existing record), mark for destruction instead of removing
       const idField = row.querySelector('input[name*="[id]"]');
       if (idField) {
         row.querySelector('.destroy-field').value = 'true';
@@ -190,7 +239,6 @@
       }
     }
 
-    // Attach handlers to all location selects and remove buttons
     function attachLocationHandlers() {
       document.querySelectorAll('.location-region-select').forEach(function(select) {
         select.onchange = function() { updateCityDropdown(this); };
@@ -203,16 +251,86 @@
 
     attachLocationHandlers();
 
-    // Start date -> End date auto-sync
-    if (startDateInput && endDateInput) {
-      let previousStartDate = startDateInput.value;
+    // ── Multi-date management (create form only) ─────────────────────
 
-      startDateInput.onchange = function() {
-        if (!endDateInput.value || endDateInput.value === previousStartDate) {
-          endDateInput.value = this.value;
-        }
-        previousStartDate = this.value;
-      };
+    function createDateRow(index) {
+      return `
+        <div class="date-row" data-date-index="${index}" style="margin-bottom: var(--pico-spacing); padding-bottom: var(--pico-spacing); border-bottom: 1px solid var(--pico-muted-border-color);">
+          <div class="grid">
+            <label>
+              Start Date *
+              <input type="date" name="event[dates][${index}][start_date]" required class="date-start-input">
+            </label>
+            <label>
+              End Date <small class="text-muted">(multi-day events)</small>
+              <input type="date" name="event[dates][${index}][end_date]" class="date-end-input">
+            </label>
+          </div>
+          <div class="grid" style="grid-template-columns: 1fr 1fr auto; align-items: end;">
+            <label>
+              Start Time
+              <input type="time" name="event[dates][${index}][start_time]">
+            </label>
+            <label>
+              End Time
+              <input type="time" name="event[dates][${index}][end_time]">
+            </label>
+            <button type="button" class="remove-date-btn outline secondary"
+                    data-date-index="${index}"
+                    style="margin-bottom: 0; padding: 0.5rem 0.75rem;">
+              &times;
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateRemoveDateButtons() {
+      if (!datesContainer) return;
+      const rows = datesContainer.querySelectorAll('.date-row');
+      rows.forEach(function(row) {
+        const btn = row.querySelector('.remove-date-btn');
+        if (btn) btn.style.display = rows.length <= 1 ? 'none' : '';
+      });
+    }
+
+    function attachDateRowHandlers(row) {
+      const startInput = row.querySelector('.date-start-input');
+      const endInput = row.querySelector('.date-end-input');
+      const removeBtn = row.querySelector('.remove-date-btn');
+
+      if (startInput && endInput) {
+        let previousStart = startInput.value;
+        startInput.addEventListener('change', function() {
+          if (!endInput.value || endInput.value === previousStart) {
+            endInput.value = this.value;
+          }
+          previousStart = this.value;
+        });
+      }
+
+      if (removeBtn) {
+        removeBtn.addEventListener('click', function() {
+          row.remove();
+          updateRemoveDateButtons();
+        });
+      }
+    }
+
+    if (datesContainer) {
+      datesContainer.querySelectorAll('.date-row').forEach(attachDateRowHandlers);
+      updateRemoveDateButtons();
+    }
+
+    if (addDateBtn && datesContainer) {
+      addDateBtn.addEventListener('click', function() {
+        const html = createDateRow(dateIndex);
+        datesContainer.insertAdjacentHTML('beforeend', html);
+        const newRow = datesContainer.querySelector(`.date-row[data-date-index="${dateIndex}"]`);
+        attachDateRowHandlers(newRow);
+        dateIndex++;
+        updateRemoveDateButtons();
+      });
     }
   })();
 </script>

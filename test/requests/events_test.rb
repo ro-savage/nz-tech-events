@@ -139,9 +139,9 @@ class EventsTest < ActionDispatch::IntegrationTest
       post events_path, params: {
         event: {
           title: "New Meetup Event",
-          start_date: 1.week.from_now,
           event_type: "meetup",
           description: "A great new meetup for developers",
+          dates: { "0" => { start_date: 1.week.from_now.to_date } },
           event_locations_attributes: {
             "0" => { region: "wellington", city: "Wellington CBD" }
           }
@@ -159,9 +159,9 @@ class EventsTest < ActionDispatch::IntegrationTest
     post events_path, params: {
       event: {
         title: "Regular User Event",
-        start_date: 1.week.from_now,
         event_type: "meetup",
         description: "Description text here",
+        dates: { "0" => { start_date: 1.week.from_now.to_date } },
         event_locations_attributes: {
           "0" => { region: "auckland", city: "Auckland CBD" }
         }
@@ -177,9 +177,9 @@ class EventsTest < ActionDispatch::IntegrationTest
     post events_path, params: {
       event: {
         title: "Organiser Event",
-        start_date: 1.week.from_now,
         event_type: "meetup",
         description: "Description text here",
+        dates: { "0" => { start_date: 1.week.from_now.to_date } },
         event_locations_attributes: {
           "0" => { region: "wellington", city: "Wellington CBD" }
         }
@@ -195,9 +195,9 @@ class EventsTest < ActionDispatch::IntegrationTest
     post events_path, params: {
       event: {
         title: "Admin Event",
-        start_date: 1.week.from_now,
         event_type: "meetup",
         description: "Description text here",
+        dates: { "0" => { start_date: 1.week.from_now.to_date } },
         event_locations_attributes: {
           "0" => { region: "wellington", city: "Wellington CBD" }
         }
@@ -214,9 +214,9 @@ class EventsTest < ActionDispatch::IntegrationTest
       post events_path, params: {
         event: {
           title: "",
-          start_date: 1.week.from_now,
           event_type: "meetup",
           description: "Description",
+          dates: { "0" => { start_date: 1.week.from_now.to_date } },
           event_locations_attributes: {
             "0" => { region: "wellington", city: "Wellington CBD" }
           }
@@ -234,9 +234,81 @@ class EventsTest < ActionDispatch::IntegrationTest
       post events_path, params: {
         event: {
           title: "Event Without Location",
-          start_date: 1.week.from_now,
           event_type: "meetup",
-          description: "Description"
+          description: "Description",
+          dates: { "0" => { start_date: 1.week.from_now.to_date } }
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "create renders errors when no dates provided" do
+    sign_in_as users(:regular)
+
+    assert_no_difference "Event.count" do
+      post events_path, params: {
+        event: {
+          title: "Event Without Dates",
+          event_type: "meetup",
+          description: "Description",
+          event_locations_attributes: {
+            "0" => { region: "wellington", city: "Wellington CBD" }
+          }
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "create with multiple dates creates multiple separate events" do
+    sign_in_as users(:organiser)
+
+    assert_difference "Event.count", 3 do
+      post events_path, params: {
+        event: {
+          title: "Monthly Meetup",
+          event_type: "meetup",
+          description: "Regular monthly meetup",
+          dates: {
+            "0" => { start_date: 4.weeks.from_now.to_date },
+            "1" => { start_date: 8.weeks.from_now.to_date },
+            "2" => { start_date: 12.weeks.from_now.to_date }
+          },
+          event_locations_attributes: {
+            "0" => { region: "auckland", city: "Auckland CBD" }
+          }
+        }
+      }
+    end
+
+    assert_redirected_to my_events_events_path
+    assert_match(/3 events created/, flash[:notice])
+
+    created = Event.last(3)
+    assert created.all? { |e| e.title == "Monthly Meetup" }
+    assert_equal [ 4.weeks.from_now.to_date, 8.weeks.from_now.to_date, 12.weeks.from_now.to_date ],
+                 created.map(&:start_date).sort
+  end
+
+  test "create with multiple dates rolls back all if one date is invalid" do
+    sign_in_as users(:regular)
+
+    assert_no_difference "Event.count" do
+      post events_path, params: {
+        event: {
+          title: "Recurring Event",
+          event_type: "meetup",
+          description: "Description",
+          dates: {
+            "0" => { start_date: 4.weeks.from_now.to_date },
+            "1" => { start_date: 2.weeks.from_now.to_date, end_date: 1.week.from_now.to_date }
+          },
+          event_locations_attributes: {
+            "0" => { region: "wellington", city: "Wellington CBD" }
+          }
         }
       }
     end
