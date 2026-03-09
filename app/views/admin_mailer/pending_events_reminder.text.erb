@@ -1,0 +1,3 @@
+<%= pluralize(@pending_events_count, "pending event") %> <%= @pending_events_count == 1 ? "needs" : "need" %> approval.
+
+Review the pending events page: <%= @pending_events_url %>

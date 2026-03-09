@@ -17,3 +17,7 @@ production:
   send_weekly_digest:
     class: SendWeeklyDigestJob
     schedule: "0 9 * * 1 Pacific/Auckland"
+
+  send_pending_event_approval_reminder:
+    class: SendPendingEventApprovalReminderJob
+    schedule: "0 17 * * * Pacific/Auckland"

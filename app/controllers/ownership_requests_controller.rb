@@ -44,7 +44,7 @@ class OwnershipRequestsController < ApplicationController
   end
 
   def notify_admins(ownership_request)
-    User.where(admin: true).find_each do |admin_user|
+    User.admins.find_each do |admin_user|
       OwnershipRequestMailer.new_request(ownership_request, admin_user).deliver_later
     end
   end
