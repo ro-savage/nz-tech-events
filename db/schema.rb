@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_09_050824) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_09_082544) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -86,6 +86,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_050824) do
     t.integer "region"
     t.string "registration_url"
     t.text "short_summary"
+    t.string "source"
+    t.string "source_url"
     t.date "start_date", null: false
     t.time "start_time"
     t.string "title", null: false

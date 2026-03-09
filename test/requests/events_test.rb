@@ -82,6 +82,26 @@ class EventsTest < ActionDispatch::IntegrationTest
     assert_match event.title, response.body
   end
 
+  test "show displays source attribution text when no source url is present" do
+    event = events(:approved_upcoming)
+    event.update!(source: "Tech Community Calendar", source_url: nil)
+
+    get event_path(event)
+
+    assert_response :success
+    assert_match(/Source:\s*Tech Community Calendar/, response.body)
+  end
+
+  test "show displays source attribution link when source url is present" do
+    event = events(:approved_upcoming)
+    event.update!(source: "Tech Community Calendar", source_url: "https://example.com/source")
+
+    get event_path(event)
+
+    assert_response :success
+    assert_select "a[href=?]", "https://example.com/source", text: "Tech Community Calendar"
+  end
+
   test "show displays copy link for event owner" do
     sign_in_as users(:regular)
     event = events(:approved_upcoming)
@@ -157,6 +177,26 @@ class EventsTest < ActionDispatch::IntegrationTest
     sign_in_as users(:regular)
     get new_event_path
     assert_response :success
+  end
+
+  test "new shows source fields for admins only" do
+    sign_in_as users(:admin)
+
+    get new_event_path
+
+    assert_response :success
+    assert_select 'input[name="event[source]"]'
+    assert_select 'input[name="event[source_url]"]'
+  end
+
+  test "new hides source fields from non-admins" do
+    sign_in_as users(:regular)
+
+    get new_event_path
+
+    assert_response :success
+    assert_select 'input[name="event[source]"]', count: 0
+    assert_select 'input[name="event[source_url]"]', count: 0
   end
 
   test "new redirects with alert when user is rate limited" do
@@ -262,6 +302,54 @@ class EventsTest < ActionDispatch::IntegrationTest
     }
 
     assert Event.last.approved?
+  end
+
+  test "create persists source fields for admins" do
+    sign_in_as users(:admin)
+
+    assert_difference "Event.count", 1 do
+      post events_path, params: {
+        event: {
+          title: "Admin Sourced Event",
+          event_type: "meetup",
+          description: "Description text here",
+          source: "Tech Community Calendar",
+          source_url: "https://example.com/source",
+          dates: { "0" => { start_date: 1.week.from_now.to_date } },
+          event_locations_attributes: {
+            "0" => { region: "wellington", city: "Wellington CBD" }
+          }
+        }
+      }
+    end
+
+    event = Event.last
+    assert_equal "Tech Community Calendar", event.source
+    assert_equal "https://example.com/source", event.source_url
+  end
+
+  test "create ignores source fields for non-admins" do
+    sign_in_as users(:regular)
+
+    assert_difference "Event.count", 1 do
+      post events_path, params: {
+        event: {
+          title: "Regular User Event With Source",
+          event_type: "meetup",
+          description: "Description text here",
+          source: "Should Not Persist",
+          source_url: "https://example.com/should-not-persist",
+          dates: { "0" => { start_date: 1.week.from_now.to_date } },
+          event_locations_attributes: {
+            "0" => { region: "auckland", city: "Auckland CBD" }
+          }
+        }
+      }
+    end
+
+    event = Event.last
+    assert_nil event.source
+    assert_nil event.source_url
   end
 
   test "create renders errors with invalid params - missing title" do
@@ -435,6 +523,18 @@ class EventsTest < ActionDispatch::IntegrationTest
     assert_select 'input[name="event[dates][0][end_date]"][value=?]', source_event.end_date.to_s
   end
 
+  test "new prepopulates source fields when admin copies an event" do
+    sign_in_as users(:admin)
+    source_event = events(:approved_upcoming)
+    source_event.update!(source: "Tech Community Calendar", source_url: "https://example.com/source")
+
+    get new_event_path(copy_from: source_event.id)
+
+    assert_response :success
+    assert_select 'input[name="event[source]"][value=?]', source_event.source
+    assert_select 'input[name="event[source_url]"][value=?]', source_event.source_url
+  end
+
   test "new rejects copying someone else's event" do
     sign_in_as users(:organiser)
 
@@ -471,6 +571,44 @@ class EventsTest < ActionDispatch::IntegrationTest
 
     event.reload
     assert_equal "Admin Updated", event.title
+  end
+
+  test "update persists source fields for admin" do
+    sign_in_as users(:admin)
+    event = events(:approved_upcoming)
+
+    patch event_path(event), params: {
+      event: {
+        source: "Updated Source",
+        source_url: "https://example.com/updated-source"
+      }
+    }
+
+    assert_redirected_to event_path(event)
+
+    event.reload
+    assert_equal "Updated Source", event.source
+    assert_equal "https://example.com/updated-source", event.source_url
+  end
+
+  test "update ignores source fields for non-admin owners" do
+    sign_in_as users(:regular)
+    event = events(:approved_upcoming)
+
+    patch event_path(event), params: {
+      event: {
+        title: "Owner Updated Title",
+        source: "Should Not Persist",
+        source_url: "https://example.com/should-not-persist"
+      }
+    }
+
+    assert_redirected_to event_path(event)
+
+    event.reload
+    assert_equal "Owner Updated Title", event.title
+    assert_nil event.source
+    assert_nil event.source_url
   end
 
   test "update redirects non-owner with alert" do

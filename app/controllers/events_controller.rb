@@ -161,7 +161,7 @@ class EventsController < ApplicationController
   end
 
   def duplicate_event(source_event)
-    Current.user.events.build(
+    attributes = {
       title: source_event.title,
       short_summary: source_event.short_summary,
       cost: source_event.cost,
@@ -177,7 +177,14 @@ class EventsController < ApplicationController
           position: index
         }
       end
-    ).tap do |event|
+    }
+
+    if Current.user.admin?
+      attributes[:source] = source_event.source
+      attributes[:source_url] = source_event.source_url
+    end
+
+    Current.user.events.build(attributes).tap do |event|
       event.description = source_event.description.body.to_s
       event.event_locations.build if event.event_locations.empty?
     end
@@ -198,17 +205,14 @@ class EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(
-      :title, :description, :short_summary, :start_date, :end_date,
-      :start_time, :end_time, :cost, :event_type,
-      :registration_url, :region, :city, :address,
+      *(permitted_event_attributes + [ :start_date, :end_date, :start_time, :end_time ]),
       event_locations_attributes: [ :id, :region, :city, :position, :_destroy ]
     )
   end
 
   def create_event_params
     params.require(:event).permit(
-      :title, :description, :short_summary, :cost, :event_type,
-      :registration_url, :region, :city, :address,
+      *permitted_event_attributes,
       event_locations_attributes: [ :id, :region, :city, :position, :_destroy ]
     )
   end
@@ -217,5 +221,15 @@ class EventsController < ApplicationController
     raw = params.dig(:event, :dates)
     return [] if raw.blank?
     raw.values.map { |d| d.permit(:start_date, :end_date, :start_time, :end_time) }
+  end
+
+  def permitted_event_attributes
+    attributes = [
+      :title, :description, :short_summary, :cost, :event_type,
+      :registration_url, :region, :city, :address
+    ]
+
+    attributes.concat([ :source, :source_url ]) if Current.user.admin?
+    attributes
   end
 end

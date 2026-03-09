@@ -72,6 +72,18 @@
   <% end %>
 
   <footer>
+    <% if @event.source.present? %>
+      <small class="text-muted">
+        Source:
+        <% if @event.source_url.present? %>
+          <a href="<%= @event.source_url %>" target="_blank" rel="noopener noreferrer"><%= @event.source %></a>
+        <% else %>
+          <%= @event.source %>
+        <% end %>
+      </small>
+      <br>
+    <% end %>
+
     <small class="text-muted">
       Posted by <a href="<%= user_path(@event.user) %>"><%= @event.user.display_name %></a>
       on <%= @event.created_at.strftime("%d %B %Y") %>

@@ -143,6 +143,18 @@
       Registration Link <small class="text-muted">(optional)</small>
       <%= f.url_field :registration_url, placeholder: "https://..." %>
     </label>
+
+    <% if Current.user&.admin? %>
+      <label for="event_source">
+        Source <small class="text-muted">(optional attribution shown on the event page)</small>
+        <%= f.text_field :source, placeholder: "e.g., Tech Community Newsletter" %>
+      </label>
+
+      <label for="event_source_url">
+        Source URL <small class="text-muted">(optional)</small>
+        <%= f.url_field :source_url, placeholder: "https://..." %>
+      </label>
+    <% end %>
   </fieldset>
 
   <div class="flex gap-1">
