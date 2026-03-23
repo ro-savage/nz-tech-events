@@ -1,0 +1,59 @@
+<% content_for(:title) { "API Tokens - NZ Tech Events" } %>
+
+<hgroup>
+  <h1>API Tokens</h1>
+  <p>Manage your API tokens for programmatic access to NZ Tech Events.</p>
+</hgroup>
+
+<% if flash[:token].present? %>
+  <article aria-label="New token" style="border-left: 4px solid var(--pico-primary);">
+    <header><strong>Your new API token</strong></header>
+    <p>Copy this token now. It will not be shown again.</p>
+    <pre style="user-select: all; cursor: pointer;"><code><%= flash[:token] %></code></pre>
+    <p><small>Use this token in the <code>Authorization</code> header: <code>Bearer &lt;token&gt;</code></small></p>
+  </article>
+<% end %>
+
+<h2>Create New Token</h2>
+
+<%= form_with url: api_tokens_path, method: :post do |f| %>
+  <fieldset role="group">
+    <%= f.text_field :name, placeholder: "Token name (e.g. 'My Script')", required: true, name: "api_token[name]" %>
+    <%= f.submit "Generate Token" %>
+  </fieldset>
+<% end %>
+
+<% if @tokens.any? %>
+  <h2>Your Tokens</h2>
+
+  <figure>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Created</th>
+          <th>Last Used</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @tokens.each do |token| %>
+          <tr>
+            <td><%= token.name %></td>
+            <td><%= token.created_at.strftime("%d %b %Y") %></td>
+            <td><%= token.last_used_at ? token.last_used_at.strftime("%d %b %Y %H:%M") : "Never" %></td>
+            <td>
+              <%= button_to "Revoke", api_token_path(token), method: :delete, class: "outline secondary", data: { turbo_confirm: "Revoke this token? Any scripts using it will stop working." } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </figure>
+
+  <p><small>Tokens should be rotated periodically. If a token is compromised, revoke it immediately and create a new one.</small></p>
+<% else %>
+  <p>No tokens yet. Create one above to get started.</p>
+<% end %>
+
+<p><a href="<%= api_docs_path %>">View API Documentation</a></p>

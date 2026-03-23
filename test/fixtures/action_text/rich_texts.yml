@@ -33,3 +33,9 @@ paid_event_description:
   body: "<div>AI Conference NZ description. Explore the latest in artificial intelligence.</div>"
   record_type: Event
   record_id: <%= ActiveRecord::FixtureSet.identify(:paid_event) %>
+
+organiser_event_description:
+  name: description
+  body: "<div>Organiser's DevOps Talk description. Learn modern DevOps practices.</div>"
+  record_type: Event
+  record_id: <%= ActiveRecord::FixtureSet.identify(:organiser_event) %>

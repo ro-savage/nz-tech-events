@@ -31,6 +31,7 @@ A simple New Zealand tech events listing website. Users can browse events, filte
 | JavaScript | Importmaps | No bundler, no Node.js |
 | Interactivity | Hotwire (Turbo + Stimulus) | SPA-like without complexity |
 | Auth | Rails 8 Generator + OmniAuth | Email/password + Google |
+| Markdown | Redcarpet | For API event descriptions |
 | Deployment | Kamal 2 | Docker-based, to Hetzner |
 
 **Key Principle**: Zero Node.js. No `node_modules`. No build step.
@@ -69,6 +70,8 @@ users
 ├── name (string, nullable)
 ├── google_uid (string, unique nullable)
 ├── avatar_url (string, nullable)
+├── admin (boolean, default false)
+├── approved_organiser (boolean, default false)
 ├── created_at, updated_at
 ```
 
@@ -87,7 +90,8 @@ sessions
 events
 ├── id (integer, PK)
 ├── title (string, not null, max 200)
-├── description (text, not null)
+├── short_summary (text, nullable)
+├── description_markdown (text, nullable)  -- raw Markdown, used by API
 ├── start_date (date, not null)
 ├── end_date (date, nullable)
 ├── start_time (time, nullable)
@@ -95,13 +99,42 @@ events
 ├── cost (string, nullable)
 ├── event_type (integer, not null)  -- enum
 ├── registration_url (string, nullable)
-├── region (integer, not null)  -- enum
-├── city (string, not null)
+├── region (integer, nullable)  -- legacy, use event_locations
+├── city (string, nullable)     -- legacy, use event_locations
 ├── address (text, nullable)
+├── approved (boolean, default false)
+├── source (string, nullable)
+├── source_url (string, nullable)
 ├── user_id (FK, not null)
 ├── created_at, updated_at
 
-Indexes: start_date, region, [start_date, region], event_type
+Indexes: start_date, region, [start_date, region], event_type, user_id
+```
+
+### Event Locations Table
+```sql
+event_locations
+├── id (integer, PK)
+├── event_id (FK, not null)
+├── region (integer, not null)  -- enum
+├── city (string, nullable)
+├── position (integer, default 0)
+├── created_at, updated_at
+
+Indexes: event_id, region, [event_id, region], [region, city]
+```
+
+### API Tokens Table
+```sql
+api_tokens
+├── id (integer, PK)
+├── user_id (FK, not null)
+├── token_digest (string, unique, not null)  -- SHA-256 of raw token
+├── name (string, not null)                  -- user-chosen label
+├── last_used_at (datetime, nullable)
+├── created_at, updated_at
+
+Indexes: token_digest (unique), user_id
 ```
 
 ---
@@ -176,6 +209,25 @@ DELETE /events/:id      events#destroy     # Owner only
 
 # Health check
 GET /up                 -> 200 OK
+
+# REST API (public, no auth)
+GET  /api/v1/events          api/v1/events#index   # List approved upcoming events
+GET  /api/v1/events/:id      api/v1/events#show    # Single approved event
+GET  /api/v1/spec.json       api/v1/spec#show      # Machine-readable JSON spec
+GET  /api/docs               api/docs#index        # Human-readable HTML docs
+
+# REST API (authenticated, bearer token)
+GET    /api/v1/events/mine   api/v1/events#mine    # Token holder's events
+POST   /api/v1/events        api/v1/events#create  # Create event
+PATCH  /api/v1/events/:id    api/v1/events#update  # Update own event
+DELETE /api/v1/events/:id    api/v1/events#destroy  # Delete own event
+
+# /api/latest/ is aliased to /api/v1/
+
+# API Token Management (web UI, session auth)
+GET    /api_tokens           api_tokens#index      # List user's tokens
+POST   /api_tokens           api_tokens#create     # Generate new token
+DELETE /api_tokens/:id       api_tokens#destroy    # Revoke token
 ```
 
 ---
@@ -189,22 +241,27 @@ app/
 │   ├── events_controller.rb           # CRUD + filters
 │   ├── sessions_controller.rb         # Rails 8 auth (generated)
 │   ├── registrations_controller.rb    # Email signup
-│   └── oauth_callbacks_controller.rb  # Google OAuth
+│   ├── oauth_callbacks_controller.rb  # Google OAuth
+│   ├── api_tokens_controller.rb       # Token management web UI
+│   └── api/
+│       ├── docs_controller.rb         # HTML API documentation
+│       └── v1/
+│           ├── base_controller.rb     # API auth, rate limiting, pagination
+│           ├── events_controller.rb   # API event CRUD
+│           └── spec_controller.rb     # JSON API spec
 ├── models/
-│   ├── user.rb                        # has_secure_password, has_many :events
+│   ├── user.rb                        # has_secure_password, has_many :events, :api_tokens
 │   ├── session.rb                     # Rails 8 auth (generated)
 │   ├── event.rb                       # Enums, scopes, validations
+│   ├── api_token.rb                   # Bearer token auth for API
 │   └── current.rb                     # Rails 8 Current attributes
+├── services/
+│   └── markdown_converter.rb          # Markdown→HTML via Redcarpet
 ├── views/
 │   ├── layouts/application.html.erb   # Pico CSS, nav
-│   ├── events/
-│   │   ├── index.html.erb             # Upcoming events
-│   │   ├── past.html.erb              # Past events
-│   │   ├── show.html.erb              # Event detail
-│   │   ├── new.html.erb / edit.html.erb
-│   │   ├── _form.html.erb             # Shared form
-│   │   ├── _event_card.html.erb       # List item
-│   │   └── _filters.html.erb          # Filter controls
+│   ├── events/                        # Event views (index, show, form, etc.)
+│   ├── api/docs/index.html.erb        # Human-readable API docs
+│   ├── api_tokens/index.html.erb      # Token management UI
 │   ├── sessions/new.html.erb          # Login form
 │   └── registrations/new.html.erb     # Signup form
 ├── helpers/
@@ -239,6 +296,13 @@ logged_in?            # Boolean helper
 require_login         # Before action, redirects if not logged in
 start_new_session_for(user)  # Create session after login/signup
 ```
+
+3. **API Bearer Tokens**
+   - `ApiToken` model with SHA-256 digest storage
+   - Token format: `techevent_` + 32-char base58 (42 chars total)
+   - Raw token shown once on creation, never retrievable again
+   - Only approved organisers and admins can create tokens
+   - Rate limited: 120 reads/min, 30 writes/min per token/IP
 
 ### Authorization
 ```ruby

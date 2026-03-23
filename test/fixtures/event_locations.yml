@@ -33,3 +33,9 @@ paid_event_location:
   region: 1
   city: "Auckland CBD"
   position: 0
+
+organiser_event_location:
+  event: organiser_event
+  region: 1
+  city: "Auckland CBD"
+  position: 0

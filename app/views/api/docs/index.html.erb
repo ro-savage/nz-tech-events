@@ -1,0 +1,209 @@
+<% content_for(:title) { "API Documentation - NZ Tech Events" } %>
+
+<hgroup>
+  <h1>NZ Tech Events API</h1>
+  <p>Programmatic access to New Zealand tech event listings.</p>
+</hgroup>
+
+<article>
+  <h2>Base URL</h2>
+  <pre><code><%= request.base_url %>/api/v1/</code></pre>
+  <p>You can also use <code>/api/latest/</code> which always points to the current API version.</p>
+</article>
+
+<article>
+  <h2>Authentication</h2>
+  <p>Public endpoints (listing and viewing events) require no authentication. Creating, updating, and deleting events requires a bearer token.</p>
+
+  <h3>Getting a Token</h3>
+  <p>Approved organisers and admins can generate API tokens from the <a href="<%= api_tokens_path %>">API Tokens</a> page (requires sign-in).</p>
+
+  <h3>Using a Token</h3>
+  <p>Include the token in the <code>Authorization</code> header:</p>
+  <pre><code>Authorization: Bearer techevent_your_token_here</code></pre>
+
+  <h4>Example (curl)</h4>
+  <pre><code>curl -H "Authorization: Bearer techevent_your_token" \
+     <%= request.base_url %>/api/v1/events/mine</code></pre>
+</article>
+
+<article>
+  <h2>Endpoints</h2>
+
+  <h3>List Events</h3>
+  <p><code>GET /api/v1/events</code> — No auth required</p>
+  <p>Returns approved upcoming events by default.</p>
+
+  <details>
+    <summary>Query Parameters</summary>
+    <table>
+      <thead><tr><th>Param</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>scope</code></td><td>string</td><td><code>upcoming</code> (default) or <code>past</code></td></tr>
+        <tr><td><code>region</code></td><td>string</td><td>Filter by region (e.g., <code>auckland</code>, <code>wellington</code>, <code>online</code>)</td></tr>
+        <tr><td><code>city</code></td><td>string</td><td>Filter by city name (requires <code>region</code>)</td></tr>
+        <tr><td><code>event_type</code></td><td>string</td><td>Filter by type (e.g., <code>meetup</code>, <code>conference</code>)</td></tr>
+        <tr><td><code>page</code></td><td>integer</td><td>Page number (default: 1)</td></tr>
+        <tr><td><code>per_page</code></td><td>integer</td><td>Items per page (default: 25, max: 100)</td></tr>
+      </tbody>
+    </table>
+  </details>
+
+  <details>
+    <summary>Example Response</summary>
+    <pre><code>{
+  "events": [
+    {
+      "id": 1,
+      "title": "Ruby Meetup Auckland",
+      "description": "Plain text description...",
+      "description_markdown": "**Markdown** description...",
+      "short_summary": "Brief summary",
+      "start_date": "2026-04-15",
+      "end_date": null,
+      "start_time": "18:00",
+      "end_time": "20:00",
+      "cost": "Free",
+      "event_type": "meetup",
+      "registration_url": "https://...",
+      "address": "123 Queen St",
+      "locations": [
+        { "region": "auckland", "city": "Auckland CBD" }
+      ],
+      "approved": true,
+      "created_at": "2026-03-20T10:00:00Z",
+      "updated_at": "2026-03-20T10:00:00Z"
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "total_pages": 1,
+    "total_count": 1,
+    "per_page": 25
+  }
+}</code></pre>
+  </details>
+
+  <hr>
+
+  <h3>Show Event</h3>
+  <p><code>GET /api/v1/events/:id</code> — No auth required</p>
+  <p>Returns a single approved event. Returns 404 if the event doesn't exist or isn't approved.</p>
+
+  <hr>
+
+  <h3>My Events</h3>
+  <p><code>GET /api/v1/events/mine</code> — <mark>Auth required</mark></p>
+  <p>Returns all events owned by the token holder, including unapproved events. Supports <code>page</code> and <code>per_page</code> parameters.</p>
+
+  <hr>
+
+  <h3>Create Event</h3>
+  <p><code>POST /api/v1/events</code> — <mark>Auth required</mark></p>
+
+  <details>
+    <summary>Request Body</summary>
+    <pre><code>{
+  "event": {
+    "title": "My Event",
+    "description_markdown": "Event description in **Markdown**",
+    "short_summary": "Brief summary (optional)",
+    "start_date": "2026-04-15",
+    "end_date": "2026-04-16",
+    "start_time": "09:00",
+    "end_time": "17:00",
+    "cost": "Free",
+    "event_type": "meetup",
+    "registration_url": "https://example.com",
+    "address": "123 Queen Street",
+    "locations": [
+      { "region": "auckland", "city": "Auckland CBD" }
+    ]
+  }
+}</code></pre>
+  </details>
+
+  <details>
+    <summary>Required Fields</summary>
+    <table>
+      <thead><tr><th>Field</th><th>Type</th></tr></thead>
+      <tbody>
+        <tr><td><code>title</code></td><td>string (max 200 chars)</td></tr>
+        <tr><td><code>description_markdown</code></td><td>string (Markdown or plain text)</td></tr>
+        <tr><td><code>start_date</code></td><td>date (YYYY-MM-DD)</td></tr>
+        <tr><td><code>event_type</code></td><td>string (see valid values below)</td></tr>
+        <tr><td><code>locations</code></td><td>array (at least one with <code>region</code>)</td></tr>
+      </tbody>
+    </table>
+  </details>
+
+  <p>Returns <code>201 Created</code> with the event JSON on success, or <code>422</code> with validation errors.</p>
+
+  <hr>
+
+  <h3>Update Event</h3>
+  <p><code>PATCH /api/v1/events/:id</code> — <mark>Auth required</mark></p>
+  <p>Update an event you own. All fields are optional (partial updates). If <code>locations</code> is provided, it replaces all existing locations.</p>
+
+  <hr>
+
+  <h3>Delete Event</h3>
+  <p><code>DELETE /api/v1/events/:id</code> — <mark>Auth required</mark></p>
+  <p>Delete an event you own.</p>
+</article>
+
+<article>
+  <h2>Valid Enum Values</h2>
+
+  <h3>Event Types</h3>
+  <p><code>conference</code>, <code>meetup</code>, <code>workshop</code>, <code>hackathon</code>, <code>webinar</code>, <code>networking</code>, <code>other</code>, <code>talk</code>, <code>awards</code></p>
+
+  <h3>Regions</h3>
+  <p><code>northland</code>, <code>auckland</code>, <code>waikato</code>, <code>bay_of_plenty</code>, <code>gisborne</code>, <code>hawkes_bay</code>, <code>taranaki</code>, <code>manawatu_whanganui</code>, <code>wellington</code>, <code>tasman</code>, <code>nelson</code>, <code>marlborough</code>, <code>west_coast</code>, <code>canterbury</code>, <code>otago</code>, <code>southland</code>, <code>apac</code>, <code>online</code></p>
+</article>
+
+<article>
+  <h2>Error Responses</h2>
+
+  <p>All errors return JSON with consistent structure:</p>
+  <pre><code>{ "error": "Not found", "status": 404 }</code></pre>
+
+  <p>Validation errors include field-level detail:</p>
+  <pre><code>{
+  "errors": {
+    "title": ["can't be blank"],
+    "base": ["at least one location is required"]
+  },
+  "status": 422
+}</code></pre>
+
+  <table>
+    <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>200</td><td>Success</td></tr>
+      <tr><td>201</td><td>Created</td></tr>
+      <tr><td>401</td><td>Missing or invalid token</td></tr>
+      <tr><td>403</td><td>Not the event owner</td></tr>
+      <tr><td>404</td><td>Not found</td></tr>
+      <tr><td>422</td><td>Validation errors</td></tr>
+      <tr><td>429</td><td>Rate limited</td></tr>
+    </tbody>
+  </table>
+</article>
+
+<article>
+  <h2>Rate Limiting</h2>
+  <table>
+    <thead><tr><th>Scope</th><th>Limit</th></tr></thead>
+    <tbody>
+      <tr><td>Read endpoints (index, show, mine)</td><td>120 requests per minute</td></tr>
+      <tr><td>Write endpoints (create, update, delete)</td><td>30 requests per minute</td></tr>
+    </tbody>
+  </table>
+  <p>Exceeding the limit returns <code>429 Too Many Requests</code>.</p>
+</article>
+
+<article>
+  <h2>Machine-Readable Spec</h2>
+  <p>A JSON spec is available at <a href="<%= api_v1_spec_path(format: :json) %>"><code>/api/v1/spec.json</code></a> (also at <code>/api/latest/spec.json</code>).</p>
+</article>

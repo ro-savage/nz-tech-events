@@ -76,3 +76,15 @@ paid_event:
   user: organiser
   city: "Auckland CBD"
   registration_url: "https://example.com/ai-conf"
+
+organiser_event:
+  title: "Organiser's DevOps Talk"
+  start_date: <%= 10.days.from_now.to_date %>
+  start_time: "18:00"
+  end_time: "20:00"
+  cost: "Free"
+  event_type: 7
+  short_summary: "A talk on DevOps practices"
+  approved: true
+  user: organiser
+  city: "Auckland CBD"

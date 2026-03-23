@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_09_082544) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_23_013110) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -49,6 +49,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_082544) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "api_tokens", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "last_used_at"
+    t.string "name", null: false
+    t.string "token_digest", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["token_digest"], name: "index_api_tokens_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_api_tokens_on_user_id"
+  end
+
   create_table "email_subscriptions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
@@ -80,6 +91,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_082544) do
     t.string "city"
     t.string "cost"
     t.datetime "created_at", null: false
+    t.text "description_markdown"
     t.date "end_date"
     t.time "end_time"
     t.integer "event_type", default: 0, null: false
@@ -142,6 +154,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_082544) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "api_tokens", "users"
   add_foreign_key "event_locations", "events"
   add_foreign_key "events", "users"
   add_foreign_key "ownership_requests", "events"

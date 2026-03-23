@@ -62,6 +62,32 @@ Rails.application.routes.draw do
   # Health check for deployment
   get "up" => "rails/health#show", as: :rails_health_check
 
+  # REST API
+  namespace :api do
+    get "docs", to: "docs#index"
+
+    namespace :v1 do
+      resources :events, only: [ :index, :show, :create, :update, :destroy ] do
+        collection do
+          get :mine
+        end
+      end
+      get "spec", to: "spec#show", defaults: { format: :json }
+    end
+
+    scope "latest", module: "v1", as: "latest" do
+      resources :events, only: [ :index, :show, :create, :update, :destroy ] do
+        collection do
+          get :mine
+        end
+      end
+      get "spec", to: "spec#show", defaults: { format: :json }
+    end
+  end
+
+  # Token management (web UI)
+  resources :api_tokens, only: [ :index, :create, :destroy ]
+
   # Filtered event views (at the end to avoid conflicts with other routes)
   # URLs like /auckland or /wellington/Wellington%20CBD
   get ":region/:city", to: "events#index", as: :filtered_events_city,
