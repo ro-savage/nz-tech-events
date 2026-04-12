@@ -22,7 +22,7 @@
   <p>Include the token in the <code>Authorization</code> header:</p>
   <pre><code>Authorization: Bearer techevents_your_token_here</code></pre>
 
-  <h4>Example (curl)</h4>
+  <p><strong>Example (curl)</strong></p>
   <pre><code>curl -H "Authorization: Bearer techevents_your_token" \
      <%= request.base_url %>/api/v1/events/mine</code></pre>
 </article>
@@ -34,24 +34,21 @@
   <p><code>GET /api/v1/events</code> — No auth required</p>
   <p>Returns approved upcoming events by default.</p>
 
-  <details>
-    <summary>Query Parameters</summary>
-    <table>
-      <thead><tr><th>Param</th><th>Type</th><th>Description</th></tr></thead>
-      <tbody>
-        <tr><td><code>scope</code></td><td>string</td><td><code>upcoming</code> (default) or <code>past</code></td></tr>
-        <tr><td><code>region</code></td><td>string</td><td>Filter by region (e.g., <code>auckland</code>, <code>wellington</code>, <code>online</code>)</td></tr>
-        <tr><td><code>city</code></td><td>string</td><td>Filter by city name (requires <code>region</code>)</td></tr>
-        <tr><td><code>event_type</code></td><td>string</td><td>Filter by type (e.g., <code>meetup</code>, <code>conference</code>)</td></tr>
-        <tr><td><code>page</code></td><td>integer</td><td>Page number (default: 1)</td></tr>
-        <tr><td><code>per_page</code></td><td>integer</td><td>Items per page (default: 25, max: 100)</td></tr>
-      </tbody>
-    </table>
-  </details>
+  <p><strong>Query Parameters</strong></p>
+  <table>
+    <thead><tr><th>Param</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>scope</code></td><td>string</td><td><code>upcoming</code> (default) or <code>past</code></td></tr>
+      <tr><td><code>region</code></td><td>string</td><td>Filter by region (e.g., <code>auckland</code>, <code>wellington</code>, <code>online</code>)</td></tr>
+      <tr><td><code>city</code></td><td>string</td><td>Filter by city name (requires <code>region</code>)</td></tr>
+      <tr><td><code>event_type</code></td><td>string</td><td>Filter by type (e.g., <code>meetup</code>, <code>conference</code>)</td></tr>
+      <tr><td><code>page</code></td><td>integer</td><td>Page number (default: 1)</td></tr>
+      <tr><td><code>per_page</code></td><td>integer</td><td>Items per page (default: 25, max: 100)</td></tr>
+    </tbody>
+  </table>
 
-  <details>
-    <summary>Example Response</summary>
-    <pre><code>{
+  <p><strong>Example Response</strong></p>
+  <pre><code>{
   "events": [
     {
       "id": 1,
@@ -82,7 +79,6 @@
     "per_page": 25
   }
 }</code></pre>
-  </details>
 
   <hr>
 
@@ -101,9 +97,8 @@
   <h3>Create Event</h3>
   <p><code>POST /api/v1/events</code> — <mark>Auth required</mark></p>
 
-  <details>
-    <summary>Request Body</summary>
-    <pre><code>{
+  <p><strong>Request Body</strong></p>
+  <pre><code>{
   "event": {
     "title": "My Event",
     "description_markdown": "Event description in **Markdown**",
@@ -116,26 +111,25 @@
     "event_type": "meetup",
     "registration_url": "https://example.com",
     "address": "123 Queen Street",
+    "source": "Events in Aotearoa",
+    "source_url": "https://example.com/source",
     "locations": [
       { "region": "auckland", "city": "Auckland CBD" }
     ]
   }
 }</code></pre>
-  </details>
 
-  <details>
-    <summary>Required Fields</summary>
-    <table>
-      <thead><tr><th>Field</th><th>Type</th></tr></thead>
-      <tbody>
-        <tr><td><code>title</code></td><td>string (max 200 chars)</td></tr>
-        <tr><td><code>description_markdown</code></td><td>string (Markdown or plain text)</td></tr>
-        <tr><td><code>start_date</code></td><td>date (YYYY-MM-DD)</td></tr>
-        <tr><td><code>event_type</code></td><td>string (see valid values below)</td></tr>
-        <tr><td><code>locations</code></td><td>array (at least one with <code>region</code>)</td></tr>
-      </tbody>
-    </table>
-  </details>
+  <p><strong>Required Fields</strong></p>
+  <table>
+    <thead><tr><th>Field</th><th>Type</th></tr></thead>
+    <tbody>
+      <tr><td><code>title</code></td><td>string (max 200 chars)</td></tr>
+      <tr><td><code>description_markdown</code></td><td>string (Markdown or plain text)</td></tr>
+      <tr><td><code>start_date</code></td><td>date (YYYY-MM-DD)</td></tr>
+      <tr><td><code>event_type</code></td><td>string (see valid values below)</td></tr>
+      <tr><td><code>locations</code></td><td>array (at least one with <code>region</code>)</td></tr>
+    </tbody>
+  </table>
 
   <p>Returns <code>201 Created</code> with the event JSON on success, or <code>422</code> with validation errors.</p>
 

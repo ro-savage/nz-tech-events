@@ -44,7 +44,7 @@ class Api::V1::SpecController < Api::V1::BaseController
           auth_required: true,
           description: "Create a new event",
           required_fields: %w[title description_markdown start_date event_type locations],
-          optional_fields: %w[short_summary end_date start_time end_time cost registration_url address]
+          optional_fields: %w[short_summary end_date start_time end_time cost registration_url address source source_url]
         },
         {
           method: "PATCH",
