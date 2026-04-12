@@ -104,7 +104,7 @@ class Api::V1::EventsController < Api::V1::BaseController
     params.require(:event).permit(
       :title, :short_summary, :start_date, :end_date,
       :start_time, :end_time, :cost, :event_type,
-      :registration_url, :address
+      :registration_url, :address, :source, :source_url
     )
   end
 

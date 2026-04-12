@@ -346,6 +346,46 @@ class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "$50", json["cost"]
   end
 
+  test "create saves source and source_url" do
+    post api_v1_events_path,
+      params: {
+        event: {
+          title: "Sourced Event",
+          description_markdown: "From external source",
+          start_date: 30.days.from_now.to_date.iso8601,
+          event_type: "meetup",
+          source: "Events in Aotearoa",
+          source_url: "https://example.com/events",
+          locations: [ { region: "auckland" } ]
+        }
+      },
+      headers: api_headers(organiser_token),
+      as: :json
+
+    assert_response :created
+    event = Event.find(JSON.parse(response.body)["id"])
+    assert_equal "Events in Aotearoa", event.source
+    assert_equal "https://example.com/events", event.source_url
+  end
+
+  test "update saves source and source_url" do
+    event = events(:organiser_event)
+    patch api_v1_event_path(event),
+      params: {
+        event: {
+          source: "Updated Source",
+          source_url: "https://example.com/updated"
+        }
+      },
+      headers: api_headers(organiser_token),
+      as: :json
+
+    assert_response :success
+    event.reload
+    assert_equal "Updated Source", event.source
+    assert_equal "https://example.com/updated", event.source_url
+  end
+
   test "create does not set legacy region/city on event" do
     post api_v1_events_path,
       params: {
