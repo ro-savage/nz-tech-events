@@ -7,7 +7,7 @@ class ApiToken < ApplicationRecord
 
   # Raw token is only available at creation time — never stored.
   def generate_token_value
-    raw = "techevent_#{SecureRandom.base58(32)}"
+    raw = "techevents_#{SecureRandom.base58(32)}"
     self.token_digest = Digest::SHA256.hexdigest(raw)
     raw
   end

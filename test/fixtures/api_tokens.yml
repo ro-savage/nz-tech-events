@@ -1,10 +1,10 @@
 organiser_token:
   user: organiser
-  token_digest: <%= Digest::SHA256.hexdigest("techevent_testtoken1234567890abcdef") %>
+  token_digest: <%= Digest::SHA256.hexdigest("techevents_testtoken1234567890abcdef") %>
   name: "Test Token"
   last_used_at: <%= 1.hour.ago %>
 
 admin_token:
   user: admin
-  token_digest: <%= Digest::SHA256.hexdigest("techevent_admintokenabcdef1234567890") %>
+  token_digest: <%= Digest::SHA256.hexdigest("techevents_admintokenabcdef1234567890") %>
   name: "Admin Token"

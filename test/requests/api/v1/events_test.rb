@@ -10,11 +10,11 @@ class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def organiser_token
-    "techevent_testtoken1234567890abcdef"
+    "techevents_testtoken1234567890abcdef"
   end
 
   def admin_token_value
-    "techevent_admintokenabcdef1234567890"
+    "techevents_admintokenabcdef1234567890"
   end
 
   # ============================================================
@@ -257,7 +257,7 @@ class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
   test "create with invalid token returns 401" do
     post api_v1_events_path,
       params: { event: { title: "Test" } },
-      headers: api_headers("techevent_invalidtoken"),
+      headers: api_headers("techevents_invalidtoken"),
       as: :json
     assert_response :unauthorized
   end

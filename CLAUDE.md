@@ -299,7 +299,7 @@ start_new_session_for(user)  # Create session after login/signup
 
 3. **API Bearer Tokens**
    - `ApiToken` model with SHA-256 digest storage
-   - Token format: `techevent_` + 32-char base58 (42 chars total)
+   - Token format: `techevents_` + 32-char base58 (42 chars total)
    - Raw token shown once on creation, never retrievable again
    - Only approved organisers and admins can create tokens
    - Rate limited: 120 reads/min, 30 writes/min per token/IP

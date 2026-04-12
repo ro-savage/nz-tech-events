@@ -4,7 +4,7 @@ require "json"
 require "tmpdir"
 
 # Stub ENV before loading the script
-ENV["TECHEVENTS_API_TOKEN"] ||= "techevent_testtoken"
+ENV["TECHEVENTS_API_TOKEN"] ||= "techevents_testtoken"
 
 require_relative "../../scripts/upload_events"
 
@@ -99,7 +99,7 @@ end
 
 class FormatErrorTest < Minitest::Test
   def test_formats_validation_errors
-    body = { "errors" => { "title" => ["can't be blank"], "start_date" => ["can't be blank", "is invalid"] } }
+    body = { "errors" => { "title" => [ "can't be blank" ], "start_date" => [ "can't be blank", "is invalid" ] } }
     result = format_error(422, body)
 
     assert_includes result, "title: can't be blank"

@@ -63,7 +63,7 @@ class ApiTokensControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to api_tokens_path
     assert flash[:token].present?
-    assert flash[:token].start_with?("techevent_")
+    assert flash[:token].start_with?("techevents_")
   end
 
   test "create with blank name shows error" do

@@ -6,8 +6,8 @@ class ApiTokenTest < ActiveSupport::TestCase
     token = ApiToken.new(user: user, name: "My Script")
     raw_token = token.generate_token_value
     assert token.save
-    assert raw_token.start_with?("techevent_")
-    assert_equal 42, raw_token.length  # "techevent_" (10) + 32 base58 chars
+    assert raw_token.start_with?("techevents_")
+    assert_equal 43, raw_token.length  # "techevents_" (11) + 32 base58 chars
     assert token.token_digest.present?
   end
 
@@ -41,14 +41,14 @@ class ApiTokenTest < ActiveSupport::TestCase
   end
 
   test "authenticate returns token for valid raw token" do
-    raw = "techevent_testtoken1234567890abcdef"
+    raw = "techevents_testtoken1234567890abcdef"
     token = ApiToken.authenticate(raw)
     assert_not_nil token
     assert_equal api_tokens(:organiser_token), token
   end
 
   test "authenticate returns nil for invalid token" do
-    assert_nil ApiToken.authenticate("techevent_invalidtoken")
+    assert_nil ApiToken.authenticate("techevents_invalidtoken")
   end
 
   test "authenticate returns nil for nil" do
