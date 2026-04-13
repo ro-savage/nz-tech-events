@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_23_013110) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_13_111413) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.text "body"
     t.datetime "created_at", null: false
@@ -105,6 +105,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_23_013110) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["approved"], name: "index_events_on_approved"
     t.index ["event_type"], name: "index_events_on_event_type"
     t.index ["region"], name: "index_events_on_region"
     t.index ["start_date", "region"], name: "index_events_on_start_date_and_region"
