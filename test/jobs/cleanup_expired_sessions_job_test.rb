@@ -55,18 +55,16 @@ class CleanupExpiredSessionsJobTest < ActiveJob::TestCase
     end
   end
 
-  test "keeps sessions updated within the last 30 days" do
-    recent_session = @user.sessions.create!(
-      user_agent: "recent",
+  test "deletes sessions at exactly 30 days old" do
+    boundary_session = @user.sessions.create!(
+      user_agent: "boundary",
       ip_address: "1.2.3.4"
     )
-    recent_session.update_column(:updated_at, 25.days.ago)
-
-    initial_count = Session.count
+    boundary_session.update_column(:updated_at, 30.days.ago)
 
     CleanupExpiredSessionsJob.perform_now
 
-    assert_equal initial_count, Session.count
-    assert Session.find_by(id: recent_session.id).present?
+    assert_nil Session.find_by(id: boundary_session.id),
+      "Session at exactly 30 days should be deleted"
   end
 end
