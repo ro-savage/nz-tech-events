@@ -67,6 +67,50 @@ module EventsHelper
     "badge badge-#{event_type}"
   end
 
+  # Schema.org event type mapping
+  SCHEMA_ORG_EVENT_TYPES = {
+    "conference" => "BusinessEvent",
+    "meetup" => "SocialEvent",
+    "workshop" => "EducationEvent",
+    "hackathon" => "Hackathon",
+    "webinar" => "EducationEvent",
+    "networking" => "SocialEvent",
+    "talk" => "EducationEvent",
+    "awards" => "SocialEvent",
+    "other" => "Event"
+  }.freeze
+
+  # JSON-LD structured data helpers
+
+  # Generates a JSON-LD string for the Schema.org Event type.
+  #
+  # @param event [Event] the event to generate structured data for
+  # @return [String] JSON-LD string safe for embedding in a script tag
+  def event_json_ld(event)
+    data = {
+      "@context" => "https://schema.org",
+      "@type" => schema_org_event_type(event),
+      "name" => event.title,
+      "startDate" => json_ld_start_date(event),
+      "description" => event.display_summary,
+      "eventStatus" => "https://schema.org/EventScheduled",
+      "eventAttendanceMode" => json_ld_attendance_mode(event)
+    }
+
+    end_date = json_ld_end_date(event)
+    data["endDate"] = end_date if end_date
+
+    data["location"] = json_ld_location(event)
+
+    if event.registration_url.present?
+      data["url"] = event.registration_url
+    end
+
+    data["offers"] = json_ld_offers(event)
+
+    data.to_json
+  end
+
   # Calendar integration helpers
   NZ_TIMEZONE = "Pacific/Auckland"
 
@@ -113,6 +157,92 @@ module EventsHelper
   end
 
   private
+
+  # JSON-LD private helpers
+
+  def schema_org_event_type(event)
+    SCHEMA_ORG_EVENT_TYPES.fetch(event.event_type, "Event")
+  end
+
+  def json_ld_start_date(event)
+    if event.start_time.present?
+      format_json_ld_datetime(event.start_date, event.start_time)
+    else
+      event.start_date.iso8601
+    end
+  end
+
+  def json_ld_end_date(event)
+    if event.end_date.present? && event.end_date != event.start_date
+      if event.end_time.present?
+        format_json_ld_datetime(event.end_date, event.end_time)
+      else
+        event.end_date.iso8601
+      end
+    elsif event.end_time.present? && event.end_time != event.start_time
+      format_json_ld_datetime(event.end_date || event.start_date, event.end_time)
+    end
+  end
+
+  def format_json_ld_datetime(date, time)
+    nz_zone = ActiveSupport::TimeZone[NZ_TIMEZONE]
+    dt = nz_zone.local(date.year, date.month, date.day, time.hour, time.min)
+    dt.iso8601
+  end
+
+  def json_ld_attendance_mode(event)
+    primary = event.primary_location
+    if primary&.region == "online"
+      "https://schema.org/OnlineEventAttendanceMode"
+    else
+      "https://schema.org/OfflineEventAttendanceMode"
+    end
+  end
+
+  def json_ld_location(event)
+    primary = event.primary_location
+    if primary&.region == "online"
+      {
+        "@type" => "VirtualLocation",
+        "url" => event.registration_url || ""
+      }
+    else
+      place = { "@type" => "Place" }
+      name_parts = [ primary&.city, primary&.region_display ].compact_blank
+      place["name"] = name_parts.join(", ") if name_parts.any?
+
+      if event.address.present?
+        place["address"] = {
+          "@type" => "PostalAddress",
+          "streetAddress" => event.address,
+          "addressRegion" => primary&.region_display,
+          "addressCountry" => "NZ"
+        }
+      end
+
+      place
+    end
+  end
+
+  def json_ld_offers(event)
+    if event.free?
+      {
+        "@type" => "Offer",
+        "price" => "0",
+        "priceCurrency" => "NZD",
+        "availability" => "https://schema.org/InStock"
+      }
+    else
+      {
+        "@type" => "Offer",
+        "price" => event.cost,
+        "priceCurrency" => "NZD",
+        "availability" => "https://schema.org/InStock"
+      }
+    end
+  end
+
+  # Calendar private helpers
 
   def calendar_times(event)
     nz_zone = ActiveSupport::TimeZone[NZ_TIMEZONE]

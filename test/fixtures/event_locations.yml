@@ -39,3 +39,9 @@ organiser_event_location:
   region: 1
   city: "Auckland CBD"
   position: 0
+
+online_event_location:
+  event: online_event
+  region: 17
+  city: "Online"
+  position: 0
