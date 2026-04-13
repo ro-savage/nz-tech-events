@@ -49,3 +49,8 @@
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
+/docker-compose*.yml
+
+# Ignore test artifacts
+/coverage
+/test/reports
