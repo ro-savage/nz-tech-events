@@ -1,4 +1,6 @@
 class Event < ApplicationRecord
+  include HasRegion
+
   belongs_to :user
   has_many :event_locations, dependent: :destroy
   has_many :ownership_requests, dependent: :destroy
@@ -17,27 +19,6 @@ class Event < ApplicationRecord
     other: 6,
     talk: 7,
     awards: 8
-  }, prefix: true
-
-  enum :region, {
-    northland: 0,
-    auckland: 1,
-    waikato: 2,
-    bay_of_plenty: 3,
-    gisborne: 4,
-    hawkes_bay: 5,
-    taranaki: 6,
-    manawatu_whanganui: 7,
-    wellington: 8,
-    tasman: 9,
-    nelson: 10,
-    marlborough: 11,
-    west_coast: 12,
-    canterbury: 13,
-    otago: 14,
-    southland: 15,
-    apac: 16,
-    online: 17
   }, prefix: true
 
   # Validations
@@ -112,11 +93,6 @@ class Event < ApplicationRecord
     else
       start_time.strftime("%l:%M %p").strip
     end
-  end
-
-  def region_display
-    return "Asia Pacific" if region == "apac"
-    region.to_s.titleize.gsub("_", "-")
   end
 
   # Multi-location helpers
