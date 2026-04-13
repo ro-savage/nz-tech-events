@@ -81,6 +81,8 @@ class RegistrationsRequestTest < ActionDispatch::IntegrationTest
       }
     end
     assert_redirected_to root_path
+  ensure
+    ENV.delete("ENABLE_RECAPTCHA")
   end
 
   test "signup fails with captcha error when reCAPTCHA enabled and verification fails" do
@@ -133,6 +135,8 @@ class RegistrationsRequestTest < ActionDispatch::IntegrationTest
       }
     }
     assert_response :unprocessable_entity
+    assert_match(/g-recaptcha/, response.body,
+      "Expected reCAPTCHA checkbox widget to be rendered in response")
   ensure
     ENV.delete("ENABLE_RECAPTCHA")
     ENV.delete("RECAPTCHA_V2_SITE_KEY")
@@ -162,8 +166,10 @@ class RegistrationsRequestTest < ActionDispatch::IntegrationTest
       }
     end
     assert_response :unprocessable_entity
-    # Both captcha AND validation errors should be present
+    # Both captcha AND model validation errors should be present
     assert_match(/reCAPTCHA/, response.body)
+    assert_match(/Email/, response.body)
+    assert_match(/Password/, response.body)
   ensure
     ENV.delete("ENABLE_RECAPTCHA")
     ENV.delete("RECAPTCHA_V2_SITE_KEY")
