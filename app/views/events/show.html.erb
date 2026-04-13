@@ -1,5 +1,15 @@
 <% content_for :title, "#{@event.title} - NZ Tech Events" %>
 
+<% content_for :meta_tags do %>
+  <meta property="og:title" content="<%= @event.title %>">
+  <meta property="og:description" content="<%= @event.display_summary(limit: 200) %>">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= event_url(@event) %>">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="<%= @event.title %>">
+  <meta name="twitter:description" content="<%= @event.display_summary(limit: 200) %>">
+<% end %>
+
 <a href="<%= root_path %>" class="back-link">&larr; Back to Events</a>
 
 <% unless @event.approved? %>
