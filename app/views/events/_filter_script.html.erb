@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%= content_security_policy_nonce %>">
   (function() {
     if (!window.filterConfig) return;
 
@@ -194,6 +194,14 @@
       e.preventDefault();
       clearFilters();
     };
+
+    var noResultsClearLink = document.getElementById('no-results-clear-filters');
+    if (noResultsClearLink) {
+      noResultsClearLink.onclick = function(e) {
+        e.preventDefault();
+        clearFilters();
+      };
+    }
 
     // Handle browser back/forward buttons
     window.onpopstate = function(event) {

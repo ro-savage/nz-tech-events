@@ -163,7 +163,7 @@
   </div>
 <% end %>
 
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%= content_security_policy_nonce %>">
   (function() {
     const citiesByRegion = <%= cities_json %>;
     const locationsContainer = document.getElementById('locations-container');

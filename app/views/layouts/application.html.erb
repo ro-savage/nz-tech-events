@@ -23,7 +23,7 @@
     <%= stylesheet_link_tag "actiontext" %>
 
     <!-- Theme initialization (prevent flash) -->
-    <script>
+    <script nonce="<%= content_security_policy_nonce %>">
       (function() {
         const saved = localStorage.getItem('theme');
         if (saved) {
@@ -58,7 +58,7 @@
         </ul>
 
         <!-- Hamburger button -->
-        <button class="hamburger" aria-label="Toggle menu" onclick="toggleMobileMenu()">
+        <button class="hamburger" aria-label="Toggle menu" id="hamburger-btn">
           <span class="hamburger-icon">☰</span>
           <span class="hamburger-close">✕</span>
         </button>
@@ -117,7 +117,7 @@
           <% end %>
           <li class="menu-divider"></li>
           <li class="nav-theme">
-            <button class="theme-toggle" aria-label="Toggle theme" onclick="toggleTheme()">
+            <button class="theme-toggle" aria-label="Toggle theme" id="theme-toggle-btn">
               <span class="theme-icon-light">☀️</span>
               <span class="theme-icon-dark">🌙</span>
             </button>
@@ -145,7 +145,7 @@
       <small>Free. <a href="https://github.com/ro-savage/nz-tech-events">Open Source</a>. No Ads. No Tracking. <a href="<%= about_path %>">Built for Good</a>.</small>
     </footer>
 
-    <script>
+    <script nonce="<%= content_security_policy_nonce %>">
       function toggleTheme() {
         const html = document.documentElement;
         const current = html.getAttribute('data-theme');
@@ -158,6 +158,10 @@
         const nav = document.querySelector('.site-header nav');
         nav.classList.toggle('menu-open');
       }
+
+      // Bind hamburger and theme toggle buttons
+      document.getElementById('hamburger-btn').addEventListener('click', toggleMobileMenu);
+      document.getElementById('theme-toggle-btn').addEventListener('click', toggleTheme);
 
       // Close menu when clicking a link
       document.querySelectorAll('.nav-menu a, .nav-menu button[type="submit"]').forEach(function(link) {

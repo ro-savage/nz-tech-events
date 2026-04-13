@@ -43,10 +43,10 @@
 
 <div id="no-results-message" class="empty-state" style="display: none;">
   <h3>No events match your filters</h3>
-  <p><a href="#" onclick="clearFilters(); return false;">Clear filters</a> to see all events</p>
+  <p><a href="#" id="no-results-clear-filters">Clear filters</a> to see all events</p>
 </div>
 
-<script type="text/javascript">
+<script type="text/javascript" nonce="<%= content_security_policy_nonce %>">
   window.filterConfig = {
     citiesByRegion: <%= cities_json %>,
     storageKey: 'nzTechEventsFilters',
