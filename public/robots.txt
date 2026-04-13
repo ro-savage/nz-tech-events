@@ -1,1 +1,7 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /login
+Disallow: /signup
+Disallow: /api/
+Sitemap: https://techevents.co.nz/sitemap.xml

@@ -59,6 +59,9 @@ Rails.application.routes.draw do
   post "subscribe", to: "email_subscriptions#create", as: :email_subscriptions
   get  "unsubscribe/:token", to: "email_subscriptions#destroy", as: :unsubscribe
 
+  # Sitemap
+  get "sitemap.xml", to: "sitemaps#index", as: :sitemap, defaults: { format: :xml }
+
   # Health check for deployment
   get "up" => "rails/health#show", as: :rails_health_check
 
