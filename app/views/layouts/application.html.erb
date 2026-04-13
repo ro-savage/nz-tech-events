@@ -160,8 +160,10 @@
       }
 
       // Bind hamburger and theme toggle buttons
-      document.getElementById('hamburger-btn').addEventListener('click', toggleMobileMenu);
-      document.getElementById('theme-toggle-btn').addEventListener('click', toggleTheme);
+      var hamburgerBtn = document.getElementById('hamburger-btn');
+      var themeToggleBtn = document.getElementById('theme-toggle-btn');
+      if (hamburgerBtn) hamburgerBtn.addEventListener('click', toggleMobileMenu);
+      if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
 
       // Close menu when clicking a link
       document.querySelectorAll('.nav-menu a, .nav-menu button[type="submit"]').forEach(function(link) {

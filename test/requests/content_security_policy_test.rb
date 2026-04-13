@@ -46,6 +46,31 @@ class ContentSecurityPolicyTest < ActionDispatch::IntegrationTest
     assert_match(/form-action 'self'/, csp)
   end
 
+  test "CSP header prevents clickjacking with frame-ancestors none" do
+    get root_path
+    csp = response.headers["Content-Security-Policy"]
+    assert_match(/frame-ancestors 'none'/, csp)
+  end
+
+  test "CSP nonce changes between requests" do
+    get root_path
+    csp1 = response.headers["Content-Security-Policy"]
+    nonce1 = csp1[/nonce-([A-Za-z0-9+\/=]+)/, 1]
+
+    get root_path
+    csp2 = response.headers["Content-Security-Policy"]
+    nonce2 = csp2[/nonce-([A-Za-z0-9+\/=]+)/, 1]
+
+    assert_not_equal nonce1, nonce2,
+      "Nonce must be unique per request for CSP security"
+  end
+
+  test "CSP header allows reCAPTCHA in connect-src" do
+    get root_path
+    csp = response.headers["Content-Security-Policy"]
+    assert_match(/connect-src.*www\.google\.com\/recaptcha/, csp)
+  end
+
   test "inline scripts in layout include nonce attribute" do
     get root_path
     assert_match(/script nonce="[^"]*"/, response.body)

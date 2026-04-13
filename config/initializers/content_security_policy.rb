@@ -13,10 +13,13 @@ Rails.application.configure do
     policy.base_uri    :self
     policy.form_action :self
 
+    # Prevent clickjacking by disallowing framing of this site
+    policy.frame_ancestors :none
+
     # Pico CSS served from CDN
     policy.style_src   :self, "https://cdn.jsdelivr.net"
 
-    # Inline scripts use nonces; importmaps and reCAPTCHA need their origins
+    # Inline scripts use nonces; reCAPTCHA needs its origins
     policy.script_src  :self,
                        "https://www.google.com/recaptcha/",
                        "https://www.gstatic.com/recaptcha/",
@@ -26,12 +29,18 @@ Rails.application.configure do
     policy.frame_src   "https://www.google.com/recaptcha/",
                        "https://www.recaptcha.net/"
 
-    # Turbo and Stimulus use same-origin fetch
-    policy.connect_src :self
+    # Turbo/Stimulus use same-origin fetch; reCAPTCHA v3 makes background requests
+    policy.connect_src :self,
+                       "https://www.google.com/recaptcha/",
+                       "https://www.recaptcha.net/"
   end
 
-  # Generate session nonces for permitted importmap and inline scripts.
+  # Cryptographically random nonce per request for inline script protection.
   config.content_security_policy_nonce_generator =
-    ->(request) { request.session.id.to_s }
+    ->(_request) { SecureRandom.base64(16) }
   config.content_security_policy_nonce_directives = %w[script-src]
+
+  # Auto-add nonce to javascript_tag, javascript_include_tag,
+  # javascript_importmap_tags, and stylesheet_link_tag.
+  config.content_security_policy_nonce_auto = true
 end
