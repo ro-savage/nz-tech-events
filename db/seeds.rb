@@ -1,406 +1,415 @@
-# Clear existing data
-puts "Clearing existing data..."
-Event.destroy_all
-EmailSubscription.destroy_all
-User.destroy_all
+# Seed data for NZ Tech Events
+# Idempotent: safe to run multiple times via `bin/rails db:seed`
 
-# Create users
-puts "Creating users..."
+puts "Seeding NZ Tech Events..."
 
-test_user = User.create!(
-  email_address: "test@example.com",
-  password: "password123",
-  name: "Test User",
-  approved_organiser: true,
-  admin: true
-)
+# ---------------------------------------------------------------------------
+# Users
+# ---------------------------------------------------------------------------
+puts "\nCreating users..."
 
-sarah = User.create!(
-  email_address: "sarah@example.com",
-  password: "password123",
-  name: "Sarah Chen",
-  approved_organiser: true
-)
+admin = User.find_or_create_by!(email_address: "admin@example.com") do |u|
+  u.password = "password123"
+  u.name = "Admin User"
+  u.admin = true
+  u.approved_organiser = true
+end
+puts "  #{admin.persisted? ? 'Found' : 'Created'} admin: admin@example.com (admin)"
 
-james = User.create!(
-  email_address: "james@example.com",
-  password: "password123",
-  name: "James Wilson",
-  approved_organiser: true
-)
+organiser = User.find_or_create_by!(email_address: "organiser@example.com") do |u|
+  u.password = "password123"
+  u.name = "Sarah Chen"
+  u.approved_organiser = true
+end
+puts "  #{organiser.persisted? ? 'Found' : 'Created'} organiser: organiser@example.com (approved organiser)"
 
-aroha = User.create!(
-  email_address: "aroha@example.com",
-  password: "password123",
-  name: "Aroha Ngata"
-)
+regular_user = User.find_or_create_by!(email_address: "user@example.com") do |u|
+  u.password = "password123"
+  u.name = "James Wilson"
+end
+puts "  #{regular_user.persisted? ? 'Found' : 'Created'} regular user: user@example.com"
 
-liam = User.create!(
-  email_address: "liam@example.com",
-  password: "password123",
-  name: "Liam O'Brien"
-)
+# Keep the legacy test user so existing docs/test credentials still work
+test_user = User.find_or_create_by!(email_address: "test@example.com") do |u|
+  u.password = "password123"
+  u.name = "Test User"
+  u.admin = true
+  u.approved_organiser = true
+end
+puts "  #{test_user.persisted? ? 'Found' : 'Created'} test user: test@example.com (admin + organiser)"
 
-# Helper to build location attributes
+# ---------------------------------------------------------------------------
+# Helper
+# ---------------------------------------------------------------------------
 def loc(region:, city: nil, position: 0)
   { region: region, city: city, position: position }
 end
 
-# Create future events
-puts "Creating future events..."
+def find_or_create_event!(attrs)
+  existing = Event.find_by(title: attrs[:title], start_date: attrs[:start_date])
+  return existing if existing
 
-future_events = [
+  Event.create!(attrs)
+end
+
+# ---------------------------------------------------------------------------
+# Upcoming events (next 1-3 months)
+# ---------------------------------------------------------------------------
+puts "\nCreating upcoming events..."
+
+upcoming_events = [
   {
-    title: "Auckland JavaScript Meetup",
-    description: "Join us for an evening of JavaScript talks and networking. We'll have two speakers covering modern JS frameworks and best practices for async programming.",
+    title: "Auckland Python Meetup",
+    description: "Monthly gathering for Python enthusiasts in Auckland. This month we have two talks: building REST APIs with FastAPI, and an intro to data pipelines with Polars. Pizza and drinks provided.",
+    short_summary: "Monthly Python meetup with talks on FastAPI and Polars.",
     start_date: Date.current + 7.days,
     start_time: "18:00",
-    end_time: "21:00",
+    end_time: "20:30",
     event_type: :meetup,
     cost: "Free",
-    user: test_user,
-    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
+    user: organiser,
+    event_locations_attributes: [loc(region: :auckland, city: "Auckland CBD")]
   },
   {
-    title: "Wellington Tech Conference 2026",
-    description: "The biggest tech conference in the capital! Two days of talks, workshops, and networking with the best minds in NZ tech.",
-    start_date: Date.current + 30.days,
-    end_date: Date.current + 31.days,
+    title: "Wellington DevOps Workshop",
+    description: "Hands-on workshop covering CI/CD pipelines with GitHub Actions, infrastructure as code with Terraform, and container orchestration with Kubernetes. Bring your laptop with Docker installed. Lunch included.",
+    short_summary: "Full-day hands-on DevOps workshop covering GitHub Actions, Terraform, and Kubernetes.",
+    start_date: Date.current + 14.days,
     start_time: "09:00",
     end_time: "17:00",
-    event_type: :conference,
-    cost: "$199",
-    registration_url: "https://example.com/register",
-    user: sarah,
-    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
-  },
-  {
-    title: "Christchurch Python Workshop",
-    description: "A hands-on workshop for Python beginners. Learn the basics of Python programming in a friendly, supportive environment.",
-    start_date: Date.current + 14.days,
-    start_time: "10:00",
-    end_time: "16:00",
     event_type: :workshop,
-    cost: "$50",
-    user: james,
-    event_locations_attributes: [ loc(region: :canterbury, city: "Christchurch") ]
+    cost: "$50 early bird / $75 standard",
+    registration_url: "https://example.com/welly-devops",
+    user: organiser,
+    event_locations_attributes: [loc(region: :wellington, city: "Wellington CBD")]
   },
   {
-    title: "Remote Work Webinar",
-    description: "Tips and tricks for effective remote work. Join us online to learn from experienced remote workers across the Asia Pacific region.",
-    start_date: Date.current + 3.days,
+    title: "NZ JavaScript Conference 2026",
+    description: "The premier JavaScript conference in Aotearoa New Zealand. Two days of talks from local and international speakers covering TypeScript, React Server Components, Deno 2, edge computing, and the future of the web platform. Includes workshops, hallway track, and conference dinner.",
+    short_summary: "Two-day JS conference with local and international speakers.",
+    start_date: Date.current + 30.days,
+    end_date: Date.current + 31.days,
+    start_time: "08:30",
+    end_time: "17:30",
+    event_type: :conference,
+    cost: "$199 + GST",
+    registration_url: "https://example.com/nzjsconf",
+    user: admin,
+    event_locations_attributes: [loc(region: :auckland, city: "Auckland CBD")]
+  },
+  {
+    title: "Christchurch AI Hackathon",
+    description: "48-hour hackathon focused on practical AI applications for New Zealand businesses. Teams of 2-5 people. Mentors from local AI companies available throughout. Prizes include $5,000 cash, cloud credits, and co-working space memberships.",
+    short_summary: "48-hour AI hackathon with $5,000 in prizes.",
+    start_date: Date.current + 21.days,
+    end_date: Date.current + 23.days,
+    start_time: "18:00",
+    event_type: :hackathon,
+    cost: "$25",
+    registration_url: "https://example.com/chch-ai-hack",
+    user: organiser,
+    event_locations_attributes: [loc(region: :canterbury, city: "Christchurch")]
+  },
+  {
+    title: "Online Cloud Native Webinar",
+    description: "Join us for a lunchtime webinar on cloud-native architecture patterns. Covering microservices vs monoliths, service mesh, observability, and cost optimisation strategies for AWS and Azure. Q&A session at the end.",
+    short_summary: "Lunchtime webinar on cloud-native architecture patterns.",
+    start_date: Date.current + 5.days,
     start_time: "12:00",
     end_time: "13:00",
     event_type: :webinar,
     cost: "Free",
-    registration_url: "https://zoom.us/example",
-    user: aroha,
-    event_locations_attributes: [ loc(region: :online, city: "Online") ]
+    registration_url: "https://zoom.us/example-cloud-native",
+    user: admin,
+    event_locations_attributes: [loc(region: :online, city: "Online")]
   },
   {
-    title: "Hamilton Hackathon",
-    description: "48-hour hackathon! Build something amazing with fellow developers. Prizes for top projects including $5,000 for the winner.",
-    start_date: Date.current + 45.days,
-    end_date: Date.current + 47.days,
-    start_time: "18:00",
-    event_type: :hackathon,
-    cost: "$25",
-    user: liam,
-    event_locations_attributes: [ loc(region: :waikato, city: "Hamilton") ]
-  },
-  {
-    title: "Auckland Cloud Infrastructure Meetup",
-    description: "Monthly meetup focused on AWS, Azure, and GCP. This month we're covering serverless architectures and cost optimisation strategies.",
+    title: "Hamilton Tech Networking Drinks",
+    description: "Informal networking for Waikato tech workers. No agenda, just good conversation over drinks. Whether you are a developer, designer, PM, or founder, come meet others in the local tech scene. First drink on us.",
+    short_summary: "Casual networking drinks for Waikato tech professionals.",
     start_date: Date.current + 10.days,
-    start_time: "18:30",
-    end_time: "20:30",
-    event_type: :meetup,
-    cost: "Free",
-    user: sarah,
-    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
-  },
-  {
-    title: "Dunedin Data Science Workshop",
-    description: "Learn data science fundamentals with real-world datasets. Covering pandas, scikit-learn, and data visualisation with matplotlib.",
-    start_date: Date.current + 21.days,
-    start_time: "09:00",
-    end_time: "17:00",
-    event_type: :workshop,
-    cost: "$75",
-    user: james,
-    event_locations_attributes: [ loc(region: :otago, city: "Dunedin") ]
-  },
-  {
-    title: "Wellington Ruby on Rails Meetup",
-    description: "Monthly Rails meetup. This month: Rails 8 features deep dive, including Solid Cache, Solid Queue, and the new authentication generator.",
-    start_date: Date.current + 5.days,
-    start_time: "18:00",
-    end_time: "20:00",
-    event_type: :meetup,
-    cost: "Free",
-    user: aroha,
-    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
-  },
-  {
-    title: "NZ Cybersecurity Conference",
-    description: "Annual cybersecurity conference covering threat landscape, incident response, and security best practices for NZ organisations.",
-    start_date: Date.current + 60.days,
-    end_date: Date.current + 61.days,
-    start_time: "08:30",
-    end_time: "17:30",
-    event_type: :conference,
-    cost: "$350",
-    registration_url: "https://example.com/cybersec",
-    user: test_user,
-    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
-  },
-  {
-    title: "Tauranga Startup Networking",
-    description: "Connect with fellow founders and tech professionals in the Bay of Plenty. Casual drinks and conversation about the local startup scene.",
-    start_date: Date.current + 12.days,
     start_time: "17:30",
     end_time: "19:30",
     event_type: :networking,
     cost: "Free",
-    user: liam,
-    event_locations_attributes: [ loc(region: :bay_of_plenty, city: "Tauranga") ]
+    user: organiser,
+    event_locations_attributes: [loc(region: :waikato, city: "Hamilton")]
+  },
+  {
+    title: "Wellington Engineering Leadership Talk",
+    description: "An evening talk on scaling engineering teams from 5 to 50 people. Covering hiring, onboarding, decision-making under uncertainty, and practical leadership lessons from NZ tech leaders. Followed by networking and refreshments.",
+    short_summary: "Evening talk on scaling engineering teams with local tech leaders.",
+    start_date: Date.current + 12.days,
+    start_time: "18:00",
+    end_time: "19:30",
+    event_type: :talk,
+    cost: "Free",
+    user: admin,
+    event_locations_attributes: [loc(region: :wellington, city: "Wellington CBD")]
+  },
+  {
+    title: "Auckland Cloud Infrastructure Meetup",
+    description: "Monthly meetup for cloud infrastructure professionals. This month: serverless architectures on AWS Lambda and Azure Functions, plus a lightning talk on cost optimisation. Sponsored by a local cloud consultancy.",
+    short_summary: "Monthly cloud infra meetup covering serverless and cost optimisation.",
+    start_date: Date.current + 9.days,
+    start_time: "18:30",
+    end_time: "20:30",
+    event_type: :meetup,
+    cost: "Free",
+    user: organiser,
+    event_locations_attributes: [loc(region: :auckland, city: "North Shore")]
+  },
+  {
+    title: "Dunedin Data Science Workshop",
+    description: "Learn data science fundamentals with real-world NZ datasets. Covering pandas, scikit-learn, and data visualisation with matplotlib. Suitable for beginners with some Python experience. Laptops provided if needed.",
+    short_summary: "Beginner-friendly data science workshop with real NZ datasets.",
+    start_date: Date.current + 18.days,
+    start_time: "09:00",
+    end_time: "16:00",
+    event_type: :workshop,
+    cost: "$75",
+    registration_url: "https://example.com/dunedin-datasci",
+    user: admin,
+    event_locations_attributes: [loc(region: :otago, city: "Dunedin")]
+  },
+  {
+    title: "Tauranga Startup Pitch Night",
+    description: "Five Bay of Plenty startups pitch to a panel of investors and mentors. Each team gets 10 minutes to present followed by 5 minutes of Q&A. Networking drinks afterwards. Open to anyone interested in the local startup scene.",
+    short_summary: "Five local startups pitch to investors and mentors.",
+    start_date: Date.current + 15.days,
+    start_time: "18:00",
+    end_time: "21:00",
+    event_type: :networking,
+    cost: "Free",
+    user: organiser,
+    event_locations_attributes: [loc(region: :bay_of_plenty, city: "Tauranga")]
+  },
+  {
+    title: "NZ Cybersecurity Conference",
+    description: "Annual cybersecurity conference for NZ organisations. Two days covering threat landscape, incident response, zero trust architecture, and compliance with the NZ Privacy Act. Keynote from CERT NZ. Early bird pricing available until two weeks before the event.",
+    short_summary: "Two-day cybersecurity conference with CERT NZ keynote.",
+    start_date: Date.current + 45.days,
+    end_date: Date.current + 46.days,
+    start_time: "08:30",
+    end_time: "17:30",
+    event_type: :conference,
+    cost: "$350 + GST",
+    registration_url: "https://example.com/nz-cybersec",
+    user: admin,
+    event_locations_attributes: [loc(region: :wellington, city: "Wellington CBD")]
+  },
+  {
+    title: "React & TypeScript Workshop",
+    description: "Build a full-stack application with React 19 and TypeScript. Covers Server Components, hooks patterns, state management with Zustand, and API integration. You will deploy a working app by the end of the day.",
+    short_summary: "Full-day React 19 and TypeScript hands-on workshop.",
+    start_date: Date.current + 28.days,
+    start_time: "09:00",
+    end_time: "17:00",
+    event_type: :workshop,
+    cost: "$150 + GST",
+    registration_url: "https://example.com/react-ts-workshop",
+    user: organiser,
+    event_locations_attributes: [loc(region: :auckland, city: "Auckland CBD")]
   },
   {
     title: "Intro to Kubernetes Webinar",
-    description: "A beginner-friendly webinar covering container orchestration with Kubernetes. Learn about pods, services, deployments, and more.",
+    description: "A beginner-friendly webinar covering container orchestration with Kubernetes. Learn about pods, services, deployments, ConfigMaps, and Helm charts. No prior container experience required.",
+    short_summary: "Beginner-friendly Kubernetes webinar covering core concepts.",
     start_date: Date.current + 8.days,
     start_time: "14:00",
     end_time: "15:30",
     event_type: :webinar,
     cost: "Free",
     registration_url: "https://example.com/k8s-webinar",
-    user: sarah,
-    event_locations_attributes: [ loc(region: :online, city: "Online") ]
-  },
-  {
-    title: "Auckland AI/ML Meetup",
-    description: "Exploring practical applications of AI and machine learning in NZ businesses. Two talks plus Q&A and networking.",
-    start_date: Date.current + 18.days,
-    start_time: "18:00",
-    end_time: "20:30",
-    event_type: :meetup,
-    cost: "Free",
-    user: james,
-    event_locations_attributes: [ loc(region: :auckland, city: "North Shore") ]
-  },
-  {
-    title: "Wellington UX Design Workshop",
-    description: "Hands-on workshop covering user research methods, wireframing, and prototyping. Bring your laptop with Figma installed.",
-    start_date: Date.current + 25.days,
-    start_time: "09:30",
-    end_time: "16:30",
-    event_type: :workshop,
-    cost: "$120",
-    user: aroha,
-    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
-  },
-  {
-    title: "Queenstown Tech Retreat",
-    description: "A weekend of talks, workshops, and outdoor activities for tech professionals. Combine learning with adventure in beautiful Queenstown.",
-    start_date: Date.current + 50.days,
-    end_date: Date.current + 52.days,
-    start_time: "10:00",
-    end_time: "16:00",
-    event_type: :conference,
-    cost: "$450",
-    registration_url: "https://example.com/tech-retreat",
-    user: liam,
-    event_locations_attributes: [ loc(region: :otago, city: "Queenstown") ]
-  },
-  {
-    title: "Palmerston North DevOps Meetup",
-    description: "Bi-monthly DevOps meetup covering CI/CD pipelines, infrastructure as code, and monitoring. All experience levels welcome.",
-    start_date: Date.current + 16.days,
-    start_time: "18:00",
-    end_time: "20:00",
-    event_type: :meetup,
-    cost: "Free",
-    user: test_user,
-    event_locations_attributes: [ loc(region: :manawatu_whanganui, city: "Palmerston North") ]
-  },
-  {
-    title: "React & TypeScript Workshop",
-    description: "Build a full-stack application with React and TypeScript. Covers hooks, state management, and API integration patterns.",
-    start_date: Date.current + 35.days,
-    start_time: "09:00",
-    end_time: "17:00",
-    event_type: :workshop,
-    cost: "$95",
-    user: sarah,
-    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
-  },
-  {
-    title: "New Plymouth Tech Drinks",
-    description: "Informal networking for Taranaki tech workers. No agenda, just good conversation and a chance to meet others in the local tech scene.",
-    start_date: Date.current + 9.days,
-    start_time: "17:00",
-    end_time: "19:00",
-    event_type: :networking,
-    cost: "Free",
-    user: james,
-    event_locations_attributes: [ loc(region: :taranaki, city: "New Plymouth") ]
-  },
-  {
-    title: "GovTech Hackathon Wellington",
-    description: "Use open government data to build solutions for public good. Teams of 3-5 people. Mentors from government agencies available.",
-    start_date: Date.current + 40.days,
-    end_date: Date.current + 42.days,
-    start_time: "09:00",
-    event_type: :hackathon,
-    cost: "Free",
-    registration_url: "https://example.com/govtech-hack",
-    user: aroha,
-    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
-  },
-  {
-    title: "Mobile App Development Webinar",
-    description: "Comparing React Native, Flutter, and native development for mobile apps. Pros, cons, and when to use each approach.",
-    start_date: Date.current + 6.days,
-    start_time: "13:00",
-    end_time: "14:00",
-    event_type: :webinar,
-    cost: "Free",
-    registration_url: "https://example.com/mobile-webinar",
-    user: liam,
-    event_locations_attributes: [ loc(region: :online, city: "Online") ]
+    user: admin,
+    event_locations_attributes: [loc(region: :online, city: "Online")]
   },
   {
     title: "Nelson Tech Community Meetup",
-    description: "Monthly meetup for tech enthusiasts in the Nelson region. Lightning talks, project show-and-tell, and networking.",
+    description: "Monthly meetup for tech enthusiasts in the Nelson region. Lightning talks, project show-and-tell, and networking. All skill levels and backgrounds welcome. This month: home automation with Raspberry Pi.",
+    short_summary: "Monthly Nelson tech meetup with lightning talks and show-and-tell.",
     start_date: Date.current + 20.days,
     start_time: "18:00",
     end_time: "20:00",
     event_type: :meetup,
     cost: "Free",
-    user: test_user,
-    event_locations_attributes: [ loc(region: :nelson, city: "Nelson") ]
+    user: organiser,
+    event_locations_attributes: [loc(region: :nelson, city: "Nelson")]
   },
   {
-    title: "Wellington Engineering Leadership Talk",
-    description: "An evening talk on scaling engineering teams, decision-making under uncertainty, and practical leadership lessons from local tech leaders.",
-    start_date: Date.current + 11.days,
-    start_time: "18:00",
-    end_time: "19:30",
-    event_type: :talk,
+    title: "GovTech Hackathon Wellington",
+    description: "Use open government data to build solutions for public good. Teams of 3-5 people. Mentors from government agencies available throughout the weekend. Datasets provided from Stats NZ, LINZ, and DOC.",
+    short_summary: "Weekend hackathon using open government data for public good.",
+    start_date: Date.current + 35.days,
+    end_date: Date.current + 37.days,
+    start_time: "09:00",
+    event_type: :hackathon,
     cost: "Free",
-    user: sarah,
-    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
+    registration_url: "https://example.com/govtech-hack",
+    user: admin,
+    event_locations_attributes: [loc(region: :wellington, city: "Wellington CBD")]
   },
   {
     title: "Canterbury Tech Excellence Awards",
-    description: "Celebrating standout teams and individuals across the Canterbury tech ecosystem with awards, short acceptance talks, and networking.",
-    start_date: Date.current + 55.days,
+    description: "Celebrating standout teams and individuals across the Canterbury tech ecosystem. Awards, short acceptance talks, dinner, and networking. Categories include Best Startup, Best Open Source Project, and Tech Leader of the Year.",
+    short_summary: "Awards ceremony celebrating Canterbury tech achievements.",
+    start_date: Date.current + 50.days,
     start_time: "18:30",
     end_time: "22:00",
     event_type: :awards,
     cost: "$120",
-    user: liam,
-    event_locations_attributes: [ loc(region: :canterbury, city: "Christchurch") ]
-  }
-]
-
-future_events.each do |event_data|
-  Event.create!(event_data)
-  puts "  Created: #{event_data[:title]}"
-end
-
-# Approve 3 of the unapproved future events (aroha/liam's) so 15 total are approved, 5 remain pending
-Event.upcoming.where(approved: false).limit(3).update_all(approved: true)
-puts "  Approved 3 additional future events (15 approved, 5 pending)"
-
-# Create past events
-puts "Creating past events..."
-
-past_events = [
+    registration_url: "https://example.com/canterbury-awards",
+    user: organiser,
+    event_locations_attributes: [loc(region: :canterbury, city: "Christchurch")]
+  },
+  # Multi-location event
   {
-    title: "Auckland Tech Meetup - December",
-    description: "End of year wrap-up meetup with lightning talks and a retrospective of the NZ tech scene in 2025.",
-    start_date: Date.current - 45.days,
+    title: "NZ Women in Tech Meetup",
+    description: "Simultaneous meetups in Auckland and Wellington for women and non-binary people in tech. Panel discussion on career progression, mentoring circles, and networking. All allies welcome.",
+    short_summary: "Simultaneous Auckland and Wellington meetups for women in tech.",
+    start_date: Date.current + 22.days,
     start_time: "18:00",
     end_time: "20:00",
     event_type: :meetup,
     cost: "Free",
-    user: test_user,
-    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
+    user: admin,
+    event_locations_attributes: [
+      loc(region: :auckland, city: "Auckland CBD", position: 0),
+      loc(region: :wellington, city: "Wellington CBD", position: 1)
+    ]
+  },
+  # Pending events (created by regular user, not auto-approved)
+  {
+    title: "Napier Web Dev Meetup",
+    description: "Casual meetup for web developers in Hawke's Bay. Bring your projects, questions, and ideas. We meet at a local cafe with good wifi and even better coffee.",
+    short_summary: "Casual Hawke's Bay web dev meetup at a local cafe.",
+    start_date: Date.current + 16.days,
+    start_time: "10:00",
+    end_time: "12:00",
+    event_type: :meetup,
+    cost: "Free",
+    user: regular_user,
+    event_locations_attributes: [loc(region: :hawkes_bay, city: "Napier")]
+  },
+  {
+    title: "Palmerston North Coding Dojo",
+    description: "Fortnightly coding dojo where we solve programming challenges in pairs. All languages welcome. Great way to practise test-driven development and learn from others.",
+    short_summary: "Fortnightly pair-programming coding dojo.",
+    start_date: Date.current + 24.days,
+    start_time: "18:00",
+    end_time: "20:00",
+    event_type: :workshop,
+    cost: "Free",
+    user: regular_user,
+    event_locations_attributes: [loc(region: :manawatu_whanganui, city: "Palmerston North")]
+  }
+]
+
+upcoming_events.each do |event_data|
+  event = find_or_create_event!(event_data)
+  puts "  Created: #{event_data[:title]}"
+end
+
+# ---------------------------------------------------------------------------
+# Past events
+# ---------------------------------------------------------------------------
+puts "\nCreating past events..."
+
+past_events = [
+  {
+    title: "Auckland Tech Meetup - March",
+    description: "End of Q1 wrap-up meetup with lightning talks covering Rails 8, Bun runtime, and the state of NZ tech hiring. Great turnout with over 80 attendees.",
+    short_summary: "Q1 wrap-up with lightning talks on Rails 8 and Bun runtime.",
+    start_date: Date.current - 14.days,
+    start_time: "18:00",
+    end_time: "20:00",
+    event_type: :meetup,
+    cost: "Free",
+    user: admin,
+    event_locations_attributes: [loc(region: :auckland, city: "Auckland CBD")]
   },
   {
     title: "Christchurch Web Dev Workshop",
-    description: "Full-day workshop on modern web development with HTML, CSS, and vanilla JavaScript.",
+    description: "Full-day workshop on modern web development with HTML, CSS, and vanilla JavaScript. Covered progressive enhancement, accessibility testing, and performance optimisation.",
+    short_summary: "Full-day web dev workshop covering accessibility and performance.",
     start_date: Date.current - 30.days,
     start_time: "09:00",
     end_time: "17:00",
     event_type: :workshop,
     cost: "$60",
-    user: james,
-    event_locations_attributes: [ loc(region: :canterbury, city: "Christchurch") ]
+    user: organiser,
+    event_locations_attributes: [loc(region: :canterbury, city: "Christchurch")]
   },
   {
     title: "Wellington Startup Weekend",
-    description: "54-hour event where aspiring entrepreneurs pitched ideas, formed teams, and launched startups.",
+    description: "54-hour event where aspiring entrepreneurs pitched ideas, formed teams, and launched startups. Twelve teams presented to a panel of judges. Winner went on to join a local accelerator programme.",
+    short_summary: "54-hour startup launch event with 12 teams competing.",
     start_date: Date.current - 60.days,
     end_date: Date.current - 58.days,
     start_time: "18:00",
     event_type: :hackathon,
     cost: "$99",
-    user: aroha,
-    event_locations_attributes: [ loc(region: :wellington, city: "Wellington CBD") ]
+    user: admin,
+    event_locations_attributes: [loc(region: :wellington, city: "Wellington CBD")]
   },
   {
     title: "API Design Best Practices Webinar",
-    description: "Covered RESTful API design, versioning strategies, and documentation with OpenAPI/Swagger.",
-    start_date: Date.current - 14.days,
+    description: "Covered RESTful API design, versioning strategies, pagination patterns, and documentation with OpenAPI. Recording available on the event page.",
+    short_summary: "Webinar on REST API design, versioning, and OpenAPI docs.",
+    start_date: Date.current - 7.days,
     start_time: "12:00",
     end_time: "13:00",
     event_type: :webinar,
     cost: "Free",
-    user: sarah,
-    event_locations_attributes: [ loc(region: :online, city: "Online") ]
+    user: organiser,
+    event_locations_attributes: [loc(region: :online, city: "Online")]
   },
   {
     title: "NZ Tech Awards Gala",
-    description: "Annual celebration of excellence in New Zealand technology. Awards, dinner, and networking.",
+    description: "Annual celebration of excellence in New Zealand technology. Awards across 10 categories, keynote dinner, and networking. Over 300 attendees from across the country.",
+    short_summary: "Annual NZ tech awards with 10 categories and 300+ attendees.",
     start_date: Date.current - 90.days,
     start_time: "18:00",
     end_time: "23:00",
-    event_type: :conference,
+    event_type: :awards,
     cost: "$175",
-    user: liam,
-    event_locations_attributes: [ loc(region: :auckland, city: "Auckland CBD") ]
+    user: admin,
+    event_locations_attributes: [loc(region: :auckland, city: "Auckland CBD")]
   }
 ]
 
 past_events.each do |event_data|
-  Event.create!(event_data)
+  event = find_or_create_event!(event_data)
   puts "  Created: #{event_data[:title]}"
 end
 
-# Create email subscriptions
-puts "Creating email subscriptions..."
+# ---------------------------------------------------------------------------
+# Email subscriptions
+# ---------------------------------------------------------------------------
+puts "\nCreating email subscriptions..."
 
 subscriptions = [
   { email_address: "dev@example.com", region: :auckland },
-  { email_address: "sarah@example.com", region: :wellington },
-  { email_address: "james@example.com", region: :canterbury },
-  { email_address: "aroha@example.com", region: :online },
-  { email_address: "newsletter@example.com", region: :auckland }
+  { email_address: "wellington-watcher@example.com", region: :wellington },
+  { email_address: "chch-dev@example.com", region: :canterbury }
 ]
 
 subscriptions.each do |sub_data|
-  EmailSubscription.create!(sub_data)
+  sub = EmailSubscription.find_or_create_by!(sub_data)
   puts "  Subscribed: #{sub_data[:email_address]} to #{sub_data[:region]}"
 end
 
+# ---------------------------------------------------------------------------
+# Summary
+# ---------------------------------------------------------------------------
+puts "\nSeed data created:"
+puts "  Users: #{User.count}"
+puts "  Events: #{Event.count} (#{Event.approved.count} approved, #{Event.pending_approval.count} pending)"
+puts "  Event locations: #{EventLocation.count}"
+puts "  Subscriptions: #{EmailSubscription.count}"
 puts ""
-puts "Done! Created:"
-puts "  #{User.count} users"
-puts "  #{Event.count} events (#{future_events.size} future, #{past_events.size} past)"
-puts "  #{EmailSubscription.count} email subscriptions"
-puts ""
-puts "Login credentials (all users share the same password):"
-puts "  Password: password123"
-puts "  Emails: test@example.com, sarah@example.com, james@example.com, aroha@example.com, liam@example.com"
+puts "Login credentials (all passwords: password123):"
+puts "  admin@example.com     - Admin"
+puts "  organiser@example.com - Approved organiser"
+puts "  user@example.com      - Regular user"
+puts "  test@example.com      - Admin + organiser (legacy test account)"
