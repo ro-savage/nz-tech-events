@@ -88,6 +88,9 @@ Rails.application.routes.draw do
   # Token management (web UI)
   resources :api_tokens, only: [ :index, :create, :destroy ]
 
+  # Search
+  get "search", to: "search#index"
+
   # Filtered event views (at the end to avoid conflicts with other routes)
   # URLs like /auckland or /wellington/Wellington%20CBD
   get ":region/:city", to: "events#index", as: :filtered_events_city,
