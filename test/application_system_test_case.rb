@@ -10,5 +10,6 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     fill_in "Email", with: user.email_address
     fill_in "Password", with: password
     click_button "Sign In"
+    assert_no_current_path new_session_path
   end
 end
