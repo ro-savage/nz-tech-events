@@ -9,7 +9,12 @@ on:
 jobs:
   test:
     name: Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    env:
+      RAILS_ENV: test
+      SECRET_KEY_BASE: test_secret_key_base_for_ci_only
 
     steps:
       - uses: actions/checkout@v4
@@ -21,18 +26,15 @@ jobs:
           bundler-cache: true
 
       - name: Prepare database
-        env:
-          RAILS_ENV: test
         run: bin/rails db:prepare
 
       - name: Run tests
-        env:
-          RAILS_ENV: test
         run: bin/rails test
 
   lint:
     name: RuboCop
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
@@ -48,7 +50,8 @@ jobs:
 
   security:
     name: Security
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
