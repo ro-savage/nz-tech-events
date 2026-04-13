@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  # RSS / Atom feeds
+  get "feed", to: "feeds#events", defaults: { format: :rss }, as: :feed
+  get "feed.atom", to: "feeds#events", defaults: { format: :atom }, as: :atom_feed
+
   # Root
   root "events#index"
 
