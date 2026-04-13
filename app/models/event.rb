@@ -159,6 +159,8 @@ class Event < ApplicationRecord
     end
   end
 
+  VALID_URL_SCHEMES = %w[http https].freeze
+
   private
 
   def set_approval_status
@@ -188,12 +190,11 @@ class Event < ApplicationRecord
     end
   end
 
-  VALID_URL_SCHEMES = %w[http https].freeze
-
+  # URL validation helpers
   def validate_url(attribute)
     url = send(attribute)
     uri = URI.parse(url)
-    unless uri.is_a?(URI::HTTP) && VALID_URL_SCHEMES.include?(uri.scheme)
+    unless uri.is_a?(URI::HTTP) && uri.host.present?
       errors.add(attribute, "must be a valid HTTP or HTTPS URL")
     end
   rescue URI::InvalidURIError

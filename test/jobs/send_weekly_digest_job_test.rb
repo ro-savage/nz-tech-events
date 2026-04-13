@@ -105,9 +105,20 @@ class SendWeeklyDigestJobTest < ActiveJob::TestCase
     assert_not_nil sub.last_sent_at
   end
 
-  test "new events section only includes events created in last 7 days" do
+  test "new events section excludes events created more than 7 days ago" do
     old_approved = events(:approved_upcoming)
     old_approved.update_column(:created_at, 10.days.ago)
+
+    # Create a recent event so the digest still has content
+    recent = users(:organiser).events.build(
+      title: "Recent Wellington Event",
+      start_date: 5.days.from_now,
+      event_type: :meetup,
+      approved: true
+    )
+    recent.description = "A recent event"
+    recent.event_locations.build(region: :wellington, city: "Wellington CBD")
+    recent.save!
 
     perform_enqueued_jobs do
       SendWeeklyDigestJob.perform_now
@@ -118,6 +129,10 @@ class SendWeeklyDigestJobTest < ActiveJob::TestCase
     end
 
     assert_not_empty wellington_emails
+    # The old event (created 10 days ago) should not appear as a "new" event,
+    # but the recent one should
+    email_body = wellington_emails.first.body.encoded
+    assert_match "Recent Wellington Event", email_body
   end
 
   test "iterates all defined regions without errors" do
