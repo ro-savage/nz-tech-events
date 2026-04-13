@@ -516,4 +516,277 @@ class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
     delete api_v1_event_path(id: 999999), headers: api_headers(organiser_token)
     assert_response :not_found
   end
+
+  # ============================================================
+  # Pagination Edge Cases
+  # ============================================================
+
+  test "last page returns fewer events than per_page" do
+    get api_v1_events_path, params: { per_page: 3 }, headers: api_headers
+    json = JSON.parse(response.body)
+
+    total = json["meta"]["total_count"]
+    total_pages = json["meta"]["total_pages"]
+
+    # Fetch the last page
+    get api_v1_events_path, params: { per_page: 3, page: total_pages }, headers: api_headers
+    assert_response :success
+
+    json = JSON.parse(response.body)
+    remainder = total % 3
+    expected_count = remainder == 0 ? 3 : remainder
+    assert_equal expected_count, json["events"].length
+    assert_equal total_pages, json["meta"]["current_page"]
+  end
+
+  test "page beyond total returns empty array with correct meta" do
+    get api_v1_events_path, params: { page: 9999 }, headers: api_headers
+    assert_response :success
+
+    json = JSON.parse(response.body)
+    assert_equal [], json["events"]
+    assert_equal 9999, json["meta"]["current_page"]
+    assert json["meta"]["total_count"].is_a?(Integer)
+    assert json["meta"]["total_pages"].is_a?(Integer)
+  end
+
+  test "per_page of zero is clamped to 1" do
+    get api_v1_events_path, params: { per_page: 0 }, headers: api_headers
+    assert_response :success
+
+    json = JSON.parse(response.body)
+    assert_equal 1, json["meta"]["per_page"]
+    assert json["events"].length <= 1
+  end
+
+  test "negative per_page is clamped to 1" do
+    get api_v1_events_path, params: { per_page: -5 }, headers: api_headers
+    assert_response :success
+
+    json = JSON.parse(response.body)
+    assert_equal 1, json["meta"]["per_page"]
+    assert json["events"].length <= 1
+  end
+
+  test "per_page exceeding max is capped at 100" do
+    get api_v1_events_path, params: { per_page: 200 }, headers: api_headers
+    assert_response :success
+
+    json = JSON.parse(response.body)
+    assert_equal 100, json["meta"]["per_page"]
+  end
+
+  # ============================================================
+  # Authentication Edge Cases
+  # ============================================================
+
+  test "malformed Authorization header returns 401 on protected endpoint" do
+    get mine_api_v1_events_path,
+      headers: { "Accept" => "application/json", "Authorization" => "NotBearer sometoken" }
+    assert_response :unauthorized
+
+    json = JSON.parse(response.body)
+    assert_equal "Unauthorized", json["error"]
+    assert_equal 401, json["status"]
+  end
+
+  test "missing Authorization header on protected endpoint returns 401" do
+    post api_v1_events_path,
+      params: { event: { title: "Test" } },
+      headers: { "Accept" => "application/json" },
+      as: :json
+    assert_response :unauthorized
+
+    json = JSON.parse(response.body)
+    assert_equal "Unauthorized", json["error"]
+  end
+
+  test "token without Bearer prefix returns 401" do
+    get mine_api_v1_events_path,
+      headers: { "Accept" => "application/json", "Authorization" => organiser_token }
+    assert_response :unauthorized
+
+    json = JSON.parse(response.body)
+    assert_equal "Unauthorized", json["error"]
+  end
+
+  test "nonexistent token digest returns 401" do
+    fake_token = "techevents_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    get mine_api_v1_events_path, headers: api_headers(fake_token)
+    assert_response :unauthorized
+  end
+
+  test "empty Bearer value returns 401" do
+    get mine_api_v1_events_path,
+      headers: { "Accept" => "application/json", "Authorization" => "Bearer " }
+    assert_response :unauthorized
+  end
+
+  # ============================================================
+  # Create Edge Cases
+  # ============================================================
+
+  test "create with no locations array returns validation error" do
+    post api_v1_events_path,
+      params: {
+        event: {
+          title: "No Locations Event",
+          description_markdown: "A test event",
+          start_date: 30.days.from_now.to_date.iso8601,
+          event_type: "meetup"
+        }
+      },
+      headers: api_headers(organiser_token),
+      as: :json
+
+    assert_response :unprocessable_entity
+    json = JSON.parse(response.body)
+    assert json.key?("errors")
+  end
+
+  test "create with empty locations array returns validation error" do
+    post api_v1_events_path,
+      params: {
+        event: {
+          title: "Empty Locations Event",
+          description_markdown: "A test event",
+          start_date: 30.days.from_now.to_date.iso8601,
+          event_type: "meetup",
+          locations: []
+        }
+      },
+      headers: api_headers(organiser_token),
+      as: :json
+
+    assert_response :unprocessable_entity
+    json = JSON.parse(response.body)
+    assert json.key?("errors")
+  end
+
+  test "create with multiple missing required fields returns field-level errors" do
+    post api_v1_events_path,
+      params: {
+        event: {
+          title: "",
+          start_date: nil,
+          event_type: nil,
+          locations: [{ region: "auckland" }]
+        }
+      },
+      headers: api_headers(organiser_token),
+      as: :json
+
+    assert_response :unprocessable_entity
+    json = JSON.parse(response.body)
+    assert json.key?("errors")
+    assert json["errors"].key?("title")
+    assert json["errors"].key?("start_date")
+    assert_equal 422, json["status"]
+  end
+
+  test "create error response includes proper JSON structure" do
+    post api_v1_events_path,
+      params: { event: { title: "" } },
+      headers: api_headers(organiser_token),
+      as: :json
+
+    assert_response :unprocessable_entity
+    json = JSON.parse(response.body)
+    assert json.key?("errors"), "Error response must include 'errors' key"
+    assert json["errors"].is_a?(Hash), "errors must be a Hash of field -> messages"
+    assert json.key?("status"), "Error response must include 'status' key"
+    assert_equal 422, json["status"]
+  end
+
+  # ============================================================
+  # Update Edge Cases
+  # ============================================================
+
+  test "update with empty locations array preserves existing locations" do
+    event = events(:organiser_event)
+    original_location_count = event.event_locations.count
+
+    patch api_v1_event_path(event),
+      params: {
+        event: {
+          locations: []
+        }
+      },
+      headers: api_headers(organiser_token),
+      as: :json
+
+    # Empty array is not present? in Rails, so locations are not modified
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_equal original_location_count, json["locations"].length
+  end
+
+  test "update with invalid data returns proper error structure" do
+    event = events(:organiser_event)
+    patch api_v1_event_path(event),
+      params: { event: { title: "" } },
+      headers: api_headers(organiser_token),
+      as: :json
+
+    assert_response :unprocessable_entity
+    json = JSON.parse(response.body)
+    assert json.key?("errors")
+    assert json.key?("status")
+    assert_equal 422, json["status"]
+  end
+
+  # ============================================================
+  # Error Response Format
+  # ============================================================
+
+  test "not found error includes proper JSON structure" do
+    get api_v1_event_path(id: 999999), headers: api_headers
+    assert_response :not_found
+
+    json = JSON.parse(response.body)
+    assert_equal "Not found", json["error"]
+    assert_equal 404, json["status"]
+  end
+
+  test "unauthorized error includes proper JSON structure" do
+    get mine_api_v1_events_path, headers: api_headers
+    assert_response :unauthorized
+
+    json = JSON.parse(response.body)
+    assert_equal "Unauthorized", json["error"]
+    assert_equal 401, json["status"]
+  end
+
+  test "invalid event_type returns proper error JSON structure" do
+    post api_v1_events_path,
+      params: {
+        event: {
+          title: "Bad Type",
+          description_markdown: "Test",
+          start_date: 30.days.from_now.to_date.iso8601,
+          event_type: "nonexistent_type",
+          locations: [{ region: "auckland" }]
+        }
+      },
+      headers: api_headers(organiser_token),
+      as: :json
+
+    assert_response :unprocessable_entity
+    json = JSON.parse(response.body)
+    assert json.key?("error") || json.key?("errors"),
+      "Error response must include 'error' or 'errors' key"
+    assert json.key?("status")
+  end
+
+  test "missing event param key returns 400 bad request" do
+    post api_v1_events_path,
+      params: { not_event: { title: "Test" } },
+      headers: api_headers(organiser_token),
+      as: :json
+
+    assert_response :bad_request
+    json = JSON.parse(response.body)
+    assert json.key?("error")
+    assert_equal 400, json["status"]
+  end
 end
