@@ -8,9 +8,9 @@
     <meta name="description" content="<%= content_for(:description) || 'Discover and share tech events across New Zealand. Conferences, meetups, workshops, and more.' %>">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="<%= content_for(:title) || 'NZ Tech Events' %>">
-    <meta property="og:description" content="<%= content_for(:description) || 'Discover and share tech events across New Zealand.' %>">
-    <meta property="og:type" content="website">
+    <meta property="og:title" content="<%= content_for(:og_title).presence || content_for(:title).presence || 'NZ Tech Events' %>">
+    <meta property="og:description" content="<%= content_for(:og_description).presence || content_for(:description).presence || 'Discover and share tech events across New Zealand.' %>">
+    <meta property="og:type" content="<%= content_for(:og_type).presence || 'website' %>">
     <%= yield :meta_tags %>
 
     <!-- Favicon -->
