@@ -13,6 +13,10 @@
     <meta property="og:type" content="<%= content_for(:og_type).presence || 'website' %>">
     <%= yield :meta_tags %>
 
+    <!-- RSS Feed -->
+    <%= auto_discovery_link_tag :rss, feed_url(format: :rss), title: "NZ Tech Events RSS Feed" %>
+    <%= auto_discovery_link_tag :atom, atom_feed_url(format: :atom), title: "NZ Tech Events Atom Feed" %>
+
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
 
@@ -143,7 +147,7 @@
     </main>
 
     <footer class="container site-footer">
-      <small>Free. <a href="https://github.com/ro-savage/nz-tech-events">Open Source</a>. No Ads. No Tracking. <a href="<%= about_path %>">Built for Good</a>.</small>
+      <small>Free. <a href="https://github.com/ro-savage/nz-tech-events">Open Source</a>. No Ads. No Tracking. <a href="<%= about_path %>">Built for Good</a>. <a href="<%= feed_path %>">RSS</a>.</small>
     </footer>
 
     <script>
