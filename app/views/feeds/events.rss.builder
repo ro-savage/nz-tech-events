@@ -5,8 +5,8 @@ xml.rss version: "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom" do
     xml.description "Upcoming tech events across New Zealand"
     xml.link root_url
     xml.language "en-nz"
-    xml.lastBuildDate @events.first&.updated_at&.rfc2822
-    xml.tag!("atom:link", href: feed_url(format: :rss), rel: "self", type: "application/rss+xml")
+    xml.lastBuildDate @feed_updated_at.rfc2822
+    xml.tag!("atom:link", href: feed_url, rel: "self", type: "application/rss+xml")
 
     @events.each do |event|
       xml.item do
@@ -18,9 +18,7 @@ xml.rss version: "2.0", "xmlns:atom" => "http://www.w3.org/2005/Atom" do
         xml.category event.event_type.humanize
 
         if event.location_regions_display.present?
-          xml.tag!("atom:author") do
-            xml.name event.location_regions_display
-          end
+          xml.category event.location_regions_display
         end
       end
     end

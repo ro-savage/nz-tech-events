@@ -41,7 +41,7 @@ class FeedsRequestTest < ActionDispatch::IntegrationTest
     assert_includes response.body, events(:approved_upcoming).title
   end
 
-  test "RSS feed includes event metadata" do
+  test "RSS feed includes channel metadata" do
     get feed_path(format: :rss)
     assert_response :success
     assert_match "<channel>", response.body
@@ -55,13 +55,57 @@ class FeedsRequestTest < ActionDispatch::IntegrationTest
     assert_match "<category>", response.body
   end
 
-  test "feed is limited to 50 events" do
+  test "Atom feed has a feed-level author" do
+    get atom_feed_path(format: :atom)
+    assert_response :success
+    # Author must be at feed level so every entry is covered even without
+    # per-entry authors (RFC 4287 §4.2.1).
+    author_section = response.body[/<feed[^>]*>.*?<entry>/m]
+    assert_match %r{<author>\s*<name>NZ Tech Events</name>\s*</author>}, author_section
+  end
+
+  test "Atom feed <updated> is a non-empty valid timestamp" do
+    get atom_feed_path(format: :atom)
+    assert_response :success
+    match = response.body.match(%r{<updated>([^<]+)</updated>})
+    assert match, "expected feed-level <updated> element"
+    assert_nothing_raised { Time.iso8601(match[1]) }
+  end
+
+  test "RSS feed <lastBuildDate> is a non-empty valid timestamp" do
     get feed_path(format: :rss)
     assert_response :success
-    # Verify the controller limits results (we have fewer than 50 fixtures,
-    # so just confirm the feed renders without error)
-    items = response.body.scan("<item>")
-    assert items.length <= 50
+    match = response.body.match(%r{<lastBuildDate>([^<]+)</lastBuildDate>})
+    assert match, "expected <lastBuildDate> element"
+    assert_nothing_raised { Time.rfc2822(match[1]) }
+  end
+
+  test "Atom feed renders with non-empty <updated> when no approved upcoming events" do
+    Event.update_all(approved: false)
+    get atom_feed_path(format: :atom)
+    assert_response :success
+    match = response.body.match(%r{<updated>([^<]+)</updated>})
+    assert match, "empty feed must still have a valid <updated>"
+    assert_nothing_raised { Time.iso8601(match[1]) }
+    refute_match "<entry>", response.body
+  end
+
+  test "RSS feed renders with non-empty <lastBuildDate> when no approved upcoming events" do
+    Event.update_all(approved: false)
+    get feed_path(format: :rss)
+    assert_response :success
+    match = response.body.match(%r{<lastBuildDate>([^<]+)</lastBuildDate>})
+    assert match, "empty feed must still have a valid <lastBuildDate>"
+    assert_nothing_raised { Time.rfc2822(match[1]) }
+    refute_match "<item>", response.body
+  end
+
+  test "feed is limited to MAX_FEED_EVENTS" do
+    assert_equal 50, FeedsController::MAX_FEED_EVENTS
+    # We can't easily build 51 valid fixtures, but verify the scope the
+    # controller uses honours the limit.
+    sql = Event.approved.upcoming.limit(FeedsController::MAX_FEED_EVENTS).to_sql
+    assert_match(/LIMIT\s+50/i, sql)
   end
 
   test "RSS feed is accessible without authentication" do

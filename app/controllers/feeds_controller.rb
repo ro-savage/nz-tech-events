@@ -5,6 +5,9 @@ class FeedsController < ApplicationController
     @events = Event.approved.upcoming
                    .includes(:event_locations, :user)
                    .limit(MAX_FEED_EVENTS)
+                   .to_a
+
+    @feed_updated_at = @events.map(&:updated_at).max || Time.current
 
     respond_to do |format|
       format.rss { render layout: false }
