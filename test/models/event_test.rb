@@ -159,6 +159,83 @@ class EventTest < ActiveSupport::TestCase
     assert event.errors[:base].any? { |e| e.include?("10 events") }
   end
 
+  # -- URL validations --
+
+  test "registration_url with https is valid" do
+    event = build_valid_event(users(:regular), registration_url: "https://example.com/register")
+    assert event.valid?
+  end
+
+  test "registration_url with http is valid" do
+    event = build_valid_event(users(:regular), registration_url: "http://example.com/register")
+    assert event.valid?
+  end
+
+  test "registration_url that is blank is valid" do
+    event = build_valid_event(users(:regular), registration_url: nil)
+    assert event.valid?
+    event.registration_url = ""
+    assert event.valid?
+  end
+
+  test "registration_url with javascript scheme is invalid" do
+    event = build_valid_event(users(:regular), registration_url: "javascript:alert('xss')")
+    assert_not event.valid?
+    assert event.errors[:registration_url].any?
+  end
+
+  test "registration_url with ftp scheme is invalid" do
+    event = build_valid_event(users(:regular), registration_url: "ftp://example.com/file")
+    assert_not event.valid?
+    assert event.errors[:registration_url].any?
+  end
+
+  test "registration_url with random string is invalid" do
+    event = build_valid_event(users(:regular), registration_url: "not a url at all")
+    assert_not event.valid?
+    assert event.errors[:registration_url].any?
+  end
+
+  test "source_url with https is valid" do
+    event = build_valid_event(users(:regular), source_url: "https://meetup.com/event")
+    assert event.valid?
+  end
+
+  test "source_url that is blank is valid" do
+    event = build_valid_event(users(:regular), source_url: nil)
+    assert event.valid?
+  end
+
+  test "source_url with javascript scheme is invalid" do
+    event = build_valid_event(users(:regular), source_url: "javascript:alert('xss')")
+    assert_not event.valid?
+    assert event.errors[:source_url].any?
+  end
+
+  test "source_url with ftp scheme is invalid" do
+    event = build_valid_event(users(:regular), source_url: "ftp://example.com/file")
+    assert_not event.valid?
+    assert event.errors[:source_url].any?
+  end
+
+  test "source_url with random string is invalid" do
+    event = build_valid_event(users(:regular), source_url: "not a url at all")
+    assert_not event.valid?
+    assert event.errors[:source_url].any?
+  end
+
+  test "registration_url with bare scheme and no host is invalid" do
+    event = build_valid_event(users(:regular), registration_url: "http://")
+    assert_not event.valid?
+    assert event.errors[:registration_url].any?
+  end
+
+  test "source_url with bare scheme and no host is invalid" do
+    event = build_valid_event(users(:regular), source_url: "https://")
+    assert_not event.valid?
+    assert event.errors[:source_url].any?
+  end
+
   # ========== Callback: set_approval_status ==========
 
   test "event by admin is auto-approved on create" do

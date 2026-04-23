@@ -49,6 +49,8 @@ class Event < ApplicationRecord
   validate :end_date_after_start_date, if: -> { end_date.present? }
   validate :at_least_one_location
   validate :user_within_rate_limit, on: :create
+  validate :registration_url_is_valid, if: -> { registration_url.present? }
+  validate :source_url_is_valid, if: -> { source_url.present? }
 
   # Scopes
   scope :upcoming, -> { where("start_date >= ?", Date.current).order(start_date: :asc, start_time: :asc) }
@@ -184,5 +186,24 @@ class Event < ApplicationRecord
     if user.events_created_in_last_24_hours >= 10
       errors.add(:base, "You can only create 10 events in a 24-hour period. Please try again later.")
     end
+  end
+
+  # URL validation helpers
+  def validate_url(attribute)
+    url = send(attribute)
+    uri = URI.parse(url)
+    unless uri.is_a?(URI::HTTP) && uri.host.present?
+      errors.add(attribute, "must be a valid HTTP or HTTPS URL")
+    end
+  rescue URI::InvalidURIError
+    errors.add(attribute, "must be a valid HTTP or HTTPS URL")
+  end
+
+  def registration_url_is_valid
+    validate_url(:registration_url)
+  end
+
+  def source_url_is_valid
+    validate_url(:source_url)
   end
 end
