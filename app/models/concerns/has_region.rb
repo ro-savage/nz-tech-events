@@ -27,7 +27,7 @@ module HasRegion
   end
 
   def region_display
-    return 'Asia Pacific' if region == 'apac'
-    region.to_s.titleize.gsub('_', '-')
+    return "Asia Pacific" if region == "apac"
+    region.to_s.titleize
   end
 end

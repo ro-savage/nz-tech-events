@@ -175,7 +175,8 @@ enum :region, {
   canterbury: 13,
   otago: 14,
   southland: 15,
-  online: 16
+  apac: 16,
+  online: 17
 }, prefix: true
 ```
 
@@ -334,7 +335,7 @@ CITIES_BY_REGION = {
   "wellington" => ["Wellington CBD", "Lower Hutt", "Upper Hutt", "Porirua", "Kāpiti Coast", "Other"],
   "canterbury" => ["Christchurch", "Timaru", "Ashburton", "Other"],
   "online" => ["Online"],
-  # ... all 17 regions
+  # ... all 18 regions
 }
 ```
 
