@@ -113,7 +113,7 @@ module EventsHelper
     offers = json_ld_offers(event)
     data["offers"] = offers if offers
 
-    data.to_json
+    ERB::Util.json_escape(data.to_json).html_safe
   end
 
   # Calendar integration helpers

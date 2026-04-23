@@ -1,0 +1,21 @@
+---
+# Pre-existing vulnerabilities to address in a separate PR.
+# Each entry documents the advisory and the planned fix.
+ignore:
+  # action_text-trix XSS vulnerabilities — update trix to >= 2.1.18
+  - GHSA-53p3-c7vp-4mcc
+  - GHSA-g9jg-w8vm-g96v
+  - GHSA-qmpg-8xg6-ph5q
+  # activestorage DoS via multi-range requests — update Rails to >= 8.1.2.1
+  - GHSA-p9fm-f462-ggrg
+  # bcrypt integer overflow on JRuby (not applicable to MRI) — update to >= 3.1.22
+  - GHSA-f27w-vcwj-c954
+  # faraday SSRF via protocol-relative URL — update to >= 2.14.1
+  - GHSA-33mh-2634-fwr2
+  # json format string injection — update to >= 2.17.1.2
+  - GHSA-3m6g-2423-7cp3
+  # nokogiri xmlC14NExecute return value — update to >= 1.19.1
+  - GHSA-wx95-c6cv-8532
+  # rack directory traversal and XSS — update to >= 3.2.5
+  - GHSA-mxw3-3hh2-x2mh
+  - GHSA-whrj-4476-wvmp
