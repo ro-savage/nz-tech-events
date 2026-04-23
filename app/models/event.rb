@@ -159,8 +159,6 @@ class Event < ApplicationRecord
     end
   end
 
-  VALID_URL_SCHEMES = %w[http https].freeze
-
   private
 
   def set_approval_status
