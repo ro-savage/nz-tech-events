@@ -67,6 +67,55 @@ module EventsHelper
     "badge badge-#{event_type}"
   end
 
+  # Schema.org event type mapping
+  SCHEMA_ORG_EVENT_TYPES = {
+    "conference" => "BusinessEvent",
+    "meetup" => "SocialEvent",
+    "workshop" => "EducationEvent",
+    "hackathon" => "Hackathon",
+    "webinar" => "EducationEvent",
+    "networking" => "SocialEvent",
+    "talk" => "EducationEvent",
+    "awards" => "SocialEvent",
+    "other" => "Event"
+  }.freeze
+
+  # JSON-LD structured data helpers
+
+  # Generates a JSON-LD string for the Schema.org Event type.
+  # Optional fields are omitted when the underlying data is not present.
+  #
+  # @param event [Event] the event to generate structured data for
+  # @return [String] JSON-LD string safe for embedding in a script tag
+  def event_json_ld(event)
+    data = {
+      "@context" => "https://schema.org",
+      "@type" => schema_org_event_type(event),
+      "name" => event.title,
+      "startDate" => json_ld_start_date(event),
+      "eventStatus" => "https://schema.org/EventScheduled"
+    }
+
+    description = event.display_summary
+    data["description"] = description if description.present?
+
+    attendance_mode = json_ld_attendance_mode(event)
+    data["eventAttendanceMode"] = attendance_mode if attendance_mode
+
+    end_date = json_ld_end_date(event)
+    data["endDate"] = end_date if end_date
+
+    location = json_ld_location(event)
+    data["location"] = location if location
+
+    data["url"] = event.registration_url if event.registration_url.present?
+
+    offers = json_ld_offers(event)
+    data["offers"] = offers if offers
+
+    data.to_json
+  end
+
   # Calendar integration helpers
   NZ_TIMEZONE = "Pacific/Auckland"
 
@@ -113,6 +162,99 @@ module EventsHelper
   end
 
   private
+
+  # JSON-LD private helpers
+
+  def schema_org_event_type(event)
+    SCHEMA_ORG_EVENT_TYPES.fetch(event.event_type, "Event")
+  end
+
+  def json_ld_start_date(event)
+    if event.start_time.present?
+      format_json_ld_datetime(event.start_date, event.start_time)
+    else
+      event.start_date.iso8601
+    end
+  end
+
+  def json_ld_end_date(event)
+    if event.end_date.present? && event.end_date != event.start_date
+      if event.end_time.present?
+        format_json_ld_datetime(event.end_date, event.end_time)
+      else
+        event.end_date.iso8601
+      end
+    elsif event.end_time.present? && event.end_time != event.start_time
+      format_json_ld_datetime(event.end_date || event.start_date, event.end_time)
+    end
+  end
+
+  def format_json_ld_datetime(date, time)
+    nz_zone = ActiveSupport::TimeZone[NZ_TIMEZONE]
+    dt = nz_zone.local(date.year, date.month, date.day, time.hour, time.min)
+    dt.iso8601
+  end
+
+  def json_ld_attendance_mode(event)
+    primary = event.primary_location
+    return nil unless primary
+
+    if primary.region == "online"
+      "https://schema.org/OnlineEventAttendanceMode"
+    else
+      "https://schema.org/OfflineEventAttendanceMode"
+    end
+  end
+
+  def json_ld_location(event)
+    primary = event.primary_location
+
+    if primary&.region == "online"
+      return nil unless event.registration_url.present?
+
+      {
+        "@type" => "VirtualLocation",
+        "url" => event.registration_url
+      }
+    else
+      place = { "@type" => "Place" }
+      name_parts = [ primary&.city, primary&.region_display ].compact_blank
+      place["name"] = name_parts.join(", ") if name_parts.any?
+
+      if event.address.present?
+        address = { "@type" => "PostalAddress", "streetAddress" => event.address }
+        address["addressRegion"] = primary.region_display if primary
+        address["addressCountry"] = "NZ"
+        place["address"] = address
+      end
+
+      place.keys.size > 1 ? place : nil
+    end
+  end
+
+  def json_ld_offers(event)
+    price = event.free? ? "0" : parse_numeric_price(event.cost)
+    return nil unless price
+
+    offer = {
+      "@type" => "Offer",
+      "price" => price,
+      "priceCurrency" => "NZD",
+      "availability" => "https://schema.org/InStock"
+    }
+    offer["url"] = event.registration_url if event.registration_url.present?
+    offer
+  end
+
+  # Extracts the first numeric value (with optional decimal) from a free-text
+  # cost string. Returns nil if no number is present (e.g. "Koha", "TBC").
+  def parse_numeric_price(cost)
+    return nil if cost.blank?
+
+    cost.to_s[/\d+(?:\.\d+)?/]
+  end
+
+  # Calendar private helpers
 
   def calendar_times(event)
     nz_zone = ActiveSupport::TimeZone[NZ_TIMEZONE]

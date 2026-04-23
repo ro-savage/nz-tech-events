@@ -88,3 +88,15 @@ organiser_event:
   approved: true
   user: organiser
   city: "Auckland CBD"
+
+online_event:
+  title: "Remote Coding Webinar"
+  start_date: <%= 5.days.from_now.to_date %>
+  start_time: "10:00"
+  end_time: "12:00"
+  cost: "Free"
+  event_type: 4
+  short_summary: "A webinar about remote coding best practices"
+  approved: true
+  user: organiser
+  registration_url: "https://example.com/webinar"

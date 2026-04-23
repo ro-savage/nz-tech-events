@@ -9,6 +9,10 @@
   <meta name="twitter:description" content="<%= @event.display_summary(limit: 200) %>">
 <% end %>
 
+<script type="application/ld+json">
+  <%= raw event_json_ld(@event) %>
+</script>
+
 <a href="<%= root_path %>" class="back-link">&larr; Back to Events</a>
 
 <% unless @event.approved? %>
