@@ -83,6 +83,7 @@ module EventsHelper
   # JSON-LD structured data helpers
 
   # Generates a JSON-LD string for the Schema.org Event type.
+  # Optional fields are omitted when the underlying data is not present.
   #
   # @param event [Event] the event to generate structured data for
   # @return [String] JSON-LD string safe for embedding in a script tag
@@ -92,21 +93,25 @@ module EventsHelper
       "@type" => schema_org_event_type(event),
       "name" => event.title,
       "startDate" => json_ld_start_date(event),
-      "description" => event.display_summary,
-      "eventStatus" => "https://schema.org/EventScheduled",
-      "eventAttendanceMode" => json_ld_attendance_mode(event)
+      "eventStatus" => "https://schema.org/EventScheduled"
     }
+
+    description = event.display_summary
+    data["description"] = description if description.present?
+
+    attendance_mode = json_ld_attendance_mode(event)
+    data["eventAttendanceMode"] = attendance_mode if attendance_mode
 
     end_date = json_ld_end_date(event)
     data["endDate"] = end_date if end_date
 
-    data["location"] = json_ld_location(event)
+    location = json_ld_location(event)
+    data["location"] = location if location
 
-    if event.registration_url.present?
-      data["url"] = event.registration_url
-    end
+    data["url"] = event.registration_url if event.registration_url.present?
 
-    data["offers"] = json_ld_offers(event)
+    offers = json_ld_offers(event)
+    data["offers"] = offers if offers
 
     data.to_json
   end
@@ -192,7 +197,9 @@ module EventsHelper
 
   def json_ld_attendance_mode(event)
     primary = event.primary_location
-    if primary&.region == "online"
+    return nil unless primary
+
+    if primary.region == "online"
       "https://schema.org/OnlineEventAttendanceMode"
     else
       "https://schema.org/OfflineEventAttendanceMode"
@@ -201,10 +208,13 @@ module EventsHelper
 
   def json_ld_location(event)
     primary = event.primary_location
+
     if primary&.region == "online"
+      return nil unless event.registration_url.present?
+
       {
         "@type" => "VirtualLocation",
-        "url" => event.registration_url || ""
+        "url" => event.registration_url
       }
     else
       place = { "@type" => "Place" }
@@ -212,34 +222,36 @@ module EventsHelper
       place["name"] = name_parts.join(", ") if name_parts.any?
 
       if event.address.present?
-        place["address"] = {
-          "@type" => "PostalAddress",
-          "streetAddress" => event.address,
-          "addressRegion" => primary&.region_display,
-          "addressCountry" => "NZ"
-        }
+        address = { "@type" => "PostalAddress", "streetAddress" => event.address }
+        address["addressRegion"] = primary.region_display if primary
+        address["addressCountry"] = "NZ"
+        place["address"] = address
       end
 
-      place
+      place.keys.size > 1 ? place : nil
     end
   end
 
   def json_ld_offers(event)
-    if event.free?
-      {
-        "@type" => "Offer",
-        "price" => "0",
-        "priceCurrency" => "NZD",
-        "availability" => "https://schema.org/InStock"
-      }
-    else
-      {
-        "@type" => "Offer",
-        "price" => event.cost,
-        "priceCurrency" => "NZD",
-        "availability" => "https://schema.org/InStock"
-      }
-    end
+    price = event.free? ? "0" : parse_numeric_price(event.cost)
+    return nil unless price
+
+    offer = {
+      "@type" => "Offer",
+      "price" => price,
+      "priceCurrency" => "NZD",
+      "availability" => "https://schema.org/InStock"
+    }
+    offer["url"] = event.registration_url if event.registration_url.present?
+    offer
+  end
+
+  # Extracts the first numeric value (with optional decimal) from a free-text
+  # cost string. Returns nil if no number is present (e.g. "Koha", "TBC").
+  def parse_numeric_price(cost)
+    return nil if cost.blank?
+
+    cost.to_s[/\d+(?:\.\d+)?/]
   end
 
   # Calendar private helpers

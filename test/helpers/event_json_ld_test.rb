@@ -48,13 +48,36 @@ class EventJsonLdTest < ActionView::TestCase
     assert_equal "NZD", json["offers"]["priceCurrency"]
   end
 
-  test "paid event has offer with cost string" do
+  test "paid event has offer with numeric price parsed from cost" do
     event = events(:paid_event)
     json = JSON.parse(event_json_ld(event))
 
+    # paid_event cost is "$50"; Schema.org requires numeric-only price
     assert_equal "Offer", json["offers"]["@type"]
-    assert_equal "$50", json["offers"]["price"]
+    assert_equal "50", json["offers"]["price"]
     assert_equal "NZD", json["offers"]["priceCurrency"]
+  end
+
+  test "event with non-numeric cost omits offers" do
+    event = events(:paid_event)
+    event.cost = "Koha"
+    json = JSON.parse(event_json_ld(event))
+
+    assert_nil json["offers"]
+  end
+
+  test "offer includes url when event has registration_url" do
+    event = events(:paid_event)
+    json = JSON.parse(event_json_ld(event))
+
+    assert_equal event.registration_url, json["offers"]["url"]
+  end
+
+  test "offer omits url when event has no registration_url" do
+    event = events(:organiser_event)
+    json = JSON.parse(event_json_ld(event))
+
+    assert_nil json["offers"]["url"]
   end
 
   test "online event has OnlineEventAttendanceMode" do
@@ -71,6 +94,25 @@ class EventJsonLdTest < ActionView::TestCase
 
     assert_equal "VirtualLocation", json["location"]["@type"]
     assert_equal event.registration_url, json["location"]["url"]
+  end
+
+  test "online event without registration_url omits location" do
+    event = events(:online_event)
+    event.registration_url = nil
+    json = JSON.parse(event_json_ld(event))
+
+    assert_nil json["location"]
+  end
+
+  test "event without any location data omits location and attendance mode" do
+    event = events(:organiser_event)
+    event.event_locations.destroy_all
+    event.address = nil
+    event.reload
+    json = JSON.parse(event_json_ld(event))
+
+    assert_nil json["location"]
+    assert_nil json["eventAttendanceMode"]
   end
 
   test "offline event has OfflineEventAttendanceMode" do
@@ -96,14 +138,22 @@ class EventJsonLdTest < ActionView::TestCase
     assert json["endDate"].present?, "endDate must be present for multi-day events"
   end
 
-  test "single-day event without different end time has no endDate" do
+  test "event without end_date or end_time has no endDate" do
     event = events(:approved_upcoming)
-    # approved_upcoming has start_time 18:00 and end_time 20:00 (different)
-    # so it will have an endDate. Let's check multi_day specifically
+    event.end_date = nil
+    event.end_time = nil
     json = JSON.parse(event_json_ld(event))
 
-    # This event has a different end_time so it should have endDate
-    assert json["endDate"].present?
+    assert_nil json["endDate"]
+  end
+
+  test "date-only event (no start_time) emits startDate without time component" do
+    event = events(:approved_upcoming)
+    event.start_time = nil
+    event.end_time = nil
+    json = JSON.parse(event_json_ld(event))
+
+    refute_match(/T/, json["startDate"], "startDate without time should not include T separator")
   end
 
   test "startDate includes time when event has start_time" do
