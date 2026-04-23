@@ -112,4 +112,10 @@ class FeedsRequestTest < ActionDispatch::IntegrationTest
     get feed_path(format: :rss)
     assert_response :success
   end
+
+  test "site footer links to the RSS feed" do
+    get root_path
+    assert_response :success
+    assert_select "footer.site-footer a[href=?]", feed_path, text: "RSS"
+  end
 end
