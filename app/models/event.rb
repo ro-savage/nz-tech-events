@@ -51,6 +51,10 @@ class Event < ApplicationRecord
       .distinct
   }
   scope :by_event_type, ->(type) { where(event_type: type) if type.present? }
+  scope :search, ->(query) {
+    return all if query.blank?
+    where("title LIKE ? OR short_summary LIKE ?", "%#{query}%", "%#{query}%")
+  }
 
   # Callbacks
   before_create :set_approval_status
