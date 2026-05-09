@@ -45,70 +45,16 @@ class EventsController < ApplicationController
   end
 
   def create
-    dates = dates_params
+    result = EventCreationService.call(
+      user: Current.user,
+      event_params: create_event_params,
+      dates: dates_params
+    )
 
-    if dates.empty?
-      @event = Current.user.events.build(create_event_params)
-      @event.event_locations.build if @event.event_locations.empty?
-      @event.errors.add(:base, "At least one date is required")
-      @submitted_dates = [ {} ]
-      render :new, status: :unprocessable_entity
-      return
-    end
-
-    shared = create_event_params
-    @events = dates.map { |date_attrs| Current.user.events.build(shared.merge(date_attrs)) }
-
-    # Pre-validate all events to surface errors before attempting any saves
-    all_valid = @events.all?(&:valid?)
-
-    unless all_valid
-      @event = Current.user.events.build(shared)
-      @event.event_locations.build if @event.event_locations.empty?
-
-      if @events.length == 1
-        @events.first.errors.full_messages.each { |m| @event.errors.add(:base, m) }
-      else
-        @events.each_with_index do |ev, i|
-          ev.errors.full_messages.each { |m| @event.errors.add(:base, "Date #{i + 1}: #{m}") }
-        end
-      end
-
-      @submitted_dates = dates.map(&:to_h)
-      render :new, status: :unprocessable_entity
-      return
-    end
-
-    # Save all in a transaction — roll back everything if any save fails
-    transaction_succeeded = false
-    ActiveRecord::Base.transaction do
-      transaction_succeeded = @events.all? { |ev| ev.save }
-      raise ActiveRecord::Rollback unless transaction_succeeded
-    end
-
-    if transaction_succeeded
-      if @events.one?
-        event = @events.first
-        msg = event.approved? ? "Event created successfully!" : "Event created! It will appear on the events list once approved by an admin."
-        redirect_to event, notice: msg
-      else
-        redirect_to my_events_events_path, notice: "#{@events.length} events created successfully!"
-      end
+    if result.success?
+      handle_creation_success(result)
     else
-      # Rare: race condition after pre-validation passed (e.g. rate limit)
-      @event = Current.user.events.build(shared)
-      @event.event_locations.build if @event.event_locations.empty?
-      failing = @events.select { |e| e.errors.any? }
-      if failing.any?
-        failing.each do |ev|
-          i = @events.index(ev)
-          ev.errors.full_messages.each { |m| @event.errors.add(:base, @events.length == 1 ? m : "Date #{i + 1}: #{m}") }
-        end
-      else
-        @event.errors.add(:base, "Failed to save events. Please try again.")
-      end
-      @submitted_dates = dates.map(&:to_h)
-      render :new, status: :unprocessable_entity
+      handle_creation_failure(result)
     end
   end
 
@@ -197,6 +143,22 @@ class EventsController < ApplicationController
       "start_time" => source_event.start_time&.strftime("%H:%M"),
       "end_time" => source_event.end_time&.strftime("%H:%M")
     }
+  end
+
+  def handle_creation_success(result)
+    if result.single?
+      event = result.events.first
+      msg = event.approved? ? "Event created successfully!" : "Event created! It will appear on the events list once approved by an admin."
+      redirect_to event, notice: msg
+    else
+      redirect_to my_events_events_path, notice: "#{result.events.length} events created successfully!"
+    end
+  end
+
+  def handle_creation_failure(result)
+    @event = result.display_event
+    @submitted_dates = result.events.any? ? dates_params.map(&:to_h) : [ {} ]
+    render :new, status: :unprocessable_entity
   end
 
   def can_modify_event?(event)
