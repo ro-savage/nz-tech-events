@@ -5,4 +5,11 @@ class PagesRequestTest < ActionDispatch::IntegrationTest
     get about_path
     assert_response :success
   end
+
+  test "GET /about renders Contributors section" do
+    get about_path
+    assert_response :success
+    assert_select "h2", text: "Contributors"
+    assert_select "a[href=?]", "https://github.com/olitreadwell", text: "Oli"
+  end
 end
