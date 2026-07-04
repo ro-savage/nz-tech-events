@@ -14,7 +14,7 @@ class BuildEventJsonTest < Minitest::Test
       "TechEventsID" => "",
       "title" => "Test Event",
       "short_summary" => "A test",
-      "description_markdowndescription_markdown" => "Some **markdown**",
+      "description_markdown" => "Some **markdown**",
       "start_date" => "2026-05-01",
       "end_date" => "",
       "start_time" => "09:00",

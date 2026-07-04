@@ -9,8 +9,7 @@ EVENTS_CSV_PATH = File.expand_path("../data/events.csv", __dir__)
 ERRORS_CSV_PATH = File.expand_path("../data/events_errors.csv", __dir__)
 REQUEST_DELAY = 2 # seconds between requests to stay under 30/min rate limit
 
-# The CSV header has a typo — map it to the correct API field
-CSV_DESCRIPTION_COLUMN = "description_markdowndescription_markdown"
+CSV_DESCRIPTION_COLUMN = "description_markdown"
 
 # CSV columns that map directly to API event fields
 DIRECT_FIELD_MAPPING = {
