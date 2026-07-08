@@ -1,0 +1,30 @@
+<% content_for :title, "Search Events" %>
+
+<h1>Search Events</h1>
+
+<form action="<%= search_path %>" method="get" role="search">
+  <fieldset role="group">
+    <input
+      type="search"
+      name="q"
+      value="<%= @query %>"
+      placeholder="Search by title or summary..."
+      aria-label="Search events"
+    >
+    <input type="submit" value="Search">
+  </fieldset>
+</form>
+
+<% if @query.present? %>
+  <% if @events.any? %>
+    <p><strong><%= @events.size %></strong> <%= "event".pluralize(@events.size) %> found for "<%= @query %>"</p>
+
+    <div class="events-list">
+      <%= render partial: "events/event_card", collection: @events, as: :event %>
+    </div>
+  <% else %>
+    <p>No events found for "<%= @query %>"</p>
+  <% end %>
+<% else %>
+  <p>Enter a search term to find upcoming events.</p>
+<% end %>
