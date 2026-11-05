@@ -51,7 +51,7 @@ def build_event_json(row)
     location = { "region" => region.strip }
     city = row["city"]
     location["city"] = city.strip if city && !city.strip.empty?
-    event["locations"] = [location]
+    event["locations"] = [ location ]
   end
 
   { "event" => event }
@@ -68,11 +68,11 @@ def post_event(json_body)
   request.body = JSON.generate(json_body)
 
   response = http.request(request)
-  [response.code.to_i, JSON.parse(response.body)]
+  [ response.code.to_i, JSON.parse(response.body) ]
 rescue JSON::ParserError
-  [response.code.to_i, { "error" => response.body }]
+  [ response.code.to_i, { "error" => response.body } ]
 rescue StandardError => e
-  [0, { "error" => e.message }]
+  [ 0, { "error" => e.message } ]
 end
 
 def format_error(status, body)
@@ -106,7 +106,7 @@ if __FILE__ == $PROGRAM_NAME
     if tech_id && !tech_id.strip.empty?
       skipped += 1
     else
-      to_upload << [index, row]
+      to_upload << [ index, row ]
     end
   end
 
@@ -137,7 +137,7 @@ if __FILE__ == $PROGRAM_NAME
       puts "OK (id=#{event_id})"
     else
       error_msg = format_error(status, body)
-      errors << [row_index, row, error_msg]
+      errors << [ row_index, row, error_msg ]
       puts "ERROR: #{error_msg}"
     end
 
@@ -153,10 +153,10 @@ if __FILE__ == $PROGRAM_NAME
 
   # Write error CSV if there were failures
   if errors.any?
-    error_headers = ["error"] + headers
+    error_headers = [ "error" ] + headers
     CSV.open(ERRORS_CSV_PATH, "w", headers: error_headers, write_headers: true) do |csv|
       errors.each do |_row_index, row, error_msg|
-        csv << [error_msg] + headers.map { |h| row[h] }
+        csv << [ error_msg ] + headers.map { |h| row[h] }
       end
     end
     puts "Errors written to #{ERRORS_CSV_PATH}"

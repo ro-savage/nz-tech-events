@@ -66,7 +66,7 @@ class Api::V1::BaseController < ActionController::API
   # --- Pagination ---
 
   def page_number
-    [params.fetch(:page, 1).to_i, 1].max
+    [ params.fetch(:page, 1).to_i, 1 ].max
   end
 
   def per_page

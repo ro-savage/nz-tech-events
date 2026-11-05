@@ -30,7 +30,7 @@ class SendWeeklyDigestJob < ApplicationJob
                           .where.not(region: region)
                           .order(:start_date)
                           .distinct
-      
+
       # Convert to arrays for serialization (deliver_later can't serialize ActiveRecord::Relation)
       new_events_array = new_events.to_a
       upcoming_events_array = upcoming_events.to_a

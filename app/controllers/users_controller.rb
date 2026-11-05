@@ -33,5 +33,4 @@ class UsersController < ApplicationController
     @user.destroy
     redirect_to users_path, notice: "User deleted successfully."
   end
-
 end

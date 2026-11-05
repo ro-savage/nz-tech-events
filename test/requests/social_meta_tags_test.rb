@@ -1,7 +1,7 @@
-require 'test_helper'
+require "test_helper"
 
 class SocialMetaTagsTest < ActionDispatch::IntegrationTest
-  test 'event show page og:title is the event title, not the site default' do
+  test "event show page og:title is the event title, not the site default" do
     event = events(:approved_upcoming)
     get event_path(event)
     assert_response :success
@@ -11,7 +11,7 @@ class SocialMetaTagsTest < ActionDispatch::IntegrationTest
     )
   end
 
-  test 'event show page og:description is the event summary, not the site default' do
+  test "event show page og:description is the event summary, not the site default" do
     event = events(:approved_upcoming)
     get event_path(event)
     assert_response :success
@@ -21,7 +21,7 @@ class SocialMetaTagsTest < ActionDispatch::IntegrationTest
     )
   end
 
-  test 'event show page emits exactly one og:title, og:description, og:type' do
+  test "event show page emits exactly one og:title, og:description, og:type" do
     event = events(:approved_upcoming)
     get event_path(event)
     assert_response :success
@@ -30,14 +30,14 @@ class SocialMetaTagsTest < ActionDispatch::IntegrationTest
     assert_equal 1, response.body.scan(/<meta property="og:type"/).size
   end
 
-  test 'event show page includes twitter:card summary' do
+  test "event show page includes twitter:card summary" do
     event = events(:approved_upcoming)
     get event_path(event)
     assert_response :success
     assert_match(/<meta name="twitter:card" content="summary">/, response.body)
   end
 
-  test 'event show page includes og:url with absolute event URL' do
+  test "event show page includes og:url with absolute event URL" do
     event = events(:approved_upcoming)
     get event_path(event)
     assert_response :success
@@ -47,7 +47,7 @@ class SocialMetaTagsTest < ActionDispatch::IntegrationTest
     )
   end
 
-  test 'homepage does not render an event-specific og:title' do
+  test "homepage does not render an event-specific og:title" do
     event = events(:approved_upcoming)
     get root_path
     assert_response :success

@@ -11,221 +11,221 @@ rows = CSV.parse(csv_content, headers: true)
 TITLE_UPDATES = {
   "DINZ Virtual Coffee Chat" => {
     event_type: "networking",
-    end_time: "10:45",
+    end_time: "10:45"
     # region/city already correct (online/Online)
   },
   "Kapiti Startup & Innovation Network" => {
     event_type: "networking",
     end_time: "09:00",
-    cost: "Free",
+    cost: "Free"
     # region=wellington, city=Kapiti Coast already correct
   },
   "Auckland Makes Games" => {
-    event_type: "networking",
+    event_type: "networking"
     # region=auckland, city=Auckland CBD already correct
   },
   "Cryptocurrency NZ Meetup" => {
-    event_type: "meetup",
+    event_type: "meetup"
     # region=online already correct (multi-location)
   },
   "Agritech Unleashed" => {
-    event_type: "conference",
-  },
+    event_type: "conference"
+  }
 }
 
 SPECIFIC_UPDATES = {
-  ["FLINT Auckland - Startups VS Corporates - Shaping Your Career", "2026-04-08"] => {
+  [ "FLINT Auckland - Startups VS Corporates - Shaping Your Career", "2026-04-08" ] => {
     event_type: "talk",
     end_time: "19:30",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Nelson - Empower Her Networking - The Story Behind the Brand", "2026-04-10"] => {
+  [ "Nelson - Empower Her Networking - The Story Behind the Brand", "2026-04-10" ] => {
     event_type: "networking",
     region: "nelson",
-    city: "Nelson",
+    city: "Nelson"
   },
-  ["GEN NZ Motu Connect", "2026-04-14"] => {
-    event_type: "networking",
+  [ "GEN NZ Motu Connect", "2026-04-14" ] => {
+    event_type: "networking"
   },
-  ["Women and Non-Binary Folk STEM TRG - The Leadership Series", "2026-04-14"] => {
+  [ "Women and Non-Binary Folk STEM TRG - The Leadership Series", "2026-04-14" ] => {
     event_type: "workshop",
     end_time: "19:30",
-    cost: "Free",
+    cost: "Free"
   },
-  ["KiwiSaaS | GTM Engineering: automate, scale, win", "2026-04-15"] => {
+  [ "KiwiSaaS | GTM Engineering: automate, scale, win", "2026-04-15" ] => {
     event_type: "workshop",
     end_time: "19:30",
-    cost: "$25",
+    cost: "$25"
   },
-  ["\u{1F525} Job Hackers Mixer \u{2014} Live Q&A, Real Stories & Breakout Connections", "2026-04-15"] => {
+  [ "\u{1F525} Job Hackers Mixer \u{2014} Live Q&A, Real Stories & Breakout Connections", "2026-04-15" ] => {
     event_type: "networking",
     end_time: "20:00",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Agritech Unleashed", "2026-04-16"] => {
+  [ "Agritech Unleashed", "2026-04-16" ] => {
     # region=auckland already correct
   },
-  ["Fintech Festival", "2026-04-16"] => {
+  [ "Fintech Festival", "2026-04-16" ] => {
     event_type: "conference",
-    end_time: "19:00",
+    end_time: "19:00"
   },
-  ["EdTechNZ Community Connect Event \u{2013} Auckland", "2026-04-16"] => {
+  [ "EdTechNZ Community Connect Event \u{2013} Auckland", "2026-04-16" ] => {
     event_type: "networking",
-    cost: "Free",
+    cost: "Free"
   },
-  ["EdTechNZ Community Connect Event \u{2013} Wellington", "2026-04-16"] => {
+  [ "EdTechNZ Community Connect Event \u{2013} Wellington", "2026-04-16" ] => {
     event_type: "networking",
-    cost: "Free",
+    cost: "Free"
   },
-  ["EdTechNZ Community Connect Event \u{2013} Christchurch", "2026-04-16"] => {
+  [ "EdTechNZ Community Connect Event \u{2013} Christchurch", "2026-04-16" ] => {
     event_type: "networking",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Prompt Like a Pro: Practical AI Techniques", "2026-04-17"] => {
-    event_type: "workshop",
+  [ "Prompt Like a Pro: Practical AI Techniques", "2026-04-17" ] => {
+    event_type: "workshop"
   },
-  ["AI Forum Webinar Series: Real AI Case Studies and Success Stories from the Field", "2026-04-17"] => {
+  [ "AI Forum Webinar Series: Real AI Case Studies and Success Stories from the Field", "2026-04-17" ] => {
     event_type: "webinar",
     end_time: "10:30",
-    cost: "Free",
+    cost: "Free"
   },
-  ["EdTechNZ Community Connect Event", "2026-04-18"] => {
+  [ "EdTechNZ Community Connect Event", "2026-04-18" ] => {
     event_type: "networking",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Governance for Growth", "2026-04-20"] => {
-    event_type: "workshop",
+  [ "Governance for Growth", "2026-04-20" ] => {
+    event_type: "workshop"
   },
-  ["Movac Sales Jam", "2026-04-21"] => {
+  [ "Movac Sales Jam", "2026-04-21" ] => {
     event_type: "networking",
-    end_time: "18:30",
+    end_time: "18:30"
   },
-  ["AI Engineering TRG | 0.1 Setup", "2026-04-21"] => {
+  [ "AI Engineering TRG | 0.1 Setup", "2026-04-21" ] => {
     event_type: "meetup",
     end_time: "19:30",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Careers of the Future: Global Opportunities", "2026-04-21"] => {
+  [ "Careers of the Future: Global Opportunities", "2026-04-21" ] => {
     event_type: "talk",
     end_time: "19:30",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Cleantech Expo - Auckland", "2026-04-22"] => {
+  [ "Cleantech Expo - Auckland", "2026-04-22" ] => {
     event_type: "conference",
     end_time: "15:00",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Ministry of Awesome: Coffee & Jam - #370", "2026-04-23"] => {
+  [ "Ministry of Awesome: Coffee & Jam - #370", "2026-04-23" ] => {
     event_type: "meetup",
     end_time: "13:15",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Think aloud! 30-min chat for people doing product research", "2026-04-27"] => {
+  [ "Think aloud! 30-min chat for people doing product research", "2026-04-27" ] => {
     event_type: "networking",
     end_time: "09:00",
-    cost: "Free",
+    cost: "Free"
   },
-  ["VenturEd Live", "2026-04-29"] => {
+  [ "VenturEd Live", "2026-04-29" ] => {
     event_type: "conference",
     end_date: "2026-05-06",
     end_time: "18:30",
-    cost: "$120",
+    cost: "$120"
   },
-  ["Aurora Climate Lab Launch night", "2026-04-29"] => {
+  [ "Aurora Climate Lab Launch night", "2026-04-29" ] => {
     event_type: "networking",
     end_time: "19:30",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Network on Your Terms with Powrsuit &  W\u{0101}hine Fuelled Tech", "2026-04-30"] => {
+  [ "Network on Your Terms with Powrsuit &  W\u{0101}hine Fuelled Tech", "2026-04-30" ] => {
     event_type: "networking",
     end_time: "19:30",
-    cost: "Free",
+    cost: "Free"
   },
-  ["VESA Hackathon 2026", "2026-05-01"] => {
-    event_type: "hackathon",
+  [ "VESA Hackathon 2026", "2026-05-01" ] => {
+    event_type: "hackathon"
     # end_date already set to 2026-05-03
   },
-  ["AI and Creativity Summit", "2026-05-05"] => {
-    event_type: "conference",
+  [ "AI and Creativity Summit", "2026-05-05" ] => {
+    event_type: "conference"
   },
-  ["Soda Power Lunch with AJ Tills", "2026-05-05"] => {
+  [ "Soda Power Lunch with AJ Tills", "2026-05-05" ] => {
     event_type: "talk",
     end_time: "13:30",
-    cost: "$25",
+    cost: "$25"
   },
-  ["AI and Creativity Summit", "2026-05-06"] => {
-    event_type: "conference",
+  [ "AI and Creativity Summit", "2026-05-06" ] => {
+    event_type: "conference"
   },
-  ["PowerUp Accelerator Showcase Night 2026", "2026-05-13"] => {
+  [ "PowerUp Accelerator Showcase Night 2026", "2026-05-13" ] => {
     event_type: "talk",
     end_time: "20:30",
-    city: "New Plymouth",
+    city: "New Plymouth"
   },
-  ["AI Forum Webinar Series: Governance, Risk & Compliance", "2026-05-15"] => {
+  [ "AI Forum Webinar Series: Governance, Risk & Compliance", "2026-05-15" ] => {
     event_type: "webinar",
     end_time: "10:30",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Marketers Day Auckland", "2026-05-22"] => {
+  [ "Marketers Day Auckland", "2026-05-22" ] => {
     event_type: "conference",
     end_time: "17:00",
     region: "auckland",
-    city: "Auckland CBD",
+    city: "Auckland CBD"
   },
-  ["Seeds Impact Conference 2026", "2026-05-22"] => {
+  [ "Seeds Impact Conference 2026", "2026-05-22" ] => {
     event_type: "conference",
     end_time: "16:30",
-    cost: "Free",
+    cost: "Free"
   },
-  ["AANZ Expert Session Legal Essentials for Early-Stage Companies", "2026-05-27"] => {
+  [ "AANZ Expert Session Legal Essentials for Early-Stage Companies", "2026-05-27" ] => {
     event_type: "webinar",
-    end_time: "11:30",
+    end_time: "11:30"
   },
-  ["KPIs That Drive Profit Presented by Excel in BI NZ", "2026-05-05"] => {
+  [ "KPIs That Drive Profit Presented by Excel in BI NZ", "2026-05-05" ] => {
     event_type: "webinar",
     end_time: "10:00",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Migrants in Tech", "2026-06-25"] => {
-    event_type: "networking",
+  [ "Migrants in Tech", "2026-06-25" ] => {
+    event_type: "networking"
   },
-  ["Startup Weekend Taranaki 2026", "2026-07-31"] => {
+  [ "Startup Weekend Taranaki 2026", "2026-07-31" ] => {
     event_type: "hackathon",
     # end_date already set to 2026-08-02
-    city: "Hawera",
+    city: "Hawera"
   },
-  ["Revved. Powerful Minds. Limitless Acceleration.", "2026-08-06"] => {
-    event_type: "conference",
+  [ "Revved. Powerful Minds. Limitless Acceleration.", "2026-08-06" ] => {
+    event_type: "conference"
   },
-  ["Agritech Unleashed", "2026-08-25"] => {
+  [ "Agritech Unleashed", "2026-08-25" ] => {
     # region=bay_of_plenty, city=Tauranga already correct
   },
-  ["CryptoWinter26", "2026-08-25"] => {
+  [ "CryptoWinter26", "2026-08-25" ] => {
     event_type: "conference",
-    end_date: "2026-08-27",
+    end_date: "2026-08-27"
   },
-  ["AUT Innovation Showcase", "2026-09-03"] => {
+  [ "AUT Innovation Showcase", "2026-09-03" ] => {
     event_type: "conference",
     end_time: "20:00",
-    cost: "Free",
+    cost: "Free"
   },
-  ["Aotearoa AI Summit", "2026-09-08"] => {
-    event_type: "conference",
+  [ "Aotearoa AI Summit", "2026-09-08" ] => {
+    event_type: "conference"
     # end_date already set to 2026-09-09
   },
-  ["KiwiSaaS Wellington conference", "2026-09-24"] => {
-    event_type: "conference",
+  [ "KiwiSaaS Wellington conference", "2026-09-24" ] => {
+    event_type: "conference"
   },
-  ["KiwiSaaS Auckland Event", "2026-10-15"] => {
-    event_type: "conference",
+  [ "KiwiSaaS Auckland Event", "2026-10-15" ] => {
+    event_type: "conference"
   },
-  ["Agritech Unleashed", "2026-11-12"] => {
+  [ "Agritech Unleashed", "2026-11-12" ] => {
     # region=otago already correct
-    city: "Dunedin",
+    city: "Dunedin"
   },
-  ["Maui Venture Summit", "2026-11-26"] => {
-    event_type: "conference",
-  },
+  [ "Maui Venture Summit", "2026-11-26" ] => {
+    event_type: "conference"
+  }
 }
 
 updated_count = 0
@@ -241,7 +241,7 @@ rows.each do |row|
   # Get updates: specific first, then title-level
   updates = {}
   updates.merge!(TITLE_UPDATES[title] || {})
-  updates.merge!(SPECIFIC_UPDATES[[title, start_date]] || {})
+  updates.merge!(SPECIFIC_UPDATES[[ title, start_date ]] || {})
 
   next if updates.empty?
 

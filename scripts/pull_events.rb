@@ -97,31 +97,31 @@ module SheetRegionMapper
   # Maps sheet region strings to TechEvents enum values.
   # Matches by keyword - order matters (more specific first).
   MAPPINGS = [
-    [/auckland/i, "auckland"],
-    [/wellington/i, "wellington"],
-    [/christchurch/i, "canterbury"],
-    [/canterbury/i, "canterbury"],
-    [/tauranga/i, "bay_of_plenty"],
-    [/bay.of.plenty/i, "bay_of_plenty"],
-    [/rotorua/i, "bay_of_plenty"],
-    [/hamilton/i, "waikato"],
-    [/waikato/i, "waikato"],
-    [/taup/i, "waikato"],
-    [/queenstown/i, "otago"],
-    [/dunedin/i, "otago"],
-    [/otago/i, "otago"],
-    [/invercargill/i, "southland"],
-    [/southland/i, "southland"],
-    [/kapiti/i, "wellington"],
-    [/nelson/i, "nelson"],
-    [/napier|hastings|hawke/i, "hawkes_bay"],
-    [/palmerston|manawat|whanganui/i, "manawatu_whanganui"],
-    [/new.plymouth|taranaki/i, "taranaki"],
-    [/northland|whang.rei/i, "northland"],
-    [/marlborough|blenheim/i, "marlborough"],
-    [/tasman|richmond|motueka/i, "tasman"],
-    [/west.coast|greymouth|hokitika/i, "west_coast"],
-    [/aotearoa|new.zealand|online|virtual|zoom/i, "online"],
+    [ /auckland/i, "auckland" ],
+    [ /wellington/i, "wellington" ],
+    [ /christchurch/i, "canterbury" ],
+    [ /canterbury/i, "canterbury" ],
+    [ /tauranga/i, "bay_of_plenty" ],
+    [ /bay.of.plenty/i, "bay_of_plenty" ],
+    [ /rotorua/i, "bay_of_plenty" ],
+    [ /hamilton/i, "waikato" ],
+    [ /waikato/i, "waikato" ],
+    [ /taup/i, "waikato" ],
+    [ /queenstown/i, "otago" ],
+    [ /dunedin/i, "otago" ],
+    [ /otago/i, "otago" ],
+    [ /invercargill/i, "southland" ],
+    [ /southland/i, "southland" ],
+    [ /kapiti/i, "wellington" ],
+    [ /nelson/i, "nelson" ],
+    [ /napier|hastings|hawke/i, "hawkes_bay" ],
+    [ /palmerston|manawat|whanganui/i, "manawatu_whanganui" ],
+    [ /new.plymouth|taranaki/i, "taranaki" ],
+    [ /northland|whang.rei/i, "northland" ],
+    [ /marlborough|blenheim/i, "marlborough" ],
+    [ /tasman|richmond|motueka/i, "tasman" ],
+    [ /west.coast|greymouth|hokitika/i, "west_coast" ],
+    [ /aotearoa|new.zealand|online|virtual|zoom/i, "online" ]
   ].freeze
 
   def self.map(raw)
@@ -154,7 +154,7 @@ module SheetFetcher
     { name: "Feb 2027", gid: "1154928392", year: 2027, month: 2 },
     { name: "Mar 2027", gid: "1735034357", year: 2027, month: 3 },
     # Whole-year tab for events beyond the monthly tabs (month: nil)
-    { name: "2027", gid: "1663809046", year: 2027, month: nil },
+    { name: "2027", gid: "1663809046", year: 2027, month: nil }
   ].freeze
 
   def self.year_tab?(tab)

@@ -14,7 +14,7 @@ class PasswordsRequestTest < ActionDispatch::IntegrationTest
   end
 
   test "POST /passwords with valid email sends reset email and redirects" do
-    assert_enqueued_email_with PasswordsMailer, :reset, args: [@user] do
+    assert_enqueued_email_with PasswordsMailer, :reset, args: [ @user ] do
       post passwords_path, params: { email_address: @user.email_address }
     end
     assert_redirected_to new_session_path

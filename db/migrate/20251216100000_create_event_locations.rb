@@ -10,8 +10,8 @@ class CreateEventLocations < ActiveRecord::Migration[8.1]
     end
 
     add_index :event_locations, :region
-    add_index :event_locations, [:event_id, :region]
-    add_index :event_locations, [:region, :city]
+    add_index :event_locations, [ :event_id, :region ]
+    add_index :event_locations, [ :region, :city ]
 
     # Migrate existing event locations
     reversible do |dir|
