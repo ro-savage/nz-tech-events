@@ -37,6 +37,18 @@ sources:
     latest_site_event: 2026-10-21
     site_event_ids: [137, 223, 232, 238, 295, 300]
 
+  - name: Deep South Design Summit
+    url: https://events.humanitix.com/host/deep-south-design-summit
+    platform: humanitix
+    also:
+      - https://www.designsummit.co.nz/
+    status: active
+    upcoming: 1
+    regions: [otago]
+    latest_site_event: 2026-11-18
+    site_event_ids: [522]
+    notes: Added 2026-11-05. Numbered breakfast "jam" series (Vol.5 on 18 Nov 2026) for Queenstown and Wānaka creatives and designers, held at The Sherwood.
+
   - name: FLINT and TUANZ
     url: https://events.humanitix.com/host/60c2e2dfc217da000b70a655
     platform: humanitix
