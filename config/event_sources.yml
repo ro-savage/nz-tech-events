@@ -72,7 +72,7 @@ sources:
     regions: [wellington]
     latest_site_event: 2026-07-29
     site_event_ids: [12, 14, 96, 209, 235]
-    notes: "Wellington monthly meetups plus the annual conference (next: 7 May 2027). The website calendar is Squarespace (?format=json works)."
+    notes: "Wellington monthly meetups plus the annual conference (next: 6–7 May 2027, site 423). The website calendar is Squarespace (?format=json works)."
 
   - name: Caelan Huntress
     url: https://events.humanitix.com/host/caelan-huntress
@@ -460,25 +460,35 @@ sources:
     latest_site_event: 2027-01-06
     site_event_ids: [39, 332, 367, 375, 387, 397]
 
-  - name: Cryptocurrency NZ
-    url: https://cryptocurrency.org.nz/meetups
+  - name: Christchurch Game Developers
+    url: https://www.meetup.com/christchurchgamedevelopers/events/
     platform: meetup
-    also:
-      - https://www.meetup.com/auckland-cryptocurrency-nz-meetup/events/
-      - https://www.meetup.com/wellington-cryptocurrency-nz-meetup/events/
-      - https://www.meetup.com/hamilton-cryptocurrency-nz-meetup/events/
-      - https://www.meetup.com/christchurch-cryptocurrency-blockchain-meetup/events/
-      - https://www.meetup.com/dunedin-cryptocurrency-nz-meetup/events/
-      - https://www.meetup.com/gisborne-cryptocurrency-nz-meetup/events/
-      - https://www.meetup.com/hawkes-bay-cryptocurrency-nz-meetup-group/events/
-      - https://www.meetup.com/nelson-cryptocurrency-nz-meetup/events/
-      - https://www.meetup.com/Invercargill-cryptocurrency-nz-meetup/events/
-    status: unknown
-    upcoming: null
-    regions: [online, otago]
-    latest_site_event: 2026-12-23
-    site_event_ids: [41, 132, 145, 149, 152, 303, 322, 394]
-    notes: "Nine regional Meetup groups. The hub page has no dates; check the regional groups listed under also. Regional meetups run on the last Wednesday of the month, and the site lists them as one monthly online 'Cryptocurrency NZ Meetup' (e.g. 303, 322), so regional meetups on that date are already covered; list other dates individually (e.g. 394). Invercargill cancelled its Jul and Sep 2026 meetups."
+    status: active
+    upcoming: 1
+    regions: [canterbury]
+    latest_site_event: 2026-11-14
+    site_event_ids: [500]
+    notes: Monthly free public game playtest at Tūranga (developers submit games about a week ahead). Added 2026-11-05; found via Canterbury Tech's calendar.
+
+  - name: South Island Architect Forum
+    url: https://www.meetup.com/south-island-architect-forum/events/
+    platform: meetup
+    status: active
+    upcoming: 1
+    regions: [canterbury]
+    latest_site_event: 2026-11-17
+    site_event_ids: [501]
+    notes: Christchurch sessions on solution/system architecture (not buildings) at EPIC. Added 2026-11-05; found via Canterbury Tech's calendar.
+
+  - name: Christchurch Power Platform group
+    url: https://www.meetup.com/christchurch-microsoft-powerapps-flow-and-cds-meetup/events/
+    platform: meetup
+    status: active
+    upcoming: 1
+    regions: [canterbury]
+    latest_site_event: 2026-11-06
+    site_event_ids: [499]
+    notes: Christchurch Microsoft Power Platform and Dynamics 365 Group; runs the annual NZ Business Applications Summit at Ara. Added 2026-11-05; found via Canterbury Tech's calendar.
 
   - name: Christchurch AI Risk and Ethics Community
     url: https://www.meetup.com/christchurch-ai-risk-and-ethics-community/events/
@@ -608,6 +618,19 @@ sources:
     latest_site_event: 2026-10-01
     site_event_ids: [280]
     notes: Wellington AI meetup, monthly since mid-2024 (20 past events); quiet right now.
+
+  - name: Cryptocurrency NZ
+    url: https://luma.com/CryptocurrencyNZ
+    platform: luma
+    feed: https://api.lu.ma/calendar/get-items?period=future&calendar_api_id=cal-BT07eEJSbhUajJv
+    also:
+      - https://cryptocurrency.org.nz/meetups
+    status: active
+    upcoming: 7
+    regions: [online, otago]
+    latest_site_event: 2026-12-23
+    site_event_ids: [41, 132, 145, 149, 152, 303, 322, 394]
+    notes: "Moved from Meetup to Luma (seen 2026-11-05): the Hamilton, Dunedin, Nelson and Invercargill Meetup groups are gone and Auckland, Wellington, Gisborne and Hawke's Bay are frozen, so ignore Meetup. Regional meetups run on the last Wednesday of the month, and the site lists them as one monthly online 'Cryptocurrency NZ Meetup' (e.g. 303, 322), so regional meetups on that date are already covered; list other dates individually (e.g. 394)."
 
   # --- Eventbrite organiser pages (embedded JSON lists upcoming events) ---
   # The old /org/<id>/showmore/ endpoint returns 403. For more than the first page use
@@ -821,7 +844,7 @@ sources:
     regions: [otago, auckland, canterbury, waikato, wellington]
     latest_site_event: 2026-10-15
     site_event_ids: [20, 157, 340, 341, 400, 345]
-    notes: Umbrella calendar. Covers Techweek and BlockchainNZ, and cross-lists KiwiNet, Auckland Startup Week, EdTechNZ, FinTechNZ, AI Forum, DINZ, TUANZ and TechWomen. Highest-yield single source; dedupe against the others.
+    notes: Umbrella calendar. Covers Techweek and BlockchainNZ, and cross-lists KiwiNet, Auckland Startup Week, EdTechNZ, FinTechNZ, AI Forum, DINZ, TUANZ and TechWomen. Highest-yield single source; dedupe against the others. The old nztech.org.nz domain redirects here.
 
   - name: Canterbury Tech
     url: https://canterburytech.nz/events/
@@ -1068,6 +1091,18 @@ sources:
     regions: [auckland]
     latest_site_event: 2026-08-06
     site_event_ids: [242]
+
+  - name: Young Kiwis in AI (YKIA)
+    url: https://www.youngkiwisai.nz/events
+    platform: website
+    also:
+      - https://www.youngkiwisai.nz/conference
+    status: active
+    upcoming: 1
+    regions: [auckland, wellington]
+    latest_site_event: 2027-02-12
+    site_event_ids: [498]
+    notes: Young people's AI community (founded 2026). City meetups (Auckland, Wellington and more) plus the annual national conference; the conference page has JSON-LD with start/end dates and ticket prices. Added 2026-11-05; found via AI Forum NZ's calendar.
 
   # --- Unverified (blocked by Cloudflare or JS-only; needs a real browser) ---
 
