@@ -9,8 +9,7 @@ class OwnershipRequestMailer < ApplicationMailer
     mail(
       to: admin_user.email_address,
       subject: "New ownership request for #{@event.title}",
-      reply_to: "rowan.savage@gmail.com",
-      content_type: "text/html"
+      reply_to: "rowan.savage@gmail.com"
     )
   end
 
@@ -22,8 +21,7 @@ class OwnershipRequestMailer < ApplicationMailer
     mail(
       to: @user.email_address,
       subject: "You now own #{@event.title} on NZ Tech Events",
-      reply_to: "rowan.savage@gmail.com",
-      content_type: "text/html"
+      reply_to: "rowan.savage@gmail.com"
     )
   end
 end

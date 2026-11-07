@@ -34,4 +34,24 @@ class OwnershipRequestMailerTest < ActionMailer::TestCase
     assert_match ownership_request.event.title, mail.body.encoded
     assert_match "approved", mail.body.encoded
   end
+
+  # Regression: forcing content_type "text/html" on a mail with both html and
+  # text templates mislabelled the multipart body, so clients showed raw MIME
+  # boundaries ("----==_mimepart_...") at the top of the email.
+  test "new_request and approved emails are multipart/alternative" do
+    ownership_request = OwnershipRequest.create!(
+      event: events(:approved_upcoming),
+      requester: users(:organiser),
+      reason: "I now run this meetup."
+    )
+
+    new_request = OwnershipRequestMailer.new_request(ownership_request, users(:admin))
+    ownership_request.approve!(users(:admin))
+    approved = OwnershipRequestMailer.approved(ownership_request)
+
+    [ new_request, approved ].each do |mail|
+      assert_equal "multipart/alternative", mail.mime_type
+      assert_equal %w[text/plain text/html], mail.parts.map(&:mime_type)
+    end
+  end
 end
