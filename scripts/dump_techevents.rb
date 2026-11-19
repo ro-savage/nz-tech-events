@@ -2,7 +2,7 @@ require_relative "pull_techevents"
 
 # Writes every live event (upcoming + past) to data/techevents_all.csv.
 # Unlike pull_techevents.rb it doesn't drop events already matched in
-# events.csv, so /check-sources can dedupe against the whole site.
+# events.csv, so /pull-events-websites can dedupe against the whole site.
 TECHEVENTS_ALL_CSV_PATH = File.expand_path("../data/techevents_all.csv", __dir__)
 
 module TechEventsDump

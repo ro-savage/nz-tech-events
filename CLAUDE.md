@@ -394,7 +394,7 @@ Pulls community events from the "Events in Aotearoa" Google Sheet into `data/eve
 
 > Also documented standalone (with extra detail) in `docs/pull_events.md` — if you change one, update the other.
 
-**Weekly shortcut:** run `/pull-events` in Claude Code to do all five steps end to end, including the live upload. The command lives in `.claude/commands/pull-events.md` (gitignored, so it's local to this machine) and adds the lessons from past runs on top of the steps below.
+**Weekly shortcut:** run `/pull-events-sheets` in Claude Code to do all five steps end to end, including the live upload. The command lives in `.claude/commands/pull-events-sheets.md` (gitignored, so it's local to this machine) and adds the lessons from past runs on top of the steps below.
 
 ### 1. Pull new events from the Google Sheet
 
@@ -443,7 +443,7 @@ TECHEVENTS_API_URL=https://techevents.co.nz/api/v1 TECHEVENTS_API_TOKEN=<token> 
 - `TechEventsID` = `SKIP` means the event was deliberately held back (postponed, cancelled, or dead link); the reason and date checked are in `notes`. The uploader skips any non-blank ID — clear `SKIP` to upload it later.
 - `data/` is gitignored: events.csv is the only record of sheet↔site matching. Back it up before risky operations.
 - `config/event_sources.yml` lists the organiser pages that site events came from (Humanitix hosts, Meetup groups, Luma calendars, Eventbrite organisers, organisers' own `/events` pages), with tested JSON feeds where one exists. Add an entry when events start arriving from a new organiser.
-- `/check-sources` (`.claude/commands/check-sources.md`, local like `/pull-events`) checks those pages at most once a week and uploads new events: recurring events up to 3 months ahead, and one-off events at any future date once the organiser has set the actual day. It keeps its rows in `data/source_events.csv` (never `events.csv`, so the sheet pipeline sees them as existing site events), logs each run to `data/source_checks.csv`, dedupes against `data/techevents_all.csv` from `ruby scripts/dump_techevents.rb` (every live event, unlike `techevents.csv`), and uploads with `EVENTS_CSV=data/source_events.csv ruby scripts/upload_events.rb`.
+- `/pull-events-websites` (`.claude/commands/pull-events-websites.md`, local like `/pull-events-sheets`) checks those pages at most once a week and uploads new events: recurring events up to 3 months ahead, and one-off events at any future date once the organiser has set the actual day. It keeps its rows in `data/source_events.csv` (never `events.csv`, so the sheet pipeline sees them as existing site events), logs each run to `data/source_checks.csv`, dedupes against `data/techevents_all.csv` from `ruby scripts/dump_techevents.rb` (every live event, unlike `techevents.csv`), and uploads with `EVENTS_CSV=data/source_events.csv ruby scripts/upload_events.rb`.
 
 ---
 
